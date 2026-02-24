@@ -3,36 +3,39 @@ package tn.esprit._4se2.pi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import tn.esprit._4se2.pi.entities.Booking;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
-@Entity(name = "User")
-@Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+@Table(name = "sport_spaces")
+@Entity(name = "SportSpace")
+public class SportSpace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String firstName;
-    String lastName;
-    String email;
-    String phone;
-    String passwordHash;
+    String name;
+    String description;
+    String address;
+    String city;
+    double latitude;
+    double longitude;
+    String sportType;
+    String status;
 
     LocalDateTime createdAt;
 
-    boolean isActive;
+    @ManyToOne
+    FieldOwner owner;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "sportSpace")
     List<Booking> bookings;
 }
