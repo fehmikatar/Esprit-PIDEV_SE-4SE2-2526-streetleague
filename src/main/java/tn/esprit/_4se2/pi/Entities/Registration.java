@@ -29,7 +29,7 @@ public class Registration {
     @Column(nullable=false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // getters/setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getCompetitionId() { return competitionId; }
