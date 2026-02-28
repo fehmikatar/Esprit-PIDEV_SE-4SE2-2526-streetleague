@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,26 +24,23 @@ public class Product {
     @Column(nullable = false)
     String nom;
 
-    @Column(nullable = false, length = 1000)
+    @Column(length = 1000)
     String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     BigDecimal prix;
 
-    @Column(nullable = false)
     Integer stock;
 
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
-    @Builder.Default
-    List<String> images = new ArrayList<>();
+    List<String> images;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product")
     @Builder.Default
     List<ProductVariant> variants = new ArrayList<>();
 
@@ -57,4 +53,9 @@ public class Product {
 
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
+
+    // AJOUTEZ CETTE RELATION SI ELLE N'EXISTE PAS
+    @OneToMany(mappedBy = "product")
+    @Builder.Default
+    List<Favorite> favorites = new ArrayList<>();
 }
