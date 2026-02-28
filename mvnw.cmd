@@ -1,4 +1,5 @@
-﻿@REM Licensed to the Apache Software Foundation (ASF) under one
+﻿@REM ----------------------------------------------------------------------------
+@REM Licensed to the Apache Software Foundation (ASF) under one
 @REM or more contributor license agreements.  See the NOTICE file
 @REM distributed with this work for additional information
 @REM regarding copyright ownership.  The ASF licenses this file
@@ -14,6 +15,7 @@
 @REM KIND, either express or implied.  See the License for the
 @REM specific language governing permissions and limitations
 @REM under the License.
+@REM ----------------------------------------------------------------------------
 
 @REM ----------------------------------------------------------------------------
 @REM Maven Start Up Batch script
@@ -131,9 +133,7 @@ if exist %WRAPPER_JAR% (
         echo Found %WRAPPER_JAR%
     )
 ) else (
-    if "%MVNW_REPOURL%" == "" (
-        SET DOWNLOAD_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
-    ) else (
+    if not "%MVNW_REPOURL%" == "" (
         SET DOWNLOAD_URL="%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
     )
     if "%MVNW_VERBOSE%" == "true" (

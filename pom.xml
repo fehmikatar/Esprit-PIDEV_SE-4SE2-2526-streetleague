@@ -11,7 +11,6 @@
         <version>3.2.0</version> <!-- ou 3.1.x -->
         <relativePath/>
     </parent>
-
     <groupId>esprit.tn</groupId>
     <artifactId>esprit-4se2-pi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -19,7 +18,8 @@
     <description>Projet PI ESPRIT</description>
 
     <properties>
-        <java.version>17</java.version> <!-- ou 21 -->
+        <java.version>17</java.version>
+        <lombok.version>1.18.36</lombok.version><!-- ou 21 -->
     </properties>
 
     <dependencies>
@@ -34,10 +34,6 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
 
         <!-- MySQL Driver -->
         <dependency>
@@ -50,7 +46,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- JWT -->
@@ -92,20 +88,34 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+
     </dependencies>
+
+
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
-                    <excludes>
-                        <exclude>
+                    <source>17</source>
+                    <target>17</target>
+                    <annotationProcessorPaths>
+                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
