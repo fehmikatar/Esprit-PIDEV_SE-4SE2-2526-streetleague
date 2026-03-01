@@ -3,16 +3,16 @@ package tn.esprit._4se2.pi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import tn.esprit._4se2.pi.entities.Booking;
-
 import java.time.LocalDateTime;
+import tn.esprit._4se2.pi.Enum.Role;
 import java.util.List;
-
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 @Entity(name = "User")
@@ -24,15 +24,23 @@ public class User {
     Long id;
 
     String firstName;
+
     String lastName;
+
     String email;
+
     String phone;
+
     String passwordHash;
 
     LocalDateTime createdAt;
 
-    boolean isActive;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    Role role;
 
-    @OneToMany(mappedBy = "user")
-    List<Booking> bookings;
+    @Builder.Default
+    Boolean isActive = true;
+
+
 }
