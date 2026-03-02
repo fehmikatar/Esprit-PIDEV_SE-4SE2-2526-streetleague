@@ -141,4 +141,51 @@ public class SwaggerConfig {
                 .pathsToMatch("/api/performances/**")
                 .build();
     }
+    @Bean
+    public GroupedOpenApi categoryApi() {
+        return GroupedOpenApi.builder()
+                .group("Categories API")
+                .pathsToMatch("/api/categories/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi commentApi() {
+        return GroupedOpenApi.builder()
+                .group("Comments API")
+                .pathsToMatch("/api/comments/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi likeApi() {
+        return GroupedOpenApi.builder()
+                .group("Likes API")
+                .pathsToMatch("/api/likes/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi messageApi() {
+        return GroupedOpenApi.builder()
+                .group("Messages API")
+                .pathsToMatch("/api/messages/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi postApi() {
+        return GroupedOpenApi.builder()
+                .group("Posts API")
+                .pathsToMatch("/api/posts/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi teamMemberApi() {
+        return GroupedOpenApi.builder()
+                .group("Team Members API")
+                .pathsToMatch("/api/team-members/**")
+                .build();
+    }
 }
