@@ -1,9 +1,11 @@
 package tn.esprit._4se2.pi.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.entities.Promotion;
+import tn.esprit._4se2.pi.dto.PromotionRequest;
+import tn.esprit._4se2.pi.dto.PromotionResponse;
 import tn.esprit._4se2.pi.services.PromotionService;
 
 import java.util.List;
@@ -17,23 +19,24 @@ public class PromotionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Promotion createPromotion(@RequestBody Promotion promotion) {
-        return promotionService.createPromotion(promotion);
+    public PromotionResponse createPromotion(@Valid @RequestBody PromotionRequest request) {
+        return promotionService.createPromotion(request);
     }
 
     @GetMapping
-    public List<Promotion> getAllPromotions() {
+    public List<PromotionResponse> getAllPromotions() {
         return promotionService.getAllPromotions();
     }
 
     @GetMapping("/{id}")
-    public Promotion getPromotionById(@PathVariable Long id) {
+    public PromotionResponse getPromotionById(@PathVariable Long id) {
         return promotionService.getPromotionById(id);
     }
 
     @PutMapping("/{id}")
-    public Promotion updatePromotion(@PathVariable Long id, @RequestBody Promotion promotion) {
-        return promotionService.updatePromotion(id, promotion);
+    public PromotionResponse updatePromotion(@PathVariable Long id,
+                                             @Valid @RequestBody PromotionRequest request) {
+        return promotionService.updatePromotion(id, request);
     }
 
     @DeleteMapping("/{id}")

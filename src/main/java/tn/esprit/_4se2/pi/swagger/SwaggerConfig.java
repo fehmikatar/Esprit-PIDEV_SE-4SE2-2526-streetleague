@@ -45,7 +45,11 @@ public class SwaggerConfig {
                         new Tag().name("Sport Spaces").description("Gestion des terrains sportifs"),
                         new Tag().name("Bookings").description("Gestion des réservations"),
                         new Tag().name("Notifications").description("Gestion des notifications"),
-                        new Tag().name("Teams").description("Gestion des équipes")
+                        new Tag().name("Teams").description("Gestion des équipes"),
+                        new Tag().name("Promotions").description("Gestion des promotions et codes promo"),
+                        new Tag().name("Badges").description("Gestion des badges"),
+                        new Tag().name("Performances").description("Gestion des performances des joueurs")
+
                 ))
                 .externalDocs(new ExternalDocumentation()
                         .description("Documentation complète du projet PI")
@@ -112,6 +116,29 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("Authentication API")
                 .pathsToMatch("/api/auth/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi promotionApi() {
+        return GroupedOpenApi.builder()
+                .group("Promotions API")
+                .pathsToMatch("/api/promotions/**")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi badgeApi() {
+        return GroupedOpenApi.builder()
+                .group("Badges API")
+                .pathsToMatch("/api/badges/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi performanceApi() {
+        return GroupedOpenApi.builder()
+                .group("Performances API")
+                .pathsToMatch("/api/performances/**")
                 .build();
     }
 }

@@ -1,9 +1,11 @@
 package tn.esprit._4se2.pi.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class PromotionResponse {
     private Long id;
     private String name;
