@@ -1,6 +1,6 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.Entities.Registration;
+import tn.esprit._4se2.pi.entities.Registration;
 
 import java.util.List;
 

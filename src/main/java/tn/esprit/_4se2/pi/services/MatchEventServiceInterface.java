@@ -1,6 +1,6 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.Entities.MatchEvent;
+import tn.esprit._4se2.pi.entities.MatchEvent;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.Entities.TeamLineup;
-import tn.esprit._4se2.pi.Repositories.TeamLineupRepository;
+import tn.esprit._4se2.pi.entities.TeamLineup;
+import tn.esprit._4se2.pi.repositories.TeamLineupRepository;
 
 @Service
 public class TeamLineupService {

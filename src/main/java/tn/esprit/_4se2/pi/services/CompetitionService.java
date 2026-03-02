@@ -1,8 +1,8 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.Entities.Competition;
-import tn.esprit._4se2.pi.Repositories.CompetitionRepository;
+import tn.esprit._4se2.pi.entities.Competition;
+import tn.esprit._4se2.pi.repositories.CompetitionRepository;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.Entities.MatchEvent;
-import tn.esprit._4se2.pi.Repositories.MatchEventRepository;
+import tn.esprit._4se2.pi.entities.MatchEvent;
+import tn.esprit._4se2.pi.repositories.MatchEventRepository;
 
 import java.util.List;
 

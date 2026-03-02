@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.Controllers;
 
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.Entities.TeamLineup;
-import tn.esprit._4se2.pi.Services.TeamLineupService;
+import tn.esprit._4se2.pi.entities.TeamLineup;
+import tn.esprit._4se2.pi.services.TeamLineupService;
 
 @RestController
 @RequestMapping("/api/team-lineups")

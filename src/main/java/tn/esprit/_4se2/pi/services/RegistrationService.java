@@ -1,8 +1,8 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.Entities.Registration;
-import tn.esprit._4se2.pi.Repositories.RegistrationRepository;
+import tn.esprit._4se2.pi.entities.Registration;
+import tn.esprit._4se2.pi.repositories.RegistrationRepository;
 
 import java.util.List;
 

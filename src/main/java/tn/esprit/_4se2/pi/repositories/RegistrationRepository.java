@@ -1,7 +1,7 @@
-package tn.esprit._4se2.pi.Repositories;
+package tn.esprit._4se2.pi.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import tn.esprit._4se2.pi.Entities.Registration;
+import tn.esprit._4se2.pi.entities.Registration;
 import tn.esprit._4se2.pi.Enum.RegistrationStatus;
 
 import java.util.List;
