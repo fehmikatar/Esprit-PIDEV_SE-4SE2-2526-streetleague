@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.Controllers;
 
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.Entities.Registration;
-import tn.esprit._4se2.pi.Services.RegistrationService;
+import tn.esprit._4se2.pi.entities.Registration;
+import tn.esprit._4se2.pi.services.RegistrationService;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.Entities;
+package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
 
