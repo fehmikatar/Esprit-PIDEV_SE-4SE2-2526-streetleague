@@ -49,6 +49,7 @@ import org.springframework.context.annotation.Configuration;
         }
 )
 public class Swagger {
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -58,10 +59,20 @@ public class Swagger {
                         .description("API pour la gestion des compétitions, matchs et événements dans StreetLeague"));
     }
 
-    // Groupes API (Modules)
-    @Bean public GroupedOpenApi competitionsApi() { return GroupedOpenApi.builder().group("🏆 Compétitions").pathsToMatch("/api/competitions/**").build(); }
-    @Bean public GroupedOpenApi matchesApi() { return GroupedOpenApi.builder().group("⚽ Matchs").pathsToMatch("/api/matches/**").build(); }
-    @Bean public GroupedOpenApi matchEventsApi() { return GroupedOpenApi.builder().group("📋 Événements de Match").pathsToMatch("/api/match-events/**").build(); }
-    @Bean public GroupedOpenApi registrationsApi() { return GroupedOpenApi.builder().group("📝 Inscriptions").pathsToMatch("/api/registrations/**").build(); }
-    @Bean public GroupedOpenApi teamsApi() { return GroupedOpenApi.builder().group("👥 Equipes").pathsToMatch("/api/teams/**").build(); }
+
+    @Bean public GroupedOpenApi competitionsApi() {
+        return GroupedOpenApi.builder().group("🏆 Compétitions").pathsToMatch("/api/competitions/**").build();
+    }
+    @Bean public GroupedOpenApi matchesApi() {
+        return GroupedOpenApi.builder().group("⚽ Matchs").pathsToMatch("/api/matches/**").build();
+    }
+    @Bean public GroupedOpenApi matchEventsApi() {
+        return GroupedOpenApi.builder().group("📋 Événements de Match").pathsToMatch("/api/match-events/**").build();
+    }
+    @Bean public GroupedOpenApi registrationsApi() {
+        return GroupedOpenApi.builder().group("📝 Inscriptions").pathsToMatch("/api/registrations/**").build();
+    }
+    @Bean public GroupedOpenApi teamsApi() {
+        return GroupedOpenApi.builder().group("👥 Equipes").pathsToMatch("/api/teams/**").build();
+    }
 }
