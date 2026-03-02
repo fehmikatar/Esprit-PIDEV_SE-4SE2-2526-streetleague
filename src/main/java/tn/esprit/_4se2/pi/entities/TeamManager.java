@@ -1,20 +1,22 @@
 package tn.esprit._4se2.pi.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Builder
+@Entity
+@Table(name = "team_managers")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "TeamManager")
-@Table(name = "team_managers")
 public class TeamManager extends User {
 
     String teamName;
+
+    String teamCode;
+
+    String experience;
 }

@@ -5,28 +5,36 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 
-@Builder
+@Entity
+@Table(name = "feedbacks")
 @Getter
 @Setter
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "feedbacks")
-@Entity(name = "Feedback")
 public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    int rating;
+    @Column(nullable = false)
+    Long userId;
+
+    @Column(nullable = false)
+    Long sportSpaceId;
+
+    @Column(nullable = false)
+    Integer rating; // 1-5
+
+    @Column(length = 1000)
     String comment;
 
+    @Column(nullable = false)
+    @Builder.Default
+    String status = "PENDING"; // PENDING, APPROVED, REJECTED
+
+    @Column(name = "created_at")
     LocalDateTime createdAt;
-
-    boolean isModerated;
-
-    @ManyToOne
-    SportSpace sportSpace;
 }

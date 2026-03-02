@@ -1,26 +1,24 @@
 package tn.esprit._4se2.pi.entities;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Table(name = "players")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Player extends User {
-    @ElementCollection
-    private List<String> sports = new ArrayList<>();
-    private String position;
-    @OneToOne(mappedBy = "player")
-    private PlayerLevel level;
-    @OneToMany(mappedBy = "player")
-    private List<Performance> performances;
-    @OneToMany(mappedBy = "player")
-    private List<BadgePlayer> badgePlayers = new ArrayList<>();
+
+    Integer skillLevel;
+
+    String position;
+
+    Integer gamesPlayed;
+
+    Double rating;
 }

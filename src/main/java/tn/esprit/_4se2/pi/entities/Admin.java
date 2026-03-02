@@ -4,12 +4,19 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@Entity
+@Table(name = "admins")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity(name = "Admin")
-@Table(name = "admins")
 public class Admin extends User {
+
+    String adminRole;
+
+    String department;
 }

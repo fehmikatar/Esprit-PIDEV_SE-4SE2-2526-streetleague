@@ -1,12 +1,10 @@
 package tn.esprit._4se2.pi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import tn.esprit._4se2.pi.entities.Booking;
-
 import java.time.LocalDateTime;
+import tn.esprit._4se2.pi.Enum.Role;
 import java.util.List;
 
 @Getter
@@ -14,6 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 @Entity(name = "User")
@@ -25,23 +24,23 @@ public class User {
     Long id;
 
     String firstName;
-    String lastName;
-    String email;
-    String phone;
-    String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    UserRole role;
+    String lastName;
+
+    String email;
+
+    String phone;
+
+    String passwordHash;
 
     LocalDateTime createdAt;
 
-    boolean isActive;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    Role role;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    List<Booking> bookings;
+    @Builder.Default
+    Boolean isActive = true;
 
-    public enum UserRole {
-        ADMIN, PLAYER, FIELD_OWNER, TEAM_MANAGER
-    }
+
 }
