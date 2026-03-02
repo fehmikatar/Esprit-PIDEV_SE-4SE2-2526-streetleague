@@ -1,6 +1,6 @@
-package tn.esprit._4se2.pi.Services;
+package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.Entities.TeamLineup;
+import tn.esprit._4se2.pi.entities.TeamLineup;
 
 public interface TeamLineupServiceInterface {
     TeamLineup getByMatchAndTeam(Long matchId, Long teamId);

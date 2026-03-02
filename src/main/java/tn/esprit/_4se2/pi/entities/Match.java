@@ -1,8 +1,7 @@
-package tn.esprit._4se2.pi.Entities;
+package tn.esprit._4se2.pi.entities;
 
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.config.YamlProcessor;
 import tn.esprit._4se2.pi.Enum.MatchStatus;
 
 import java.time.LocalDateTime;
