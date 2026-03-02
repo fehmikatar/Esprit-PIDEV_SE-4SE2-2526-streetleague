@@ -1,9 +1,9 @@
-package tn.esprit._4se2.pi.RestController;
+package tn.esprit._4se2.pi.restcontrollers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.Service.ITeamMemberService;
+import tn.esprit._4se2.pi.services.TeamMember.ITeamMemberService;
 import tn.esprit._4se2.pi.entities.TeamMember;
 import tn.esprit._4se2.pi.entities.TeamMemberId;
 

@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "admins")
 @Getter
 @Setter
-@NoArgsConstructor
+
 @AllArgsConstructor
 
 @EqualsAndHashCode(callSuper = true)

@@ -1,9 +1,9 @@
-package tn.esprit._4se2.pi.RestController;
+package tn.esprit._4se2.pi.restcontrollers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.Service.IPostService;
+import tn.esprit._4se2.pi.services.Post.IPostService;
 import tn.esprit._4se2.pi.entities.Post;
 
 import java.util.List;

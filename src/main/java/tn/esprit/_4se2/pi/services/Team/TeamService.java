@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.Service;
+package tn.esprit._4se2.pi.services.Team;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

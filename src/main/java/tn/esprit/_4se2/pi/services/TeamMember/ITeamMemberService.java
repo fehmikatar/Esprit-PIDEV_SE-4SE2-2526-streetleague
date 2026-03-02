@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.Service;
+package tn.esprit._4se2.pi.services.TeamMember;
 
 import tn.esprit._4se2.pi.entities.TeamMember;
 import tn.esprit._4se2.pi.entities.TeamMemberId;
