@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.FavoriteDTOs;
 import tn.esprit._4se2.pi.service.IFavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/favorites")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {"*"})
 @Tag(name = "Favorites Management", description = "Endpoints for managing user favorites")
 public class FavoriteRestController {
