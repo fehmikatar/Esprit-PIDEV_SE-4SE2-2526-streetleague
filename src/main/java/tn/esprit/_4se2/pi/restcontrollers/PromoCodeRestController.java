@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.PromoCodeDTO;
 import tn.esprit._4se2.pi.service.IPromoCodeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/promocodes")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"*"})
 public class PromoCodeRestController {

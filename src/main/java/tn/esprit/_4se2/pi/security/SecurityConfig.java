@@ -61,9 +61,9 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**").permitAll()
                         // Endpoints par rôle
-                        .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/api/field-owners/**").hasRole("FIELD_OWNER")
-                        .requestMatchers("/api/players/**").hasRole("PLAYER")
+                       // .requestMatchers("/api/admins/**").hasAuthority("PAIEMENT")
+                       // .requestMatchers("/api/field-owners/**").hasAuthority("commande")
+                      //  .requestMatchers("/api/players/**").hasAuthority("PAIEMENT")
                         // Tout le reste nécessite authentification
                         .anyRequest().authenticated()
                 )
@@ -77,7 +77,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:8085"));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

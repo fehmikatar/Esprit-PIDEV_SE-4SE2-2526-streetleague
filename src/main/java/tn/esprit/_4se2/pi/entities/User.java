@@ -52,4 +52,14 @@ public class User {
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
+    // ✅ AJOUT: Méthode demandée par CustomUserDetailsServiceImpl
+    public String getPasswordHash() {
+        return this.password;
+    }
+
+    // ✅ AJOUT: Méthode demandée par CustomUserDetailsServiceImpl
+    public boolean getIsActive() {
+        return this.enabled;
+    }
 }
