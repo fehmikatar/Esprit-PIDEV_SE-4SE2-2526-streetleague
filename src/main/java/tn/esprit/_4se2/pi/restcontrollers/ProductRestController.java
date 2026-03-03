@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.ProductDTOs;
 import tn.esprit._4se2.pi.service.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = "*")
 @Tag(name = "Product Management", description = "Endpoints for managing products")
 public class ProductRestController {

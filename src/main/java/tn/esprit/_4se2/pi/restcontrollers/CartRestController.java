@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.CartDTOs;
 import tn.esprit._4se2.pi.dto.ProductDTOs;
 import tn.esprit._4se2.pi.service.ICartService;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {"*"})
 @Tag(name = "Cart Management", description = "Endpoints for managing shopping cart")
 public class CartRestController {
