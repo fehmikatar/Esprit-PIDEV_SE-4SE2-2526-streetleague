@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.dto.*;
+import tn.esprit._4se2.pi.dto.Auth.AuthResponse;
+import tn.esprit._4se2.pi.dto.Auth.LoginRequest;
+import tn.esprit._4se2.pi.dto.Auth.RegisterRequest;
 import tn.esprit._4se2.pi.services.Auth.AuthService;
 
 @RestController
