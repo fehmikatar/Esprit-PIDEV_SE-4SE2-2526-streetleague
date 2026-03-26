@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.Player;
 
-import tn.esprit._4se2.pi.dto.PlayerRequest;
-import tn.esprit._4se2.pi.dto.PlayerResponse;
+import tn.esprit._4se2.pi.dto.Player.PlayerRequest;
+import tn.esprit._4se2.pi.dto.Player.PlayerResponse;
 import java.util.List;
 
 public interface IPlayerService {

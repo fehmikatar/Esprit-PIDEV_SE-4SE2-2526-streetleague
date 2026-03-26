@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tn.esprit._4se2.pi.dto.FeedbackRequest;
-import tn.esprit._4se2.pi.dto.FeedbackResponse;
+import tn.esprit._4se2.pi.dto.Feedback.FeedbackRequest;
+import tn.esprit._4se2.pi.dto.Feedback.FeedbackResponse;
 import tn.esprit._4se2.pi.entities.Feedback;
 import tn.esprit._4se2.pi.mappers.FeedbackMapper;
 import tn.esprit._4se2.pi.repositories.FeedbackRepository;
@@ -23,13 +23,16 @@ public class FeedbackService implements IFeedbackService {
 
     @Override
     public FeedbackResponse createFeedback(FeedbackRequest request) {
-        log.info("Creating feedback for sport space: {}", request.getSportSpaceId());
+
+        log.info("Creating feedback for sport space: {}", request.getSportSpaceId()); // ✅
 
         Feedback feedback = feedbackMapper.toEntity(request);
-        feedback.setUserId(request.getUserId());
-        feedback.setSportSpaceId(request.getSportSpaceId());
+
+        feedback.setUserId(request.getUserId());           // ✅
+        feedback.setSportSpaceId(request.getSportSpaceId()); // ✅
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
+
         log.info("Feedback created successfully with id: {}", savedFeedback.getId());
 
         return feedbackMapper.toResponse(savedFeedback);

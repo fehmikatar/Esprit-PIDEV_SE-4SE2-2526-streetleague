@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.BookingRequest;
-import tn.esprit._4se2.pi.dto.BookingResponse;
+import tn.esprit._4se2.pi.dto.Booking.BookingRequest;
+import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import tn.esprit._4se2.pi.entities.Booking;
 import java.time.LocalDateTime;
 
