@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import tn.esprit._4se2.pi.dto.ProductDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import tn.esprit._4se2.pi.service.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

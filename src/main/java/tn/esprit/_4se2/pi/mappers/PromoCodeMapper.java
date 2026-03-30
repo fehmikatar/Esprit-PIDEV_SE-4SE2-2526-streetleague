@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.PromoCodeDTO;
+import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
 import tn.esprit._4se2.pi.entities.PromoCode;
 
 @Component

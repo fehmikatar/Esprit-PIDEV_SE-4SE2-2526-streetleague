@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,23 +15,25 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SavedCart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
 
-    @Column(nullable = false)
-    String name;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    User user;
+        @Column(nullable = false)
+        String name;
 
-    @Column(length = 5000)
-    String cartContents;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id", nullable = false)
+        User user;
 
-    @Column(name = "share_token", unique = true)
-    String shareToken;
+        @Column(length = 5000)
+        String cartContents;
 
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
+        @Column(name = "share_token", unique = true)
+        String shareToken;
+
+        @Column(name = "created_at")
+        LocalDateTime createdAt;
+
 }

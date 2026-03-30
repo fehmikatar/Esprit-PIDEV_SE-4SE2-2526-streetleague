@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import tn.esprit._4se2.pi.dto.FavoriteDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.service;
 
-import tn.esprit._4se2.pi.dto.CartDTOs;
-import tn.esprit._4se2.pi.dto.ProductDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.CartDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import java.math.BigDecimal;
 import java.util.List;
 
