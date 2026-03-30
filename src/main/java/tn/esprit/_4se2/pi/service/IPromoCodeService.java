@@ -1,6 +1,6 @@
 package tn.esprit._4se2.pi.service;
 
-import tn.esprit._4se2.pi.dto.PromoCodeDTO;
+import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.entities.User;
-import tn.esprit._4se2.pi.entities.EtatPanier;
+import tn.esprit._4se2.pi.Enum.Role;
 import tn.esprit._4se2.pi.repository.UserRepository;
 import tn.esprit._4se2.pi.security.jwt.JwtService;
 import java.util.Map;
@@ -33,13 +33,20 @@ public class AuthRestController {
                         .body(Map.of("error", "Email déjà utilisé"));
             }
 
+            // Split fullName into firstName and lastName
+            String fullName = request.getFullName() != null ? request.getFullName() : "";
+            String[] parts = fullName.split(" ", 2);
+            String firstName = parts[0];
+            String lastName = parts.length > 1 ? parts[1] : "";
+
             // Créer le nouvel utilisateur
             User user = User.builder()
-                    .fullName(request.getFullName())
+                    .firstName(firstName)
+                    .lastName(lastName)
                     .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(EtatPanier.valueOf(request.getRole()))
-                    .enabled(true)
+                    .passwordHash(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.valueOf(request.getRole()))
+                    .isActive(true)
                     .build();
 
             userRepository.save(user);

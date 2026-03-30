@@ -4,62 +4,42 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import tn.esprit._4se2.pi.Enum.Role;
 import java.util.List;
 
-@Entity
-@Table(name = "users")
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity(name = "User")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
-    String fullName;
+    String firstName;
 
-    @Column(nullable = false, unique = true)
+    String lastName;
+
     String email;
 
-    @Column(nullable = false)
-    String password;
+    String phone;
 
-    @Enumerated(EnumType.STRING)
-    EtatPanier role;
+    String passwordHash;
 
-    @Builder.Default
-    boolean enabled = true;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    List<Favorite> favorites = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    List<FavoriteCategory> favoriteCategories = new ArrayList<>();
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    Cart cart;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @Builder.Default
-    List<SavedCart> savedCarts = new ArrayList<>();
-
-    @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    // ✅ AJOUT: Méthode demandée par CustomUserDetailsServiceImpl
-    public String getPasswordHash() {
-        return this.password;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    Role role;
 
-    // ✅ AJOUT: Méthode demandée par CustomUserDetailsServiceImpl
-    public boolean getIsActive() {
-        return this.enabled;
-    }
+    @Builder.Default
+    Boolean isActive = true;
+
+
 }

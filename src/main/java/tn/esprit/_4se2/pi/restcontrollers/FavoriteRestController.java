@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import tn.esprit._4se2.pi.dto.FavoriteDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
 import tn.esprit._4se2.pi.service.IFavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
