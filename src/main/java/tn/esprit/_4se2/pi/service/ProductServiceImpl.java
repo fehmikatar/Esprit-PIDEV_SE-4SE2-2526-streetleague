@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import tn.esprit._4se2.pi.dto.ProductDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import tn.esprit._4se2.pi.repository.ProductRepository;
 import tn.esprit._4se2.pi.repository.CategoryRepository;
 import tn.esprit._4se2.pi.entities.Category;

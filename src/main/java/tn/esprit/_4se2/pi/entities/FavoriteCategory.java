@@ -1,9 +1,9 @@
 package tn.esprit._4se2.pi.entities;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,6 @@ public class FavoriteCategory {
     @Column(nullable = false)
     String name;
 
-    // Vérifiez que ce champ existe
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     User user;

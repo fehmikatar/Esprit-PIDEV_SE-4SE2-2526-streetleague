@@ -21,8 +21,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,6 +49,7 @@ public class Cart {
         ACTIVE, ABANDONED, CONVERTED
     }
 
+    // Méthode métier pour calculer le total (appelée manuellement dans les services)
     public void calculateTotal() {
         this.total = items.stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))

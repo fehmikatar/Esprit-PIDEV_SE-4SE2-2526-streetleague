@@ -1,6 +1,6 @@
 package tn.esprit._4se2.pi.service;
 
-import tn.esprit._4se2.pi.dto.CategoryDTO;
+import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
 
 import java.util.List;
 
