@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
-import tn.esprit._4se2.pi.service.IPromoCodeService;
+import tn.esprit._4se2.pi.services.PromoCode.IPromoCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

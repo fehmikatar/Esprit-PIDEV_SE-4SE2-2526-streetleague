@@ -1,9 +1,9 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.Category;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
-import tn.esprit._4se2.pi.repository.CategoryRepository;
+import tn.esprit._4se2.pi.repositories.CategoryRepository;
 import tn.esprit._4se2.pi.entities.Category;
 import tn.esprit._4se2.pi.mappers.CategoryMapper;
 
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;

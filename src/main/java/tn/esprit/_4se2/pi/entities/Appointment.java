@@ -12,13 +12,13 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "doctor_id")
-    private User doctor;
+    private Doctor doctor;
 
     private LocalDateTime appointmentDate;
     private String reason;
@@ -48,8 +48,8 @@ public class Appointment {
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 
-    public User getDoctor() { return doctor; }
-    public void setDoctor(User doctor) { this.doctor = doctor; }
+    public Doctor getDoctor() { return doctor; }
+    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
 
     public LocalDateTime getAppointmentDate() { return appointmentDate; }
     public void setAppointmentDate(LocalDateTime appointmentDate) { this.appointmentDate = appointmentDate; }
@@ -68,14 +68,4 @@ public class Appointment {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "id=" + id +
-                ", appointmentDate=" + appointmentDate +
-                ", reason='" + reason + '\'' +
-                ", status=" + status +
-                '}';
-    }
 }

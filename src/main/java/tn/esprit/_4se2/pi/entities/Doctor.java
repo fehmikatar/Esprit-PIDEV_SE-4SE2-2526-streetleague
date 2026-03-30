@@ -1,26 +1,25 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import java.util.List;
 
-/**
- * Represents a doctor user (treated_by reference in MedicalRecord).
- * Extends User via JOINED inheritance.
- */
 @Entity
 @Table(name = "doctors")
-@Getter
-@Setter
-@NoArgsConstructor
-public class Doctor extends User {
+@Data
+public class Doctor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    private String firstName;
+    private String lastName;
     private String specialty;
     private String licenseNumber;
-    private String hospital;
+    private String email;
+    private String phoneNumber;
+    private String address;
 
-    public Doctor(String specialty, String licenseNumber, String hospital) {
-        this.specialty = specialty;
-        this.licenseNumber = licenseNumber;
-        this.hospital = hospital;
-    }
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments;
 }

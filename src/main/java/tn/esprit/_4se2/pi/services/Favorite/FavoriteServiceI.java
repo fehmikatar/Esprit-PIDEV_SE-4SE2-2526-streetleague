@@ -1,14 +1,14 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.Favorite;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
-import tn.esprit._4se2.pi.repository.FavoriteCategoryRepository;
-import tn.esprit._4se2.pi.repository.FavoriteRepository;
-import tn.esprit._4se2.pi.repository.ProductRepository;
-import tn.esprit._4se2.pi.repository.UserRepository;
+import tn.esprit._4se2.pi.repositories.FavoriteCategoryRepository;
+import tn.esprit._4se2.pi.repositories.FavoriteRepository;
+import tn.esprit._4se2.pi.repositories.ProductRepository;
+import tn.esprit._4se2.pi.repositories.UserRepository;
 import tn.esprit._4se2.pi.entities.Favorite;
 import tn.esprit._4se2.pi.entities.FavoriteCategory;
 import tn.esprit._4se2.pi.entities.Product;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import tn.esprit._4se2.pi.entities.User;
 @Service
 @AllArgsConstructor
-public class FavoriteServiceImpl implements IFavoriteService {
+public class FavoriteServiceI implements IFavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final FavoriteCategoryRepository categoryRepository;

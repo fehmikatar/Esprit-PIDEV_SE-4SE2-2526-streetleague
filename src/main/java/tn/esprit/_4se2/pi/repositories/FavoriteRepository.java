@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.repository;
+package tn.esprit._4se2.pi.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

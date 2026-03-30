@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.repository;
+package tn.esprit._4se2.pi.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

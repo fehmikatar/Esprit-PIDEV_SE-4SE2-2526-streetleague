@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.Product;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
-import tn.esprit._4se2.pi.repository.ProductRepository;
-import tn.esprit._4se2.pi.repository.CategoryRepository;
+import tn.esprit._4se2.pi.repositories.ProductRepository;
+import tn.esprit._4se2.pi.repositories.CategoryRepository;
 import tn.esprit._4se2.pi.entities.Category;
 import tn.esprit._4se2.pi.entities.Product;
 import tn.esprit._4se2.pi.entities.ProductVariant;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ProductServiceImpl implements IProductService {
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
