@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.TeamBookingRequest;
-import tn.esprit._4se2.pi.dto.TeamBookingResponse;
+import tn.esprit._4se2.pi.dto.TeamBooking.TeamBookingRequest;
+import tn.esprit._4se2.pi.dto.TeamBooking.TeamBookingResponse;
 import tn.esprit._4se2.pi.entities.TeamBooking;
 import java.time.LocalDateTime;
 
