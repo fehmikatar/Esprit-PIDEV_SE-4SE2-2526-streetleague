@@ -45,14 +45,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())  // Désactiver CSRF pour les API REST
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS configuration
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Session sans état
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()  // ✅ Tout autoriser pour le développement
+                        .requestMatchers("/**").permitAll()  // Permet l'accès à **toutes** les routes sans restriction
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Ajoute le filtre JWT
 
         return http.build();
     }
@@ -60,8 +60,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setAllowedOrigins(List.of("http://localhost:4200"));  // Frontend Angular (ajuste l'origine si nécessaire)
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

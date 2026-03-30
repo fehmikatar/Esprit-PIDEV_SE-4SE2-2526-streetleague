@@ -23,6 +23,10 @@ public class SavedCart {
         @Column(nullable = false)
         String name;
 
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id", nullable = false)
+        User user;
+
         @Column(length = 5000)
         String cartContents;
 

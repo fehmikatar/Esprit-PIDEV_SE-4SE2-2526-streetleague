@@ -42,14 +42,15 @@ public class AuthService {
         if (req.role() == null)
             throw new IllegalArgumentException("Rôle requis");
 
-
+        // Créer le bon type selon le rôle
         User user = switch (req.role()) {
             case ROLE_ADMIN -> {
                 Admin admin = new Admin();
                 admin.setFirstName(req.firstName());
                 admin.setLastName(req.lastName());
                 admin.setEmail(req.email());
-                admin.setPasswordHash(passwordEncoder.encode(req.password()));
+                admin.setPasswordHash(
+                        passwordEncoder.encode(req.password()));
                 admin.setRole(Role.ROLE_ADMIN);
                 admin.setIsActive(true);
                 admin.setCreatedAt(LocalDateTime.now());
@@ -60,7 +61,8 @@ public class AuthService {
                 fo.setFirstName(req.firstName());
                 fo.setLastName(req.lastName());
                 fo.setEmail(req.email());
-                fo.setPasswordHash(passwordEncoder.encode(req.password()));
+                fo.setPasswordHash(
+                        passwordEncoder.encode(req.password()));
                 fo.setRole(Role.ROLE_FIELD_OWNER);
                 fo.setIsActive(true);
                 fo.setCreatedAt(LocalDateTime.now());
@@ -71,22 +73,12 @@ public class AuthService {
                 player.setFirstName(req.firstName());
                 player.setLastName(req.lastName());
                 player.setEmail(req.email());
-                player.setPasswordHash(passwordEncoder.encode(req.password()));
+                player.setPasswordHash(
+                        passwordEncoder.encode(req.password()));
                 player.setRole(Role.ROLE_PLAYER);
                 player.setIsActive(true);
                 player.setCreatedAt(LocalDateTime.now());
                 yield player;
-            }
-            case ROLE_TEAM_MANAGER -> {
-                TeamManager tm = new TeamManager();
-                tm.setFirstName(req.firstName());
-                tm.setLastName(req.lastName());
-                tm.setEmail(req.email());
-                tm.setPasswordHash(passwordEncoder.encode(req.password()));
-                tm.setRole(Role.ROLE_TEAM_MANAGER);
-                tm.setIsActive(true);
-                tm.setCreatedAt(LocalDateTime.now());
-                yield tm;
             }
         };
 

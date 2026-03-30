@@ -24,6 +24,10 @@ public class FavoriteCategory {
     @Column(nullable = false)
     String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    User user;
+
     @OneToMany(mappedBy = "category")
     @Builder.Default
     List<Favorite> favorites = new ArrayList<>();

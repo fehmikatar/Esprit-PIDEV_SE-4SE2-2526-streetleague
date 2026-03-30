@@ -1,8 +1,6 @@
 package tn.esprit._4se2.pi.Enum;
 
-public enum Role {
-    ROLE_PLAYER,
+public enum Role {ROLE_ADMIN,
     ROLE_FIELD_OWNER,
-    ROLE_ADMIN,
-    ROLE_TEAM_MANAGER
+    ROLE_PLAYER
 }
