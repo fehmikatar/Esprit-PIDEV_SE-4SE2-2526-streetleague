@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.swagger;
+package tn.esprit._4se2.pi.Swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
