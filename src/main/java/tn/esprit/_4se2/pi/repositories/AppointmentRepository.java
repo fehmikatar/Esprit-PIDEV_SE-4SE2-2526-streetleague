@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.repositories;
 
-import tn.esprit._4se2.pi.entites.Appointment;
-import tn.esprit._4se2.pi.entites.AppointmentStatus;
+import tn.esprit._4se2.pi.entities.Appointment;
+import tn.esprit._4se2.pi.entities.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

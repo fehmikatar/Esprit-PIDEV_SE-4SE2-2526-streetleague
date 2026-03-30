@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.dto;
 
 import lombok.*;
-import tn.esprit._4se2.pi.entites.AppointmentStatus;
+import tn.esprit._4se2.pi.entities.AppointmentStatus;
 import java.time.LocalDateTime;
 
 @Getter

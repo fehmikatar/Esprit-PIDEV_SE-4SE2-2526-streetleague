@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.entites.User;
+import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.HealthMetrics;
+import tn.esprit._4se2.pi.entities.HealthMetrics;
 import java.time.LocalDateTime;
 import java.util.List;
 

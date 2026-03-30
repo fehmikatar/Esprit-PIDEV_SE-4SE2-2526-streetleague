@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.services;
 
 
-import tn.esprit._4se2.pi.entites.Appointment;
-import tn.esprit._4se2.pi.entites.AppointmentStatus;
+import tn.esprit._4se2.pi.entities.Appointment;
+import tn.esprit._4se2.pi.entities.AppointmentStatus;
 import tn.esprit._4se2.pi.repositories.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

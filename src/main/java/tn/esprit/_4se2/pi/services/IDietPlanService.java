@@ -1,6 +1,6 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.DietPlan;
+import tn.esprit._4se2.pi.entities.DietPlan;
 
 import java.time.LocalDate;
 import java.util.List;

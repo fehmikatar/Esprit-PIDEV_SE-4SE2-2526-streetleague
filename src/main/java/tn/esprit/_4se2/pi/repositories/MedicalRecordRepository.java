@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.repositories;
 
-import tn.esprit._4se2.pi.entites.MedicalRecord;
-import tn.esprit._4se2.pi.entites.InjuryType;
-import tn.esprit._4se2.pi.entites.RecoveryStatus;
+import tn.esprit._4se2.pi.entities.MedicalRecord;
+import tn.esprit._4se2.pi.entities.InjuryType;
+import tn.esprit._4se2.pi.entities.RecoveryStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

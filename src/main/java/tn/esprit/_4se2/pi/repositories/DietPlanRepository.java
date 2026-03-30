@@ -1,6 +1,6 @@
 package tn.esprit._4se2.pi.repositories;
 
-import tn.esprit._4se2.pi.entites.DietPlan;
+import tn.esprit._4se2.pi.entities.DietPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

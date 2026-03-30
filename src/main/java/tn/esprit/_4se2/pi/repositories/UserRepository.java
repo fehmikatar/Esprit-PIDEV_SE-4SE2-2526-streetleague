@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.repositories;
 
-import tn.esprit._4se2.pi.entites.User;
-import tn.esprit._4se2.pi.entites.UserRole;
+import tn.esprit._4se2.pi.entities.User;
+import tn.esprit._4se2.pi.entities.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

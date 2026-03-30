@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.Appointment;
-import tn.esprit._4se2.pi.entites.AppointmentStatus;
+import tn.esprit._4se2.pi.entities.Appointment;
+import tn.esprit._4se2.pi.entities.AppointmentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.dto;
 
 import lombok.*;
-import tn.esprit._4se2.pi.entites.UserRole;
+import tn.esprit._4se2.pi.entities.UserRole;
 import java.time.LocalDateTime;
 
 @Getter

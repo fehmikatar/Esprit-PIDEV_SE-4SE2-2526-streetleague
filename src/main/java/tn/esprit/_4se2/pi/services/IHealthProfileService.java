@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.HealthProfile;
-import tn.esprit._4se2.pi.entites.FitnessStatus;
+import tn.esprit._4se2.pi.entities.HealthProfile;
+import tn.esprit._4se2.pi.entities.FitnessStatus;
 import java.util.List;
 
 public interface IHealthProfileService {

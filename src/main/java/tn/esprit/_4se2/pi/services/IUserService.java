@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.User;
-import tn.esprit._4se2.pi.entites.UserRole;
+import tn.esprit._4se2.pi.entities.User;
+import tn.esprit._4se2.pi.entities.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.List;

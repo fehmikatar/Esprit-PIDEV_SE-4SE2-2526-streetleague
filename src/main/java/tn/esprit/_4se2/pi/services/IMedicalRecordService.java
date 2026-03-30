@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.services;
 
-import tn.esprit._4se2.pi.entites.MedicalRecord;
-import tn.esprit._4se2.pi.entites.InjuryType;
-import tn.esprit._4se2.pi.entites.RecoveryStatus;
+import tn.esprit._4se2.pi.entities.MedicalRecord;
+import tn.esprit._4se2.pi.entities.InjuryType;
+import tn.esprit._4se2.pi.entities.RecoveryStatus;
 import java.time.LocalDate;
 import java.util.List;
 

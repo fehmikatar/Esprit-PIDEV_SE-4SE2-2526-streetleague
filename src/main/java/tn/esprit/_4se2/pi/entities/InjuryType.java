@@ -1,0 +1,9 @@
+package tn.esprit._4se2.pi.entities;
+
+public enum InjuryType {
+    MUSCLE_STRAIN, MUSCLE_TEAR, CRAMP,
+    SPRAIN, DISLOCATION,
+    FRACTURE, STRESS_FRACTURE,
+    LIGAMENT_TEAR, TENDONITIS,
+    CONCUSSION, BRUISE, CUT, OTHER
+}
