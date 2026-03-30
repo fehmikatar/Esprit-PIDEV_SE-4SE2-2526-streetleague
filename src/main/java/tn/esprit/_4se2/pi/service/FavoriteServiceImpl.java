@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.dto.FavoriteDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
 import tn.esprit._4se2.pi.repository.FavoriteCategoryRepository;
 import tn.esprit._4se2.pi.repository.FavoriteRepository;
 import tn.esprit._4se2.pi.repository.ProductRepository;

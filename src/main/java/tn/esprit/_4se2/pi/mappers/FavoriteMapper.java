@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.FavoriteDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
 import tn.esprit._4se2.pi.entities.Favorite;
 import tn.esprit._4se2.pi.entities.FavoriteCategory;
 

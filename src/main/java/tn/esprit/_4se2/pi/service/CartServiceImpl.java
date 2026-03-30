@@ -2,8 +2,8 @@ package tn.esprit._4se2.pi.service;  // Note: service en minuscule
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.esprit._4se2.pi.dto.CartDTOs;
-import tn.esprit._4se2.pi.dto.ProductDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.CartDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import tn.esprit._4se2.pi.repository.*;
 import tn.esprit._4se2.pi.entities.*;
 import tn.esprit._4se2.pi.mappers.CartMapper;

@@ -1,9 +1,7 @@
 package tn.esprit._4se2.pi.restcontrollers;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import tn.esprit._4se2.pi.dto.CategoryDTO;
+import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
 import tn.esprit._4se2.pi.service.ICategoryService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

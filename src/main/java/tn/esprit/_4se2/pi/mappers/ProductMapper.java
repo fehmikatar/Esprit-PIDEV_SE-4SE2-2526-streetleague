@@ -2,8 +2,8 @@ package tn.esprit._4se2.pi.mappers;
 
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.CategoryDTO;
-import tn.esprit._4se2.pi.dto.ProductDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
+import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import tn.esprit._4se2.pi.entities.Product;
 import tn.esprit._4se2.pi.entities.ProductVariant;
 

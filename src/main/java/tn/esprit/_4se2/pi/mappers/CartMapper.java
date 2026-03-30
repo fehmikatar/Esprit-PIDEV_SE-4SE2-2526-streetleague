@@ -1,9 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
-import tn.esprit._4se2.pi.dto.CartDTOs;
+import tn.esprit._4se2.pi.dto.Sponsor.CartDTOs;
 import tn.esprit._4se2.pi.entities.Cart;
 import tn.esprit._4se2.pi.entities.CartItem;
-import tn.esprit._4se2.pi.entities.SavedCart;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
