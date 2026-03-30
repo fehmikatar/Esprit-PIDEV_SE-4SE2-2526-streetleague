@@ -27,6 +27,8 @@ public class Category {
 
     String description;
 
+    Integer capacity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     Category parentCategory;

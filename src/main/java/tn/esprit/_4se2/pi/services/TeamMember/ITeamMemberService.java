@@ -1,7 +1,6 @@
 package tn.esprit._4se2.pi.services.TeamMember;
 
 import tn.esprit._4se2.pi.entities.TeamMember;
-import tn.esprit._4se2.pi.entities.TeamMemberId;
 
 import java.util.List;
 
@@ -10,9 +9,9 @@ public interface ITeamMemberService {
 
     List<TeamMember> getAllTeamMembers();
 
-    TeamMember getTeamMemberById(TeamMemberId id);
+    TeamMember getTeamMemberById(Long id);
 
     TeamMember updateTeamMember(TeamMember teamMember);
 
-    void deleteTeamMember(TeamMemberId id);
+    void deleteTeamMember(Long id);
 }

@@ -1,15 +1,18 @@
 package tn.esprit._4se2.pi.services.Category;
 
-import tn.esprit._4se2.pi.entities.Category;
+import tn.esprit._4se2.pi.dto.CategoryRequest;
+import tn.esprit._4se2.pi.dto.CategoryResponse;
 
 import java.util.List;
 
 public interface ICategoryService {
-    Category addCategory(Category category);
+    CategoryResponse addCategory(CategoryRequest request);
 
-    List<Category> getAllCategories();
+    List<CategoryResponse> getAllCategories();
 
-    Category getCategoryById(Long id);
+    CategoryResponse getCategoryById(Long id);
+
+    CategoryResponse updateCategory(Long id, CategoryRequest request);
 
     void deleteCategory(Long id);
 }

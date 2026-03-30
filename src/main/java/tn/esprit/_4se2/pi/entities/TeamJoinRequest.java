@@ -2,17 +2,16 @@ package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import tn.esprit._4se2.pi.Enum.MemberStatus;
-import tn.esprit._4se2.pi.Enum.TeamRole;
+import tn.esprit._4se2.pi.Enum.JoinRequestStatus;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    name = "team_members",
+    name = "team_join_requests",
     uniqueConstraints = {
         @UniqueConstraint(
-            name = "uq_active_team_member",
+            name = "uq_pending_join_request",
             columnNames = {"team_id", "user_id", "status"}
         )
     }
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TeamMember {
+public class TeamJoinRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,15 +35,19 @@ public class TeamMember {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private TeamRole teamRole = TeamRole.PLAYER;
-
-    private LocalDateTime joinedAt;
+    @Column(length = 500)
+    private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private MemberStatus status = MemberStatus.ACTIVE;
+    private JoinRequestStatus status = JoinRequestStatus.PENDING;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime reviewedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by_id")
+    private User reviewedBy;
 }

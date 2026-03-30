@@ -2,39 +2,60 @@ package tn.esprit._4se2.pi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import tn.esprit._4se2.pi.Enum.TeamStatus;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "teams")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Column(nullable = false)
     private String name;
 
-    private LocalDate createdAt;
+    private String sport;
 
-    @ManyToOne
-    @JoinColumn(name = "responsible_id")
-    private User responsible;
+    private String level;
+
+    @Column(length = 1000)
+    private String description;
+
+    private String city;
+
+    private String logo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private TeamStatus status = TeamStatus.ACTIVE;
+
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id", nullable = false)
+    private User createdBy;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<TeamMember> members = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "team")
-    private List<Message> messages = new ArrayList<>();
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<TeamJoinRequest> joinRequests = new ArrayList<>();
 }

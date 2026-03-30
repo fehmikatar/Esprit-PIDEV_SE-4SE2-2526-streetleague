@@ -3,14 +3,15 @@ package tn.esprit._4se2.pi.services.TeamMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tn.esprit._4se2.pi.Enum.MemberStatus;
 import tn.esprit._4se2.pi.entities.Team;
 import tn.esprit._4se2.pi.entities.TeamMember;
-import tn.esprit._4se2.pi.entities.TeamMemberId;
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
 import tn.esprit._4se2.pi.repositories.TeamRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,17 +25,12 @@ public class TeamMemberService implements ITeamMemberService {
     @Override
     @Transactional
     public TeamMember addTeamMember(TeamMember teamMember) {
-        // Initialiser l'ID composite si nécessaire
-        if (teamMember.getId() == null) {
-            teamMember.setId(new TeamMemberId());
-        }
-
         // Récupérer et associer l'utilisateur
         if (teamMember.getUser() != null && teamMember.getUser().getId() != null) {
             User user = userRepository.findById(teamMember.getUser().getId())
-                    .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'id : " + teamMember.getUser().getId()));
+                    .orElseThrow(() -> new RuntimeException(
+                            "Utilisateur non trouvé avec l'id : " + teamMember.getUser().getId()));
             teamMember.setUser(user);
-            teamMember.getId().setUserId(user.getId());
         } else {
             throw new RuntimeException("L'utilisateur est requis pour ajouter un membre");
         }
@@ -42,16 +38,23 @@ public class TeamMemberService implements ITeamMemberService {
         // Récupérer et associer l'équipe
         if (teamMember.getTeam() != null && teamMember.getTeam().getId() != null) {
             Team team = teamRepository.findById(teamMember.getTeam().getId())
-                    .orElseThrow(() -> new RuntimeException("Équipe non trouvée avec l'id : " + teamMember.getTeam().getId()));
+                    .orElseThrow(() -> new RuntimeException(
+                            "Équipe non trouvée avec l'id : " + teamMember.getTeam().getId()));
             teamMember.setTeam(team);
-            teamMember.getId().setTeamId(team.getId());
         } else {
             throw new RuntimeException("L'équipe est requise pour ajouter un membre");
         }
 
-        // Vérifier l'unicité (la contrainte de la base fera de même)
-        if (teamMemberRepository.existsById(teamMember.getId())) {
-            throw new RuntimeException("Ce membre est déjà présent dans l'équipe");
+        // Vérifier l'unicité (un utilisateur ne peut être actif qu'une fois dans une
+        // équipe)
+        if (teamMemberRepository.existsByTeamIdAndUserIdAndStatus(
+                teamMember.getTeam().getId(), teamMember.getUser().getId(), MemberStatus.ACTIVE)) {
+            throw new RuntimeException("Ce membre est déjà actif dans l'équipe");
+        }
+
+        // Définir la date d'ajout
+        if (teamMember.getJoinedAt() == null) {
+            teamMember.setJoinedAt(LocalDateTime.now());
         }
 
         return teamMemberRepository.save(teamMember);
@@ -65,10 +68,10 @@ public class TeamMemberService implements ITeamMemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public TeamMember getTeamMemberById(TeamMemberId id) {
+    public TeamMember getTeamMemberById(Long id) {
         return teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
-                        "Membre d'équipe non trouvé avec userId : " + id.getUserId() + " et teamId : " + id.getTeamId()));
+                        "Membre d'équipe non trouvé avec l'id : " + id));
     }
 
     @Override
@@ -77,17 +80,22 @@ public class TeamMemberService implements ITeamMemberService {
         // Récupérer l'entité existante
         TeamMember existingMember = getTeamMemberById(teamMember.getId());
 
-        // Mettre à jour le rôle uniquement (les associations user/team sont fixes)
-        if (teamMember.getRole() != null) {
-            existingMember.setRole(teamMember.getRole());
+        // Mettre à jour le rôle si fourni
+        if (teamMember.getTeamRole() != null) {
+            existingMember.setTeamRole(teamMember.getTeamRole());
         }
 
-        return existingMember; // Les modifications sont persistées automatiquement
+        // Mettre à jour le statut si fourni
+        if (teamMember.getStatus() != null) {
+            existingMember.setStatus(teamMember.getStatus());
+        }
+
+        return teamMemberRepository.save(existingMember);
     }
 
     @Override
     @Transactional
-    public void deleteTeamMember(TeamMemberId id) {
+    public void deleteTeamMember(Long id) {
         teamMemberRepository.deleteById(id);
     }
 }

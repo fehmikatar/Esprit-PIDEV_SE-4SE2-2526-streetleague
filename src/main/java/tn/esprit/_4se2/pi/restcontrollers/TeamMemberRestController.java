@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.services.TeamMember.ITeamMemberService;
 import tn.esprit._4se2.pi.entities.TeamMember;
-import tn.esprit._4se2.pi.entities.TeamMemberId;
 
 import java.util.List;
 
@@ -26,9 +25,8 @@ public class TeamMemberRestController {
         return ResponseEntity.ok(teamMemberService.getAllTeamMembers());
     }
 
-    @GetMapping("/{userId}/{teamId}")
-    public ResponseEntity<TeamMember> getTeamMemberById(@PathVariable Long userId, @PathVariable Long teamId) {
-        TeamMemberId id = new TeamMemberId(userId, teamId);
+    @GetMapping("/{id}")
+    public ResponseEntity<TeamMember> getTeamMemberById(@PathVariable Long id) {
         return ResponseEntity.ok(teamMemberService.getTeamMemberById(id));
     }
 
@@ -37,9 +35,8 @@ public class TeamMemberRestController {
         return ResponseEntity.ok(teamMemberService.updateTeamMember(teamMember));
     }
 
-    @DeleteMapping("/{userId}/{teamId}")
-    public ResponseEntity<Void> deleteTeamMember(@PathVariable Long userId, @PathVariable Long teamId) {
-        TeamMemberId id = new TeamMemberId(userId, teamId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTeamMember(@PathVariable Long id) {
         teamMemberService.deleteTeamMember(id);
         return ResponseEntity.noContent().build();
     }
