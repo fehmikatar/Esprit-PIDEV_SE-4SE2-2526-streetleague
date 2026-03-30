@@ -3,6 +3,9 @@ package tn.esprit._4se2.pi.dto.Booking;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+import tn.esprit._4se2.pi.dto.User.UserRequest;
+
 import java.time.LocalDateTime;
 
 @Getter

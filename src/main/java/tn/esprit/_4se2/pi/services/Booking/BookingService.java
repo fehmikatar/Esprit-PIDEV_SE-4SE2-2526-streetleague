@@ -31,6 +31,7 @@ public class BookingService implements IBookingService {
 
         Booking booking = bookingMapper.toEntity(request);
         booking.setUserId(request.getUserId());
+
         booking.setSportSpaceId(request.getSportSpaceId());
 
         Booking savedBooking = bookingRepository.save(booking);

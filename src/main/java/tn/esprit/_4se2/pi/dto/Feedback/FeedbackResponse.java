@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.dto.Feddback;
+package tn.esprit._4se2.pi.dto.Feedback;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

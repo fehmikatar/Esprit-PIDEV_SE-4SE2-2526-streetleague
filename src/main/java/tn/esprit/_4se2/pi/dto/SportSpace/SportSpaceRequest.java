@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.dto.SportSpace;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.FieldOwner.FieldOwnerRequest;
+
 import java.math.BigDecimal;
 
 @Getter
@@ -14,7 +16,7 @@ import java.math.BigDecimal;
 public class SportSpaceRequest {
 
     @NotNull(message = "Field Owner ID is required")
-    Long fieldOwnerId;
+    long fieldOwnerId;
 
     @NotBlank(message = "Name is required")
     @Size(min = 3, max = 100)

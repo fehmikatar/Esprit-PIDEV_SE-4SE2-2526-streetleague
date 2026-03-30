@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.dto.Notification;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.User.UserRequest;
 
 @Getter
 @Setter
