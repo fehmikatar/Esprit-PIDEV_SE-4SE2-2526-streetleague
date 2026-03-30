@@ -1,34 +1,37 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "teams")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
-    private String description;
+    private LocalDate createdAt;
 
-    @Column(nullable = true)
-    private String logoUrl;
+    @ManyToOne
+    @JoinColumn(name = "responsible_id")
+    private User responsible;
 
-    // getters et setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @OneToMany(mappedBy = "team")
+    private List<TeamMember> members = new ArrayList<>();
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getLogoUrl() { return logoUrl; }
-    public void setLogoUrl(String logoUrl) { this.logoUrl = logoUrl; }
+    @OneToMany(mappedBy = "team")
+    private List<Message> messages = new ArrayList<>();
 }

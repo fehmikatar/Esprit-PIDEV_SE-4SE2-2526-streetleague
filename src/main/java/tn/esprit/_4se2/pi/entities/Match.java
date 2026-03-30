@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.entities;
 
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.config.YamlProcessor;
 import tn.esprit._4se2.pi.Enum.MatchStatus;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ public class Match {
     private Integer homeScore = 0;
     private Integer awayScore = 0;
 
-
+    // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getCompetitionId() { return competitionId; }
