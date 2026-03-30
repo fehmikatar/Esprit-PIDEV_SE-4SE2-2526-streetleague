@@ -1,8 +1,10 @@
-package tn.esprit._4se2.pi.dto.Feddback;
+package tn.esprit._4se2.pi.dto.Feedback;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+import tn.esprit._4se2.pi.dto.User.UserRequest;
 
 @Getter
 @Setter
@@ -12,17 +14,17 @@ import jakarta.validation.constraints.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeedbackRequest {
 
-    @NotNull(message = "User ID is required")
+    @NotNull
     Long userId;
 
-    @NotNull(message = "Sport Space ID is required")
+    @NotNull
     Long sportSpaceId;
 
-    @NotNull(message = "Rating is required")
+    @NotNull
     @Min(1) @Max(5)
     Integer rating;
 
-    @NotBlank(message = "Comment is required")
+    @NotBlank
     @Size(min = 10, max = 1000)
     String comment;
 }

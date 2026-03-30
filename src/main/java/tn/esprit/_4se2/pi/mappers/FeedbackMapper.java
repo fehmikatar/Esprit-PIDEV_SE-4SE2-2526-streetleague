@@ -1,10 +1,11 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.Feddback.FeedbackRequest;
-import tn.esprit._4se2.pi.dto.Feddback.FeedbackResponse;
+import tn.esprit._4se2.pi.dto.Feedback.FeedbackRequest;
+import tn.esprit._4se2.pi.dto.Feedback.FeedbackResponse;
 import tn.esprit._4se2.pi.entities.Feedback;
 import java.time.LocalDateTime;
+
 
 @Component
 public class FeedbackMapper {

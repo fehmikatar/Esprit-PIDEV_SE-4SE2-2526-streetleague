@@ -1,8 +1,10 @@
 package tn.esprit._4se2.pi.swagger;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme; // Annotation pour configurer la sécurité JWT
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -13,13 +15,20 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
+@OpenAPIDefinition(info = @Info(title = "API du projet PI ESPRIT", version = "1.0"))
+@SecurityScheme(  // Annotation pour définir un schéma de sécurité HTTP avec Bearer JWT
+        name = "bearerAuth",  // Nom du schéma de sécurité
+        type = SecuritySchemeType.HTTP,  // Type HTTP pour Bearer Token
+        scheme = "bearer",  // Utilise le schéma "bearer"
+        bearerFormat = "JWT"  // Format du token (JWT)
+)
 public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("🏟️ Sport Space API")
+                .info(new io.swagger.v3.oas.models.info.Info()
+                        .title("🏟️ Sport Space API")  // Titre de l'API
                         .description("""
                                 API du projet **PI ESPRIT**, permettant la gestion complète :
                                 - des Utilisateurs
@@ -45,11 +54,7 @@ public class SwaggerConfig {
                         new Tag().name("Sport Spaces").description("Gestion des terrains sportifs"),
                         new Tag().name("Bookings").description("Gestion des réservations"),
                         new Tag().name("Notifications").description("Gestion des notifications"),
-                        new Tag().name("Teams").description("Gestion des équipes"),
-                        new Tag().name("Promotions").description("Gestion des promotions et codes promo"),
-                        new Tag().name("Badges").description("Gestion des badges"),
-                        new Tag().name("Performances").description("Gestion des performances des joueurs")
-
+                        new Tag().name("Teams").description("Gestion des équipes")
                 ))
                 .externalDocs(new ExternalDocumentation()
                         .description("Documentation complète du projet PI")

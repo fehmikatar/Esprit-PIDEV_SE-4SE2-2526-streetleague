@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.dto.PricingRule;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 public class PricingRuleRequest {
 
     @NotNull(message = "Sport Space ID is required")
-    Long sportSpaceId;
+    Long sportSpaceId;;
 
     @NotBlank(message = "Rule name is required")
     String ruleName;

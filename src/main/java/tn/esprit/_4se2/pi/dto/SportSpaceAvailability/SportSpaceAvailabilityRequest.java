@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.dto.SportSpaceAvailability;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 public class SportSpaceAvailabilityRequest {
 
     @NotNull(message = "Sport Space ID is required")
-    Long sportSpaceId;
+    long sportSpaceId;
 
     @NotNull(message = "Available from is required")
     @FutureOrPresent
