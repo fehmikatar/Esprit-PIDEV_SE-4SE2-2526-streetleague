@@ -29,7 +29,6 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthFilter jwtAuthFilter;
 
-    // 🔧 Comment les utilisateurs sont authentifiés
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -38,14 +37,12 @@ public class SecurityConfig {
         return provider;
     }
 
-    // 🔧 Expose l'AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 🔒 Règles de sécurité HTTP
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -56,16 +53,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints publics
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
-                        // Endpoints par rôle
-                        .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/api/field-owners/**").hasRole("FIELD_OWNER")
-                        .requestMatchers("/api/players/**").hasRole("PLAYER")
-                        // Tout le reste nécessite authentification
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // ✅ Tout est accessible sans authentification
                 )
                 .addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class);
@@ -73,7 +61,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 🌐 CORS pour Angular
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
