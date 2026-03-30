@@ -1,10 +1,12 @@
 package tn.esprit._4se2.pi.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.entities.Performance;
-import tn.esprit._4se2.pi.services.PerformanceService;
+import tn.esprit._4se2.pi.dto.PerformanceRequest;
+import tn.esprit._4se2.pi.dto.PerformanceResponse;
+import tn.esprit._4se2.pi.services.IPerformanceService;
 
 import java.util.List;
 
@@ -13,27 +15,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PerformanceController {
 
-    private final PerformanceService performanceService;
+
+    private final IPerformanceService performanceService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Performance createPerformance(@RequestBody Performance performance) {
-        return performanceService.createPerformance(performance);
+    public PerformanceResponse createPerformance(@Valid @RequestBody PerformanceRequest request) {
+        return performanceService.createPerformance(request);
     }
 
     @GetMapping
-    public List<Performance> getAllPerformances() {
+    public List<PerformanceResponse> getAllPerformances() {
         return performanceService.getAllPerformances();
     }
 
     @GetMapping("/{id}")
-    public Performance getPerformanceById(@PathVariable Long id) {
+    public PerformanceResponse getPerformanceById(@PathVariable Long id) {
         return performanceService.getPerformanceById(id);
     }
 
     @PutMapping("/{id}")
-    public Performance updatePerformance(@PathVariable Long id, @RequestBody Performance performance) {
-        return performanceService.updatePerformance(id, performance);
+    public PerformanceResponse updatePerformance(@PathVariable Long id, @Valid @RequestBody PerformanceRequest request) {
+        return performanceService.updatePerformance(id, request);
     }
 
     @DeleteMapping("/{id}")
