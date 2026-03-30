@@ -29,7 +29,6 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthFilter jwtAuthFilter;
 
-    // 🔧 Comment les utilisateurs sont authentifiés
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -38,53 +37,35 @@ public class SecurityConfig {
         return provider;
     }
 
-    // 🔧 Expose l'AuthenticationManager
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 🔒 Règles de sécurité HTTP
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(sm -> sm
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints publics
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
-                        // Endpoints par rôle
-                        .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/api/field-owners/**").hasRole("FIELD_OWNER")
-                        .requestMatchers("/api/players/**").hasRole("PLAYER")
-                        // Tout le reste nécessite authentification
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // ✅ Tout autoriser pour le développement
                 )
-                .addFilterBefore(jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🌐 CORS pour Angular
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
-        config.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
