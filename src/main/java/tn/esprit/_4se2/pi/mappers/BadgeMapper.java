@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.BadgeRequest;
-import tn.esprit._4se2.pi.dto.BadgeResponse;
+import tn.esprit._4se2.pi.dto.Badge.BadgeRequest;
+import tn.esprit._4se2.pi.dto.Badge.BadgeResponse;
 import tn.esprit._4se2.pi.entities.Badge;
 
 @Component

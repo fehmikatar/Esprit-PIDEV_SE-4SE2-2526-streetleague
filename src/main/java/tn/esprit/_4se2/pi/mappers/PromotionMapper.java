@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.PromotionRequest;
-import tn.esprit._4se2.pi.dto.PromotionResponse;
+import tn.esprit._4se2.pi.dto.Promotion.PromotionRequest;
+import tn.esprit._4se2.pi.dto.Promotion.PromotionResponse;
 import tn.esprit._4se2.pi.entities.Promotion;
 
 @Component

@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.FeedbackRequest;
-import tn.esprit._4se2.pi.dto.FeedbackResponse;
+import tn.esprit._4se2.pi.dto.Feddback.FeedbackRequest;
+import tn.esprit._4se2.pi.dto.Feddback.FeedbackResponse;
 import tn.esprit._4se2.pi.entities.Feedback;
 import java.time.LocalDateTime;
 

@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.Feedback;
 
-import tn.esprit._4se2.pi.dto.FeedbackRequest;
-import tn.esprit._4se2.pi.dto.FeedbackResponse;
+import tn.esprit._4se2.pi.dto.Feddback.FeedbackRequest;
+import tn.esprit._4se2.pi.dto.Feddback.FeedbackResponse;
 import java.util.List;
 
 public interface IFeedbackService {

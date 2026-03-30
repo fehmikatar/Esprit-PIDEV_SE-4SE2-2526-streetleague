@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.FieldOwner;
 
-import tn.esprit._4se2.pi.dto.FieldOwnerRequest;
-import tn.esprit._4se2.pi.dto.FieldOwnerResponse;
+import tn.esprit._4se2.pi.dto.FieldOwner.FieldOwnerRequest;
+import tn.esprit._4se2.pi.dto.FieldOwner.FieldOwnerResponse;
 import java.util.List;
 
 public interface IFieldOwnerService {

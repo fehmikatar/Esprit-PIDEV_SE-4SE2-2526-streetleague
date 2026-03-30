@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.SportSpaceAvailability;
 
-import tn.esprit._4se2.pi.dto.SportSpaceAvailabilityRequest;
-import tn.esprit._4se2.pi.dto.SportSpaceAvailabilityResponse;
+import tn.esprit._4se2.pi.dto.SportSpaceAvailability.SportSpaceAvailabilityRequest;
+import tn.esprit._4se2.pi.dto.SportSpaceAvailability.SportSpaceAvailabilityResponse;
 import java.util.List;
 
 public interface ISportSpaceAvailabilityService {

@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.SportSpaceAvailabilityRequest;
-import tn.esprit._4se2.pi.dto.SportSpaceAvailabilityResponse;
+import tn.esprit._4se2.pi.dto.SportSpaceAvailability.SportSpaceAvailabilityRequest;
+import tn.esprit._4se2.pi.dto.SportSpaceAvailability.SportSpaceAvailabilityResponse;
 import tn.esprit._4se2.pi.entities.SportSpaceAvailability;
 
 @Component

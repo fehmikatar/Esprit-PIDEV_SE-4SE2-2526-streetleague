@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.FieldOwnerRequest;
-import tn.esprit._4se2.pi.dto.FieldOwnerResponse;
+import tn.esprit._4se2.pi.dto.FieldOwner.FieldOwnerRequest;
+import tn.esprit._4se2.pi.dto.FieldOwner.FieldOwnerResponse;
 import tn.esprit._4se2.pi.entities.FieldOwner;
 import java.time.LocalDateTime;
 
