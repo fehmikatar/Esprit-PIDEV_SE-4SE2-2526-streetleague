@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.TeamLineup;
 
 import jakarta.validation.constraints.*;
 import java.util.List;

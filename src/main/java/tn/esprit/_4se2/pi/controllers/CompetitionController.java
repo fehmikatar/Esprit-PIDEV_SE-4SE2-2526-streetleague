@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.entities.Competition;
-import tn.esprit._4se2.pi.services.CompetitionService;
+import tn.esprit._4se2.pi.services.Competition.CompetitionService;
 
 import java.util.List;
 

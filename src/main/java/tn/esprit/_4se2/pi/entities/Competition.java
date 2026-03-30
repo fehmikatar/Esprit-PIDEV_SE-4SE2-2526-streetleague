@@ -36,9 +36,10 @@ public class Competition {
 
     private String location;
 
+    // simplifié: organiserId au lieu de relation User
     private Long organizerId;
 
-
+    // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
