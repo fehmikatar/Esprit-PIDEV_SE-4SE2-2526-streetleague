@@ -28,6 +28,10 @@ public class CommunityPostResponse {
     private Long teamId;
     private String teamName;
 
+    // Community info (nullable for legacy/global posts)
+    private Long communityId;
+    private String communityName;
+
     private String imageUrl;
     private int likesCount;
     private int commentsCount;

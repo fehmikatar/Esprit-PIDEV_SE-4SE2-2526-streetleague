@@ -22,6 +22,8 @@ public class TeamService implements ITeamService {
     private final TeamJoinRequestRepository joinRequestRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final SportCommunityRepository sportCommunityRepository;
+    private final CommunityMemberRepository communityMemberRepository;
 
     // ──────────────────────────────────────────────
     // CRUD
@@ -303,6 +305,17 @@ public class TeamService implements ITeamService {
                     .joinedAt(LocalDateTime.now())
                     .build();
             teamMemberRepository.save(newMember);
+
+            SportCommunity community = findOrCreateSportCommunity(joinRequest.getTeam().getSport());
+            if (!communityMemberRepository.existsByCommunityIdAndUserId(community.getId(), joinRequest.getUser().getId())) {
+                CommunityMember communityMember = CommunityMember.builder()
+                        .community(community)
+                        .user(joinRequest.getUser())
+                        .joinedAt(LocalDateTime.now())
+                        .role(CommunityMemberRole.MEMBER)
+                        .build();
+                communityMemberRepository.save(communityMember);
+            }
         }
     }
 
@@ -329,6 +342,20 @@ public class TeamService implements ITeamService {
                 .map(Category::getNom)
                 .orElseThrow(() -> new ResourceNotFoundException("Sport category not found: " + sportName));
     }
+
+            private SportCommunity findOrCreateSportCommunity(String sportName) {
+            Category category = categoryRepository.findByNomIgnoreCase(sportName)
+                .orElseThrow(() -> new ResourceNotFoundException("Sport category not found: " + sportName));
+
+            return sportCommunityRepository.findBySportCategoryId(category.getId())
+                .orElseGet(() -> sportCommunityRepository.save(
+                    SportCommunity.builder()
+                        .name(category.getNom() + " Community")
+                        .sportCategory(category)
+                        .createdAt(LocalDateTime.now())
+                        .build()
+                ));
+            }
 
     private void assertIsCaptain(Long teamId, Long userId) {
         boolean isCaptain = teamMemberRepository

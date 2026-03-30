@@ -23,9 +23,114 @@ public class CommunityService implements ICommunityService {
     private final CommunityPostRepository postRepository;
     private final CommunityCommentRepository commentRepository;
     private final PostLikeRepository likeRepository;
+    private final SportCommunityRepository sportCommunityRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+    private final CategoryRepository categoryRepository;
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public List<SportCommunityResponse> getMyCommunities(Long userId) {
+        User user = findUserOrThrow(userId);
+
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            // Ensure a community exists for each sport category so admin always sees all communities.
+            categoryRepository.findAll().forEach(category ->
+                    sportCommunityRepository.findBySportCategoryId(category.getId())
+                            .orElseGet(() -> sportCommunityRepository.save(
+                                    SportCommunity.builder()
+                                            .name(category.getNom() + " Community")
+                                            .sportCategory(category)
+                                            .createdAt(LocalDateTime.now())
+                                            .build()
+                            ))
+            );
+
+            return sportCommunityRepository.findAll()
+                    .stream()
+                    .map(this::mapToSportCommunityResponse)
+                    .collect(Collectors.toList());
+        }
+
+        // Backfill community membership from existing active team memberships (legacy data compatibility).
+        teamMemberRepository.findAllByUserIdAndStatus(userId, MemberStatus.ACTIVE)
+                .forEach(member -> {
+                    Team team = member.getTeam();
+                    if (team == null || team.getSport() == null || team.getSport().isBlank()) {
+                        return;
+                    }
+
+                    try {
+                        SportCommunity community = ensureCommunityForSport(team.getSport());
+                        if (!communityMemberRepository.existsByCommunityIdAndUserId(community.getId(), userId)) {
+                            CommunityMember autoMember = CommunityMember.builder()
+                                    .community(community)
+                                    .user(user)
+                                    .joinedAt(LocalDateTime.now())
+                                    .role(CommunityMemberRole.MEMBER)
+                                    .build();
+                            communityMemberRepository.save(autoMember);
+                        }
+                    } catch (ResourceNotFoundException ignored) {
+                        // Skip invalid legacy sport values that no longer match a category.
+                    }
+                });
+
+        return communityMemberRepository.findAllByUserIdOrderByJoinedAtDesc(userId)
+                .stream()
+                .map(CommunityMember::getCommunity)
+                .distinct()
+                .map(this::mapToSportCommunityResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommunityPostResponse> getCommunityPosts(Long communityId, Long authenticatedUserId) {
+        SportCommunity community = findCommunityOrThrow(communityId);
+        assertCommunityMember(communityId, authenticatedUserId);
+
+        return postRepository.findByCommunityIdAndStatusOrderByCreatedAtDesc(community.getId(), PostStatus.VISIBLE)
+                .stream()
+                .map(p -> mapToPostResponse(p, authenticatedUserId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public CommunityPostResponse createCommunityPost(Long communityId, CommunityPostRequest request, Long userId) {
+        SportCommunity community = findCommunityOrThrow(communityId);
+        assertCommunityMember(communityId, userId);
+        User author = findUserOrThrow(userId);
+
+        CommunityPost post = CommunityPost.builder()
+                .author(author)
+                .community(community)
+                .content(request.getContent())
+                .postType(request.getPostType() != null ? request.getPostType() : PostType.GENERAL)
+                .imageUrl(request.getImageUrl())
+                .status(PostStatus.VISIBLE)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .likesCount(0)
+                .build();
+
+        post = postRepository.save(post);
+        return mapToPostResponse(post, userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommunityMemberResponse> getCommunityMembers(Long communityId, Long authenticatedUserId) {
+        assertCommunityMember(communityId, authenticatedUserId);
+
+        return communityMemberRepository.findAllByCommunityIdOrderByJoinedAtAsc(communityId)
+                .stream()
+                .map(this::mapToCommunityMemberResponse)
+                .collect(Collectors.toList());
+    }
 
     // ──────────────────────────────────────────────
     // POSTS
@@ -44,11 +149,15 @@ public class CommunityService implements ICommunityService {
             team = teamRepository.findById(request.getTeamId())
                     .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + request.getTeamId()));
 
-            // Verify user is a member of the team
-            if (!teamMemberRepository.existsByTeamIdAndUserIdAndStatus(
-                    request.getTeamId(), userId, MemberStatus.ACTIVE)) {
-                throw new ForbiddenException("You must be a member of the team to post in it.");
+            // TEAM community is shared by sport category: any active member of a team in the same sport can post.
+            if (!canAccessSportCommunity(team.getSport(), userId)) {
+                throw new ForbiddenException("You must be a member of this sport community to post in it.");
             }
+        }
+
+        SportCommunity community = null;
+        if (team != null) {
+            community = ensureCommunityForSport(team.getSport());
         }
 
         CommunityPost post = CommunityPost.builder()
@@ -56,6 +165,7 @@ public class CommunityService implements ICommunityService {
                 .content(request.getContent())
                 .postType(request.getPostType())
                 .team(team)
+                .community(community)
                 .imageUrl(request.getImageUrl())
                 .status(PostStatus.VISIBLE)
                 .createdAt(LocalDateTime.now())
@@ -79,14 +189,17 @@ public class CommunityService implements ICommunityService {
     @Override
     @Transactional(readOnly = true)
     public List<CommunityPostResponse> getTeamPosts(Long teamId, Long authenticatedUserId) {
-        teamRepository.findById(teamId)
+        Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
 
-        if (!teamMemberRepository.existsByTeamIdAndUserIdAndStatus(teamId, authenticatedUserId, MemberStatus.ACTIVE)) {
-            throw new ForbiddenException("You must be a member of the team to view team posts.");
+        if (!canAccessSportCommunity(team.getSport(), authenticatedUserId)) {
+            throw new ForbiddenException("You must be a member of this sport community to view posts.");
         }
 
-        return postRepository.findByTeamIdAndStatusOrderByCreatedAtDesc(teamId, PostStatus.VISIBLE)
+        SportCommunity community = ensureCommunityForSport(team.getSport());
+        assertCommunityMember(community.getId(), authenticatedUserId);
+
+        return postRepository.findByCommunityIdAndStatusOrderByCreatedAtDesc(community.getId(), PostStatus.VISIBLE)
                 .stream()
                 .map(p -> mapToPostResponse(p, authenticatedUserId))
                 .collect(Collectors.toList());
@@ -100,6 +213,7 @@ public class CommunityService implements ICommunityService {
     @Transactional
     public CommunityCommentResponse addComment(Long postId, CommunityCommentRequest request, Long userId) {
         CommunityPost post = findPostOrThrow(postId);
+        assertPostAccessible(post, userId);
         User author = findUserOrThrow(userId);
 
         CommunityComment comment = CommunityComment.builder()
@@ -116,8 +230,9 @@ public class CommunityService implements ICommunityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommunityCommentResponse> getComments(Long postId) {
-        findPostOrThrow(postId);
+    public List<CommunityCommentResponse> getComments(Long postId, Long authenticatedUserId) {
+        CommunityPost post = findPostOrThrow(postId);
+        assertPostAccessible(post, authenticatedUserId);
         return commentRepository
                 .findByPostIdAndStatusOrderByCreatedAtAsc(postId, PostStatus.VISIBLE)
                 .stream()
@@ -133,6 +248,7 @@ public class CommunityService implements ICommunityService {
     @Transactional
     public void toggleLike(Long postId, Long userId) {
         CommunityPost post = findPostOrThrow(postId);
+        assertPostAccessible(post, userId);
         User user = findUserOrThrow(userId);
 
         likeRepository.findByPostIdAndUserId(postId, userId).ifPresentOrElse(
@@ -207,12 +323,43 @@ public class CommunityService implements ICommunityService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
+    private SportCommunity findCommunityOrThrow(Long communityId) {
+        return sportCommunityRepository.findById(communityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Community not found with id: " + communityId));
+    }
+
+    private SportCommunity ensureCommunityForSport(String sport) {
+        Category category = categoryRepository.findByNomIgnoreCase(sport)
+                .orElseThrow(() -> new ResourceNotFoundException("Sport category not found: " + sport));
+
+        return sportCommunityRepository.findBySportCategoryId(category.getId())
+                .orElseGet(() -> sportCommunityRepository.save(
+                        SportCommunity.builder()
+                                .name(category.getNom() + " Community")
+                                .sportCategory(category)
+                                .createdAt(LocalDateTime.now())
+                                .build()
+                ));
+    }
+
+    private void assertCommunityMember(Long communityId, Long userId) {
+        User user = findUserOrThrow(userId);
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            return;
+        }
+
+        if (!communityMemberRepository.existsByCommunityIdAndUserId(communityId, userId)) {
+            throw new ForbiddenException("You must be a member of this community.");
+        }
+    }
+
     private CommunityPostResponse mapToPostResponse(CommunityPost post, Long authenticatedUserId) {
         boolean isLiked = authenticatedUserId != null &&
                 likeRepository.existsByPostIdAndUserId(post.getId(), authenticatedUserId);
 
         User author = post.getAuthor();
         Team team = post.getTeam();
+        SportCommunity community = post.getCommunity();
 
         return CommunityPostResponse.builder()
                 .id(post.getId())
@@ -224,6 +371,8 @@ public class CommunityService implements ICommunityService {
                 .status(post.getStatus())
                 .teamId(team != null ? team.getId() : null)
                 .teamName(team != null ? team.getName() : null)
+                .communityId(community != null ? community.getId() : null)
+                .communityName(community != null ? community.getName() : null)
                 .imageUrl(post.getImageUrl())
                 .likesCount(post.getLikesCount())
                 .commentsCount(post.getComments().size())
@@ -243,5 +392,59 @@ public class CommunityService implements ICommunityService {
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .build();
+    }
+
+    private SportCommunityResponse mapToSportCommunityResponse(SportCommunity community) {
+        return SportCommunityResponse.builder()
+                .id(community.getId())
+                .name(community.getName())
+                .sportCategoryId(community.getSportCategory().getId())
+                .sportCategory(community.getSportCategory().getNom())
+                .createdAt(community.getCreatedAt())
+                .membersCount(community.getMembers() != null ? community.getMembers().size() : 0)
+                .postsCount(community.getPosts() != null ? community.getPosts().size() : 0)
+                .build();
+    }
+
+    private CommunityMemberResponse mapToCommunityMemberResponse(CommunityMember member) {
+        User user = member.getUser();
+        return CommunityMemberResponse.builder()
+                .id(member.getId())
+                .userId(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(member.getRole())
+                .joinedAt(member.getJoinedAt())
+                .build();
+    }
+
+    private boolean canAccessSportCommunity(String sport, Long userId) {
+        if (sport == null || sport.isBlank()) {
+            return false;
+        }
+
+        User user = findUserOrThrow(userId);
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            return true;
+        }
+
+        return teamMemberRepository.existsByUserIdAndStatusAndTeamSport(
+                userId,
+                MemberStatus.ACTIVE,
+                sport
+        );
+    }
+
+    private void assertPostAccessible(CommunityPost post, Long userId) {
+        if (post.getCommunity() != null) {
+            assertCommunityMember(post.getCommunity().getId(), userId);
+            return;
+        }
+
+        Team team = post.getTeam();
+        if (team != null && !canAccessSportCommunity(team.getSport(), userId)) {
+            throw new ForbiddenException("You must be a member of this sport community to access this post.");
+        }
     }
 }

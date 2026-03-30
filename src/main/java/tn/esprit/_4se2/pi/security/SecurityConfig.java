@@ -80,8 +80,14 @@ public class SecurityConfig {
                         // All community GET endpoints open to authenticated users
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
+                                "/api/communities/**",
                                 "/api/community/posts",
                                 "/api/posts/*/comments"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,
+                                "/api/communities/*/posts"
                         ).authenticated()
 
                         // All other requests require authentication

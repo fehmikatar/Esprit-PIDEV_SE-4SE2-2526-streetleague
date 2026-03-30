@@ -7,6 +7,14 @@ import java.util.List;
 
 public interface ICommunityService {
 
+    List<SportCommunityResponse> getMyCommunities(Long userId);
+
+    List<CommunityPostResponse> getCommunityPosts(Long communityId, Long authenticatedUserId);
+
+    CommunityPostResponse createCommunityPost(Long communityId, CommunityPostRequest request, Long userId);
+
+    List<CommunityMemberResponse> getCommunityMembers(Long communityId, Long authenticatedUserId);
+
     CommunityPostResponse createPost(CommunityPostRequest request, Long userId);
 
     Page<CommunityPostResponse> getGlobalPosts(int page, int size, Long authenticatedUserId);
@@ -15,7 +23,7 @@ public interface ICommunityService {
 
     CommunityCommentResponse addComment(Long postId, CommunityCommentRequest request, Long userId);
 
-    List<CommunityCommentResponse> getComments(Long postId);
+    List<CommunityCommentResponse> getComments(Long postId, Long authenticatedUserId);
 
     void toggleLike(Long postId, Long userId);
 

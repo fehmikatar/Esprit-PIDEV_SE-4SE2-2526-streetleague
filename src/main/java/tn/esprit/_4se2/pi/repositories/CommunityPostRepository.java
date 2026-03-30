@@ -17,4 +17,8 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
             PostType excludedType, PostStatus status, Pageable pageable);
 
     List<CommunityPost> findByTeamIdAndStatusOrderByCreatedAtDesc(Long teamId, PostStatus status);
+
+    List<CommunityPost> findByTeamSportAndStatusOrderByCreatedAtDesc(String sport, PostStatus status);
+
+    List<CommunityPost> findByCommunityIdAndStatusOrderByCreatedAtDesc(Long communityId, PostStatus status);
 }

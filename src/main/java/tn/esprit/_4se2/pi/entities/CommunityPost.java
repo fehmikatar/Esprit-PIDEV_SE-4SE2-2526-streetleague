@@ -42,6 +42,10 @@ public class CommunityPost {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_id")
+    private SportCommunity community;
+
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)

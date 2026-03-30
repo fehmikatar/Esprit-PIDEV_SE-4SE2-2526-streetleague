@@ -22,6 +22,43 @@ public class CommunityRestController {
     private final UserRepository userRepository;
 
     // ──────────────────────────────────────────────
+    // COMMUNITIES
+    // ──────────────────────────────────────────────
+
+    @GetMapping({"/api/communities/me", "/api/communities/mine"})
+    public ResponseEntity<List<SportCommunityResponse>> getMyCommunities(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = resolveUserId(userDetails);
+        return ResponseEntity.ok(communityService.getMyCommunities(userId));
+    }
+
+    @GetMapping("/api/communities/{communityId}/posts")
+    public ResponseEntity<List<CommunityPostResponse>> getCommunityPosts(
+            @PathVariable Long communityId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = resolveUserId(userDetails);
+        return ResponseEntity.ok(communityService.getCommunityPosts(communityId, userId));
+    }
+
+    @PostMapping("/api/communities/{communityId}/posts")
+    public ResponseEntity<CommunityPostResponse> createCommunityPost(
+            @PathVariable Long communityId,
+            @Valid @RequestBody CommunityPostRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = resolveUserId(userDetails);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(communityService.createCommunityPost(communityId, request, userId));
+    }
+
+    @GetMapping("/api/communities/{communityId}/members")
+    public ResponseEntity<List<CommunityMemberResponse>> getCommunityMembers(
+            @PathVariable Long communityId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = resolveUserId(userDetails);
+        return ResponseEntity.ok(communityService.getCommunityMembers(communityId, userId));
+    }
+
+    // ──────────────────────────────────────────────
     // POSTS
     // ──────────────────────────────────────────────
 
@@ -70,8 +107,11 @@ public class CommunityRestController {
     }
 
     @GetMapping("/api/posts/{postId}/comments")
-    public ResponseEntity<List<CommunityCommentResponse>> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(communityService.getComments(postId));
+    public ResponseEntity<List<CommunityCommentResponse>> getComments(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = resolveUserId(userDetails);
+        return ResponseEntity.ok(communityService.getComments(postId, userId));
     }
 
     // ──────────────────────────────────────────────
