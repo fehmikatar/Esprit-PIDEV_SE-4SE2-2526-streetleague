@@ -25,12 +25,6 @@ public class Team {
 
     private LocalDate createdAt;
 
-    private String description;
-
-    private String logoUrl;
-
-
-
     @ManyToOne
     @JoinColumn(name = "responsible_id")
     private User responsible;

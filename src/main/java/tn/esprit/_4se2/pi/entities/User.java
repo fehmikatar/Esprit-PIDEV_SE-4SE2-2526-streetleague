@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
 @Entity(name = "User")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
