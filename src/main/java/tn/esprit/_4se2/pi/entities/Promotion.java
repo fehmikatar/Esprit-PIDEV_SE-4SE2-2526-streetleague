@@ -14,7 +14,7 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String promoCode;
     private double discount; // percentage or fixed amount
     private LocalDate startDate;
