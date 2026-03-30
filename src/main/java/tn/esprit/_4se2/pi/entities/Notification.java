@@ -3,28 +3,41 @@ package tn.esprit._4se2.pi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDateTime;
 
-@Builder
+@Entity
+@Table(name = "notifications")
 @Getter
 @Setter
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "notifications")
-@Entity(name = "Notification")
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String message;
-    LocalDateTime createdAt;
-    boolean isRead;
+    @Column(nullable = false)
+    Long userId;
 
-    @ManyToOne
-    Booking booking;
+    @Column(nullable = false)
+    String title;
+
+    @Column(nullable = false, length = 1000)
+    String message;
+
+    @Column(nullable = false)
+    String type;
+
+    @Column(nullable = false)
+    @Builder.Default
+    Boolean isRead = false;
+
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @Column(name = "read_at")
+    LocalDateTime readAt;
 }

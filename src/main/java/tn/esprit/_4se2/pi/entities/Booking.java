@@ -3,37 +3,45 @@ package tn.esprit._4se2.pi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.math.BigDecimal;
 
-@Builder
+@Entity
+@Table(name = "bookings")
 @Getter
 @Setter
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "bookings")
-@Entity(name = "Booking")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    LocalDate bookingDate;
-    LocalTime startTime;
-    LocalTime endTime;
-    double totalPrice;
-    String status;
+    @Column(nullable = false)
+    Long userId;
 
+    @Column(nullable = false)
+    Long sportSpaceId;
+
+    @Column(name = "booking_date")
+    LocalDateTime bookingDate;
+
+    @Column(name = "start_time", nullable = false)
+    LocalDateTime startTime;
+
+    @Column(name = "end_time", nullable = false)
+    LocalDateTime endTime;
+
+    @Column(precision = 10, scale = 2)
+    BigDecimal totalPrice;
+
+    @Column(nullable = false)
+    @Builder.Default
+    String status = "PENDING";
+
+    @Column(name = "created_at")
     LocalDateTime createdAt;
-
-    @ManyToOne
-    User user;
-
-    @ManyToOne
-    SportSpace sportSpace;
 }
