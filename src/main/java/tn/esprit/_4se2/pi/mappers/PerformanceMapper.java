@@ -2,8 +2,8 @@ package tn.esprit._4se2.pi.mappers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.PerformanceRequest;
-import tn.esprit._4se2.pi.dto.PerformanceResponse;
+import tn.esprit._4se2.pi.dto.Performance.PerformanceRequest;
+import tn.esprit._4se2.pi.dto.Performance.PerformanceResponse;
 import tn.esprit._4se2.pi.entities.Performance;
 import tn.esprit._4se2.pi.entities.Player;
 import tn.esprit._4se2.pi.repositories.PlayerRepository;

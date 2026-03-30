@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.Booking;
 
-import tn.esprit._4se2.pi.dto.BookingRequest;
-import tn.esprit._4se2.pi.dto.BookingResponse;
+import tn.esprit._4se2.pi.dto.Booking.BookingRequest;
+import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import java.util.List;
 
 public interface IBookingService {

@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.Notification;
 
-import tn.esprit._4se2.pi.dto.NotificationRequest;
-import tn.esprit._4se2.pi.dto.NotificationResponse;
+import tn.esprit._4se2.pi.dto.Notification.NotificationRequest;
+import tn.esprit._4se2.pi.dto.Notification.NotificationResponse;
 import java.util.List;
 
 public interface INotificationService {

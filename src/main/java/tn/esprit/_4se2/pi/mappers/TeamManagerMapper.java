@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.TeamManagerRequest;
-import tn.esprit._4se2.pi.dto.TeamManagerResponse;
+import tn.esprit._4se2.pi.dto.TeamManager.TeamManagerRequest;
+import tn.esprit._4se2.pi.dto.TeamManager.TeamManagerResponse;
 import tn.esprit._4se2.pi.entities.TeamManager;
 import java.time.LocalDateTime;
 

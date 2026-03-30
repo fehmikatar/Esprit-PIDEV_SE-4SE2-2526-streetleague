@@ -1,10 +1,9 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.SportSpaceRequest;
-import tn.esprit._4se2.pi.dto.SportSpaceResponse;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceResponse;
 import tn.esprit._4se2.pi.entities.SportSpace;
-import java.time.LocalDateTime;
 
 @Component
 public class SportSpaceMapper {
