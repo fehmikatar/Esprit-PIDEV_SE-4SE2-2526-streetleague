@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.MatchEvent;
 
 import tn.esprit._4se2.pi.Enum.MatchEventType;
 import jakarta.validation.constraints.*;

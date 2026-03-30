@@ -1,7 +1,7 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.Team;
 
 import jakarta.validation.constraints.*;
-import java.util.List;
+
 public class TeamDTOs {
 
     // Request DTO

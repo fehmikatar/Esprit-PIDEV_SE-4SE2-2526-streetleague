@@ -1,6 +1,11 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.Collaboration;
 
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.dto.Competition.CompetitionDTOs;
+import tn.esprit._4se2.pi.dto.FournisseurEau.FournisseurEauDTOs;
+import tn.esprit._4se2.pi.dto.Hotel.HotelDTOs;
+import tn.esprit._4se2.pi.dto.Restaurant.RestaurantDTOs;
+
 public class CollaborationDTOs {
 
 

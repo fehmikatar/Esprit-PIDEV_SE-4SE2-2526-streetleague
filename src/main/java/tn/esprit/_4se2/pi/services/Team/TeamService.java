@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.Team;
 
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.entities.Team;

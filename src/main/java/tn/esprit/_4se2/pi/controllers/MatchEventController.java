@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.entities.MatchEvent;
-import tn.esprit._4se2.pi.services.MatchEventService;
+import tn.esprit._4se2.pi.services.MatchEvent.MatchEventService;
 
 import java.util.List;
 
