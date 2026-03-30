@@ -42,7 +42,7 @@ public class PlayerRestController {
         return ResponseEntity.ok(playerService.getPlayersByPosition(position));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<PlayerResponse> updatePlayer(
             @PathVariable Long id,
             @Valid @RequestBody PlayerRequest request) {
