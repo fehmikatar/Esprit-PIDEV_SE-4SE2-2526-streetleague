@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "orders")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Order {
     @Id

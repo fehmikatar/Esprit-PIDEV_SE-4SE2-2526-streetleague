@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.Category;
 
 import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
 

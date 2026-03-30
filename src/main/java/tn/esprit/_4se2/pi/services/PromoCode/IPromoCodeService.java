@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.PromoCode;
 
 import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
 

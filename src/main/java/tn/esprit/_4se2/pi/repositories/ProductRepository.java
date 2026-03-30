@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.repository;
+package tn.esprit._4se2.pi.repositories;
 
 import tn.esprit._4se2.pi.entities.Product;
 import org.springframework.data.domain.Page;

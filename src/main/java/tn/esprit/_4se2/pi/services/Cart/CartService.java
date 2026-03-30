@@ -1,12 +1,13 @@
-package tn.esprit._4se2.pi.service;  // Note: service en minuscule
+package tn.esprit._4se2.pi.services.Cart;  // Note: service en minuscule
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.CartDTOs;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
-import tn.esprit._4se2.pi.repository.*;
+import tn.esprit._4se2.pi.repositories.*;
 import tn.esprit._4se2.pi.entities.*;
 import tn.esprit._4se2.pi.mappers.CartMapper;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class CartServiceImpl implements ICartService {
+public class CartService implements ICartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;

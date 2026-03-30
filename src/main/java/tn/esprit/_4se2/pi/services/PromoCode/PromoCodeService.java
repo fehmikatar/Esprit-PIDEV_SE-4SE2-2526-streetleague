@@ -1,9 +1,9 @@
-package tn.esprit._4se2.pi.service;
+package tn.esprit._4se2.pi.services.PromoCode;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
-import tn.esprit._4se2.pi.repository.PromoCodeRepository;
+import tn.esprit._4se2.pi.repositories.PromoCodeRepository;
 import tn.esprit._4se2.pi.entities.PromoCode;
 import tn.esprit._4se2.pi.mappers.PromoCodeMapper;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class PromoCodeServiceImpl implements IPromoCodeService {
+public class PromoCodeService implements IPromoCodeService {
 
     private final PromoCodeRepository promoCodeRepository;
     private final PromoCodeMapper promoCodeMapper;
