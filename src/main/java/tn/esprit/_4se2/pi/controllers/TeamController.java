@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.entities.Team;
-import tn.esprit._4se2.pi.services.TeamService;
+import tn.esprit._4se2.pi.services.Team.TeamService;
 
 import java.util.List;
 
