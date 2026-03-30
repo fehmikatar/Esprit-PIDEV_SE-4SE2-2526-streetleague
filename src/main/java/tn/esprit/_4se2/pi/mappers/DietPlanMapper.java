@@ -1,11 +1,11 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.DietPlanRequest;
-import tn.esprit._4se2.pi.dto.DietPlanResponse;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanRequest;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanResponse;
 import tn.esprit._4se2.pi.entities.DietPlan;
 import tn.esprit._4se2.pi.entities.HealthProfile;
-import tn.esprit._4se2.pi.services.IHealthProfileService;
+import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
 import lombok.RequiredArgsConstructor;
 
 @Component

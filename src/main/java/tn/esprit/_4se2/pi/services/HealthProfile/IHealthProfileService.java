@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.HealthProfile;
 
 import tn.esprit._4se2.pi.entities.HealthProfile;
 import tn.esprit._4se2.pi.entities.FitnessStatus;

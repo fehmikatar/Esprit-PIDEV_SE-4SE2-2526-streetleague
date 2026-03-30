@@ -1,13 +1,13 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.MedicalRecordRequest;
-import tn.esprit._4se2.pi.dto.MedicalRecordResponse;
+import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordRequest;
+import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordResponse;
 import tn.esprit._4se2.pi.entities.MedicalRecord;
 import tn.esprit._4se2.pi.entities.HealthProfile;
 import tn.esprit._4se2.pi.entities.User;
-import tn.esprit._4se2.pi.services.IHealthProfileService;
-import tn.esprit._4se2.pi.services.IUserService;
+import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
+import tn.esprit._4se2.pi.services.User.IUserService;
 import lombok.RequiredArgsConstructor;
 
 @Component

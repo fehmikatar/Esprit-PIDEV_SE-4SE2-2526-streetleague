@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.MedicalRecord;
 
 import tn.esprit._4se2.pi.entities.MedicalRecord;
 import tn.esprit._4se2.pi.entities.InjuryType;

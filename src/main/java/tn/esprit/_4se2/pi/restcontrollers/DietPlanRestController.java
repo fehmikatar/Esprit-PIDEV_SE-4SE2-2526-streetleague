@@ -2,9 +2,9 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import tn.esprit._4se2.pi.entities.DietPlan;
-import tn.esprit._4se2.pi.dto.DietPlanRequest;
-import tn.esprit._4se2.pi.dto.DietPlanResponse;
-import tn.esprit._4se2.pi.services.IDietPlanService;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanRequest;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanResponse;
+import tn.esprit._4se2.pi.services.DietPlan.IDietPlanService;
 import tn.esprit._4se2.pi.mappers.DietPlanMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

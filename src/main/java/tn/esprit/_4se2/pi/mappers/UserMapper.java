@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.UserRequest;
-import tn.esprit._4se2.pi.dto.UserResponse;
+import tn.esprit._4se2.pi.dto.User.UserRequest;
+import tn.esprit._4se2.pi.dto.User.UserResponse;
 import tn.esprit._4se2.pi.entities.User;
 import lombok.RequiredArgsConstructor;
 

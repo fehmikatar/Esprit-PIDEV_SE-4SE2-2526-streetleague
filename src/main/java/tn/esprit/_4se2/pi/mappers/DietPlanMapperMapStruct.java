@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.mapstruct.*;
-import tn.esprit._4se2.pi.dto.DietPlanRequest;
-import tn.esprit._4se2.pi.dto.DietPlanResponse;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanRequest;
+import tn.esprit._4se2.pi.dto.DietPlan.DietPlanResponse;
 import tn.esprit._4se2.pi.entities.DietPlan;
 import tn.esprit._4se2.pi.entities.HealthProfile;
 

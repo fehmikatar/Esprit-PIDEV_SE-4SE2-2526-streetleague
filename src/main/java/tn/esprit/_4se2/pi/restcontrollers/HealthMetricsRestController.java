@@ -2,9 +2,9 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import tn.esprit._4se2.pi.entities.HealthMetrics;
-import tn.esprit._4se2.pi.dto.HealthMetricsRequest;
-import tn.esprit._4se2.pi.dto.HealthMetricsResponse;
-import tn.esprit._4se2.pi.services.IHealthMetricsService;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsRequest;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsResponse;
+import tn.esprit._4se2.pi.services.HealthMetrics.IHealthMetricsService;
 import tn.esprit._4se2.pi.mappers.HealthMetricsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

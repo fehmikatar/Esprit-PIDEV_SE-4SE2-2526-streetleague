@@ -13,7 +13,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import java.util.List;
 
 @Configuration
-public class OpenAPIConfig {
+public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {

@@ -1,11 +1,11 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.HealthMetricsRequest;
-import tn.esprit._4se2.pi.dto.HealthMetricsResponse;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsRequest;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsResponse;
 import tn.esprit._4se2.pi.entities.HealthMetrics;
 import tn.esprit._4se2.pi.entities.HealthProfile;
-import tn.esprit._4se2.pi.services.IHealthProfileService;
+import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 

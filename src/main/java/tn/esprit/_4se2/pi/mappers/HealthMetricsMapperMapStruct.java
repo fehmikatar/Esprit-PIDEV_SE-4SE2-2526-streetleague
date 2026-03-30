@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.mapstruct.*;
-import tn.esprit._4se2.pi.dto.HealthMetricsRequest;
-import tn.esprit._4se2.pi.dto.HealthMetricsResponse;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsRequest;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsResponse;
 import tn.esprit._4se2.pi.entities.HealthMetrics;
 import tn.esprit._4se2.pi.entities.HealthProfile;
 

@@ -1,16 +1,14 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.DietPlan;
 
 import lombok.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DietPlanResponse {
-    private Long id;
+public class DietPlanRequest {
     private Long healthProfileId;
     private String planName;
     private String description;
@@ -22,6 +20,4 @@ public class DietPlanResponse {
     private String dietaryRestrictions;
     private String nutritionalGoals;
     private String createdBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

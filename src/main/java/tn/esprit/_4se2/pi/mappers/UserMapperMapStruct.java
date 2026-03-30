@@ -2,8 +2,8 @@ package tn.esprit._4se2.pi.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import tn.esprit._4se2.pi.dto.UserRequest;
-import tn.esprit._4se2.pi.dto.UserResponse;
+import tn.esprit._4se2.pi.dto.User.UserRequest;
+import tn.esprit._4se2.pi.dto.User.UserResponse;
 import tn.esprit._4se2.pi.entities.User;
 
 @Mapper(componentModel = "spring")

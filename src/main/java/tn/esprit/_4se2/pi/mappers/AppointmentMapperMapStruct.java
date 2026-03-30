@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.mapstruct.*;
-import tn.esprit._4se2.pi.dto.AppointmentRequest;
-import tn.esprit._4se2.pi.dto.AppointmentResponse;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
 import tn.esprit._4se2.pi.entities.Appointment;
 import tn.esprit._4se2.pi.entities.User;
 

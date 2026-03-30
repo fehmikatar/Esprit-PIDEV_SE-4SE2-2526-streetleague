@@ -1,10 +1,11 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.DietPlan;
 
 import tn.esprit._4se2.pi.entities.DietPlan;
 import tn.esprit._4se2.pi.repositories.DietPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.List;
 

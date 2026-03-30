@@ -1,10 +1,11 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.HealthProfile;
 
 import tn.esprit._4se2.pi.entities.HealthProfile;
 import tn.esprit._4se2.pi.entities.FitnessStatus;
 import tn.esprit._4se2.pi.repositories.HealthProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

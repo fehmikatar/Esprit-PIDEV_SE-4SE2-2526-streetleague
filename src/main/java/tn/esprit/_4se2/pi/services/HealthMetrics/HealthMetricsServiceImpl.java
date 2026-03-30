@@ -1,10 +1,11 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.HealthMetrics;
 
 import tn.esprit._4se2.pi.entities.HealthMetrics;
 import tn.esprit._4se2.pi.repositories.HealthMetricsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

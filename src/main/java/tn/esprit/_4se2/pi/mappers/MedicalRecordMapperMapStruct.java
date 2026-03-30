@@ -1,8 +1,8 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.mapstruct.*;
-import tn.esprit._4se2.pi.dto.MedicalRecordRequest;
-import tn.esprit._4se2.pi.dto.MedicalRecordResponse;
+import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordRequest;
+import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordResponse;
 import tn.esprit._4se2.pi.entities.MedicalRecord;
 import tn.esprit._4se2.pi.entities.HealthProfile;
 import tn.esprit._4se2.pi.entities.User;

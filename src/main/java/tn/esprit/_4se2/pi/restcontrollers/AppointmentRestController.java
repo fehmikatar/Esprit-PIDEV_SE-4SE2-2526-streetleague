@@ -2,9 +2,9 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import tn.esprit._4se2.pi.entities.Appointment;
-import tn.esprit._4se2.pi.dto.AppointmentRequest;
-import tn.esprit._4se2.pi.dto.AppointmentResponse;
-import tn.esprit._4se2.pi.services.IAppointmentService;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
+import tn.esprit._4se2.pi.services.Appointment.IAppointmentService;
 import tn.esprit._4se2.pi.mappers.AppointmentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

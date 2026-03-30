@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.services;
+package tn.esprit._4se2.pi.services.User;
 
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.entities.UserRole;
