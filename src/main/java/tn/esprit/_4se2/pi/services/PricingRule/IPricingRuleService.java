@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.PricingRule;
 
-import tn.esprit._4se2.pi.dto.PricingRuleRequest;
-import tn.esprit._4se2.pi.dto.PricingRuleResponse;
+import tn.esprit._4se2.pi.dto.PricingRule.PricingRuleRequest;
+import tn.esprit._4se2.pi.dto.PricingRule.PricingRuleResponse;
 import java.util.List;
 
 public interface IPricingRuleService {

@@ -1,7 +1,7 @@
 package tn.esprit._4se2.pi.services.SportSpace;
 
-import tn.esprit._4se2.pi.dto.SportSpaceRequest;
-import tn.esprit._4se2.pi.dto.SportSpaceResponse;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
+import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceResponse;
 import java.util.List;
 
 public interface ISportSpaceService {

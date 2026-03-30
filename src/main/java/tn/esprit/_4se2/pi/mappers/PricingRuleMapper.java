@@ -1,10 +1,9 @@
 package tn.esprit._4se2.pi.mappers;
 
 import org.springframework.stereotype.Component;
-import tn.esprit._4se2.pi.dto.PricingRuleRequest;
-import tn.esprit._4se2.pi.dto.PricingRuleResponse;
+import tn.esprit._4se2.pi.dto.PricingRule.PricingRuleRequest;
+import tn.esprit._4se2.pi.dto.PricingRule.PricingRuleResponse;
 import tn.esprit._4se2.pi.entities.PricingRule;
-import java.time.LocalDateTime;
 
 @Component
 public class PricingRuleMapper {

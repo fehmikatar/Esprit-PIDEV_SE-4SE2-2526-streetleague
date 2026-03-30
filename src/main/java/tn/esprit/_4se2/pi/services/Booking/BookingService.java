@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tn.esprit._4se2.pi.dto.BookingRequest;
-import tn.esprit._4se2.pi.dto.BookingResponse;
+import tn.esprit._4se2.pi.dto.Booking.BookingRequest;
+import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import tn.esprit._4se2.pi.entities.Booking;
 import tn.esprit._4se2.pi.mappers.BookingMapper;
 import tn.esprit._4se2.pi.repositories.BookingRepository;
@@ -31,6 +31,7 @@ public class BookingService implements IBookingService {
 
         Booking booking = bookingMapper.toEntity(request);
         booking.setUserId(request.getUserId());
+
         booking.setSportSpaceId(request.getSportSpaceId());
 
         Booking savedBooking = bookingRepository.save(booking);
