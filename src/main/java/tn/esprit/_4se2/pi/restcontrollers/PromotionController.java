@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.dto.PromotionRequest;
-import tn.esprit._4se2.pi.dto.PromotionResponse;
-import tn.esprit._4se2.pi.services.PromotionService;
+import tn.esprit._4se2.pi.dto.Promotion.PromotionRequest;
+import tn.esprit._4se2.pi.dto.Promotion.PromotionResponse;
+import tn.esprit._4se2.pi.services.Promotion.IPromotionService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PromotionController {
 
-    private final PromotionService promotionService;
+    private final IPromotionService promotionService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

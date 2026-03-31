@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.dto.PlayerRequest;
-import tn.esprit._4se2.pi.dto.PlayerResponse;
+import tn.esprit._4se2.pi.dto.Player.PlayerRequest;
+import tn.esprit._4se2.pi.dto.Player.PlayerResponse;
 import tn.esprit._4se2.pi.services.Player.IPlayerService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -42,7 +42,7 @@ public class PlayerRestController {
         return ResponseEntity.ok(playerService.getPlayersByPosition(position));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<PlayerResponse> updatePlayer(
             @PathVariable Long id,
             @Valid @RequestBody PlayerRequest request) {

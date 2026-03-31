@@ -1,46 +1,44 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit._4se2.pi.entities.Badge;
-import tn.esprit._4se2.pi.services.BadgeService;
+import tn.esprit._4se2.pi.dto.Badge.BadgeRequest;
+import tn.esprit._4se2.pi.dto.Badge.BadgeResponse;
+import tn.esprit._4se2.pi.services.Badge.IBadgeService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/badges")
-@RequiredArgsConstructor // Lombok : constructeur pour l'injection du service
+@RequiredArgsConstructor
 public class BadgeController {
 
-    private final BadgeService badgeService;
 
-    // Create
+    private final IBadgeService badgeService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Badge createBadge(@RequestBody Badge badge) {
-        return badgeService.createBadge(badge);
+    public BadgeResponse createBadge(@Valid @RequestBody BadgeRequest request) {
+        return badgeService.createBadge(request);
     }
 
-    // Read all
     @GetMapping
-    public List<Badge> getAllBadges() {
+    public List<BadgeResponse> getAllBadges() {
         return badgeService.getAllBadges();
     }
 
-    // Read by id
     @GetMapping("/{id}")
-    public Badge getBadgeById(@PathVariable Long id) {
+    public BadgeResponse getBadgeById(@PathVariable Long id) {
         return badgeService.getBadgeById(id);
     }
 
-    // Update
     @PutMapping("/{id}")
-    public Badge updateBadge(@PathVariable Long id, @RequestBody Badge badge) {
-        return badgeService.updateBadge(id, badge);
+    public BadgeResponse updateBadge(@PathVariable Long id, @Valid @RequestBody BadgeRequest request) {
+        return badgeService.updateBadge(id, request);
     }
 
-    // Delete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBadge(@PathVariable Long id) {
