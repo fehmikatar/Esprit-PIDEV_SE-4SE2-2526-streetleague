@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_IMAGE = 'VOTRE_USERNAME/streetleague-app'
+        DOCKERHUB_IMAGE = 'ibtihelbaccari/streetleague-app'
     }
 
     stages {
