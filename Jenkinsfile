@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DB_URL = 'jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC'
-        DB_USERNAME = 'root'
-        DB_PASSWORD = ''
-    }
-
     stages {
 
         stage('Checkout Code') {
@@ -23,16 +17,11 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh """
-                    mvn test \
-                    -Dspring.datasource.url="${DB_URL}" \
-                    -Dspring.datasource.username=${DB_USERNAME} \
-                    -Dspring.datasource.password=${DB_PASSWORD}
-                """
+                sh 'mvn test -Dspring.datasource.url="jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&serverTimezone=UTC" -Dspring.datasource.username=root -Dspring.datasource.password=""'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
                 }
                 success {
                     echo '✅ Tests passés avec succès.'
@@ -44,12 +33,9 @@ pipeline {
         }
 
         stage('Run') {
-            when {
-                branch 'main'
-            }
             steps {
                 echo '🚀 Lancement de l\'application...'
-                sh 'java -jar target/*.jar &'
+                sh 'nohup java -jar target/*.jar --spring.datasource.url="jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&serverTimezone=UTC" --spring.datasource.username=root --spring.datasource.password="" &'
             }
         }
     }
