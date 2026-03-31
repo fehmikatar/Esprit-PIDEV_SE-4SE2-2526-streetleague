@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.mapper;
+package tn.esprit._4se2.pi.mappers;
 
 import tn.esprit._4se2.pi.dto.MessageRequest;
 import tn.esprit._4se2.pi.dto.MessageResponse;

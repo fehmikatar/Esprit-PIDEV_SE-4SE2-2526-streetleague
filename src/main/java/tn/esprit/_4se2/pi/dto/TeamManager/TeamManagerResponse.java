@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.dto;
+package tn.esprit._4se2.pi.dto.TeamManager;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

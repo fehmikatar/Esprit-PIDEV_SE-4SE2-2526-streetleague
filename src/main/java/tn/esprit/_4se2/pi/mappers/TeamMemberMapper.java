@@ -1,9 +1,9 @@
-package tn.esprit._4se2.pi.mapper;
+package tn.esprit._4se2.pi.mappers;
 
 import tn.esprit._4se2.pi.Enum.MemberStatus;
 import tn.esprit._4se2.pi.Enum.TeamRole;
-import tn.esprit._4se2.pi.dto.TeamMemberRequest;
-import tn.esprit._4se2.pi.dto.TeamMemberResponse;
+import tn.esprit._4se2.pi.dto.TeamMember.TeamMemberRequest;
+import tn.esprit._4se2.pi.dto.TeamMember.TeamMemberResponse;
 import tn.esprit._4se2.pi.entities.Team;
 import tn.esprit._4se2.pi.entities.TeamMember;
 import tn.esprit._4se2.pi.entities.User;

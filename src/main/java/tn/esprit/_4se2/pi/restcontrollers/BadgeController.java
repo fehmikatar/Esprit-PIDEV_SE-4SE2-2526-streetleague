@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.controllers;
+package tn.esprit._4se2.pi.restcontrollers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
