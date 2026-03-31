@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-        jdk 'JDK17'
-    }
-
     environment {
         DB_URL = 'jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC'
         DB_USERNAME = 'root'
@@ -54,7 +49,7 @@ pipeline {
             }
             steps {
                 echo '🚀 Lancement de l\'application...'
-                sh 'java -jar target/*.jar --spring.profiles.active=prod &'
+                sh 'java -jar target/*.jar &'
             }
         }
     }
