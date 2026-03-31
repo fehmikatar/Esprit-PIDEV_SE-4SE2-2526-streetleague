@@ -32,10 +32,25 @@ pipeline {
             }
         }
 
-        stage('Run') {
+        stage('Docker Build') {
             steps {
-                echo '🚀 Lancement de l\'application...'
-                sh 'nohup java -jar target/*.jar --spring.datasource.url="jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&serverTimezone=UTC" --spring.datasource.username=root --spring.datasource.password="" &'
+                sh 'docker build -t streetleague-app:latest .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                sh 'docker stop streetleague-app || true'
+                sh 'docker rm streetleague-app || true'
+                sh '''
+                    docker run -d \
+                    --name streetleague-app \
+                    -p 8085:8085 \
+                    -e SPRING_DATASOURCE_URL="jdbc:mysql://192.168.198.1:3306/piDB?createDatabaseIfNotExist=true&useUnicode=true&serverTimezone=UTC" \
+                    -e SPRING_DATASOURCE_USERNAME=root \
+                    -e SPRING_DATASOURCE_PASSWORD="" \
+                    streetleague-app:latest
+                '''
             }
         }
     }
