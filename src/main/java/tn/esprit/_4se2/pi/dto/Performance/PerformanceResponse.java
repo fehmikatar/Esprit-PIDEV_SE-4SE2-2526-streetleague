@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.dto.Performance;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class PerformanceResponse {
@@ -14,4 +16,6 @@ public class PerformanceResponse {
     private double distanceCovered;
     private int timePlayed;
     private double rating;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
