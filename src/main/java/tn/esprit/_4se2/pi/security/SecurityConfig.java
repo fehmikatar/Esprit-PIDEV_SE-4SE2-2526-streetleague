@@ -54,6 +54,8 @@ public class SecurityConfig {
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
 
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
                         // ── Public endpoints ──────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/password/**").permitAll()
@@ -81,11 +83,8 @@ public class SecurityConfig {
                         // Read-only team info is open to any logged-in user
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
-                                "/api/teams",
-                                "/api/teams/*",
-                                "/api/teams/*/members",
-                                "/api/teams/*/posts"
-                        ).authenticated()
+                                "/api/teams/**"
+                        ).hasAnyRole("ADMIN", "PLAYER", "FIELD_OWNER")
 
                         // All community GET endpoints open to authenticated users
                         .requestMatchers(

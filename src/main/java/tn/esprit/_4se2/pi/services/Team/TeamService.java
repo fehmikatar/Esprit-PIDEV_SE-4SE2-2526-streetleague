@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.services.Team;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import tn.esprit._4se2.pi.entities.Team;
 import tn.esprit._4se2.pi.repositories.TeamRepository;
 
@@ -23,13 +25,19 @@ public class TeamService implements TeamServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<Team> getAll() {
-        return teamRepository.findAll();
+        if (isCurrentUserAdmin()) {
+            return teamRepository.findAll();
+        }
+        return teamRepository.findAllSafe();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Team getById(Long id) {
-        return teamRepository.findById(id).orElse(null);
+        if (isCurrentUserAdmin()) {
+            return teamRepository.findById(id).orElse(null);
+        }
+        return teamRepository.findSafeById(id).orElse(null);
     }
 
     @Override
@@ -59,5 +67,14 @@ public class TeamService implements TeamServiceInterface {
     @Override
     public void delete(Long id) {
         teamRepository.deleteById(id);
+    }
+
+    private boolean isCurrentUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities() == null) {
+            return false;
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
     }
 }
