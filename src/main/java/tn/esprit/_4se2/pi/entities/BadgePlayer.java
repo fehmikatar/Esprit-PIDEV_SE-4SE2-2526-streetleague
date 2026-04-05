@@ -21,4 +21,14 @@ public class BadgePlayer {
     private Badge badge;
 
     private LocalDate obtainDate;
+
+    // Lien vers la performance qui a déclenché l'obtention
+    @ManyToOne
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
+
+    // Code promo généré (optionnel)
+    @ManyToOne
+    @JoinColumn(name = "generated_promo_code_id")
+    private PromoCode generatedPromoCode;
 }

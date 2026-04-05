@@ -22,5 +22,5 @@ public class Badge {
     private String iconUrl;
 
     @OneToMany(mappedBy = "badge")
-    private List<BadgePlayer> badgePlayers = new ArrayList<>();  // ✅ correct type
+    private List<BadgePlayer> badgePlayers = new ArrayList<>();
 }
