@@ -16,7 +16,7 @@ public class BookingMapper {
         booking.setBookingDate(LocalDateTime.now());
         booking.setStartTime(request.getStartTime());
         booking.setEndTime(request.getEndTime());
-        booking.setStatus("PENDING");
+        booking.setStatus("CONFIRMED");
         booking.setCreatedAt(LocalDateTime.now());
         return booking;
     }

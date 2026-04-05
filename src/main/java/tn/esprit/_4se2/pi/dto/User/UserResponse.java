@@ -18,4 +18,5 @@ public class UserResponse {
     String phone;
     LocalDateTime createdAt;
     Boolean isActive;
+    String profileImageUrl;
 }

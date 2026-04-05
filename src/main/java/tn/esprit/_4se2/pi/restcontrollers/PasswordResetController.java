@@ -11,7 +11,7 @@ import tn.esprit._4se2.pi.dto.Auth.ValidateTokenResponse;
 import tn.esprit._4se2.pi.services.Auth.PasswordResetService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth/password")
 @RequiredArgsConstructor
 public class PasswordResetController {
 

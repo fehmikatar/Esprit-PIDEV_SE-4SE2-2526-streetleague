@@ -42,5 +42,10 @@ public class User {
     @Builder.Default
     Boolean isActive = true;
 
+    String profileImageUrl;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    byte[] profileImageData;
 
 }

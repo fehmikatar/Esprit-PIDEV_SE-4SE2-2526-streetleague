@@ -40,6 +40,8 @@ public class PerformanceMapper {
                 .distanceCovered(performance.getDistanceCovered())
                 .timePlayed(performance.getTimePlayed())
                 .rating(performance.getRating())
+                .createdAt(performance.getCreatedAt())
+                .updatedAt(performance.getUpdatedAt())
                 .build();
     }
 
