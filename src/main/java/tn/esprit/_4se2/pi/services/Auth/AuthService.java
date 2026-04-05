@@ -1,6 +1,9 @@
 package tn.esprit._4se2.pi.services.Auth;
 
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +27,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // 📝 Inscription
     public String register(RegisterRequest req) {
@@ -69,21 +75,48 @@ public class AuthService {
                 yield fo;
             }
             case ROLE_PLAYER -> {
-                Player player = new Player();
-                player.setFirstName(req.firstName());
-                player.setLastName(req.lastName());
-                player.setEmail(req.email());
-                player.setPasswordHash(
+                User playerUser = new User();
+                playerUser.setFirstName(req.firstName());
+                playerUser.setLastName(req.lastName());
+                playerUser.setEmail(req.email());
+                playerUser.setPasswordHash(
                         passwordEncoder.encode(req.password()));
-                player.setRole(Role.ROLE_PLAYER);
-                player.setIsActive(true);
-                player.setCreatedAt(LocalDateTime.now());
-                yield player;
+                playerUser.setRole(Role.ROLE_PLAYER);
+                playerUser.setIsActive(true);
+                playerUser.setCreatedAt(LocalDateTime.now());
+                yield playerUser;
             }
         };
 
-        userRepository.save(user);
+        try {
+            userRepository.saveAndFlush(user);
+        } catch (DataIntegrityViolationException ex) {
+            if (req.role() == Role.ROLE_PLAYER && isDuplicatePlayerPrimaryKey(ex)) {
+                cleanupOrphanPlayers();
+                userRepository.saveAndFlush(user);
+            } else {
+                throw ex;
+            }
+        }
+
         return "Utilisateur créé : " + user.getEmail();
+    }
+
+    private boolean isDuplicatePlayerPrimaryKey(DataIntegrityViolationException ex) {
+        String message = ex.getMostSpecificCause() != null
+                ? ex.getMostSpecificCause().getMessage()
+                : ex.getMessage();
+        if (message == null) {
+            return false;
+        }
+        String lower = message.toLowerCase();
+        return lower.contains("duplicate entry") && lower.contains("players") && lower.contains("primary");
+    }
+
+    private void cleanupOrphanPlayers() {
+        entityManager.createNativeQuery(
+            "DELETE p FROM players p LEFT JOIN `user` u ON p.id = u.id WHERE u.id IS NULL"
+        ).executeUpdate();
     }
 
     // 🔐 Connexion
