@@ -111,4 +111,65 @@ public class UserService implements IUserService {
         userRepository.save(user);
         log.info("User deactivated successfully with id: {}", id);
     }
+
+    @Override
+    public UserResponse updateProfile(Long id, String firstName, String lastName, String email, String phone) {
+        log.info("Updating profile for user with id: {}", id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        userMapper.updateProfile(user, firstName, lastName, email, phone);
+        User updatedUser = userRepository.save(user);
+        log.info("Profile updated successfully for user with id: {}", id);
+
+        return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public String uploadProfileImage(Long id, byte[] imageData, String filename) {
+        log.info("Uploading profile image for user with id: {}", id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        // Store image data in the database
+        user.setProfileImageData(imageData);
+        
+        // Generate image URL
+        String imageUrl = "/api/users/" + id + "/profile-image/content";
+        user.setProfileImageUrl(imageUrl);
+        
+        userRepository.save(user);
+        log.info("Profile image uploaded successfully for user with id: {}", id);
+
+        return imageUrl;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getProfileImageUrl(Long id) {
+        log.info("Fetching profile image URL for user with id: {}", id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        return user.getProfileImageUrl();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getProfileImageContent(Long id) {
+        log.info("Fetching profile image content for user with id: {}", id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        byte[] imageData = user.getProfileImageData();
+        if (imageData == null || imageData.length == 0) {
+            throw new RuntimeException("No image data found for user with id: " + id);
+        }
+
+        return imageData;
+    }
 }

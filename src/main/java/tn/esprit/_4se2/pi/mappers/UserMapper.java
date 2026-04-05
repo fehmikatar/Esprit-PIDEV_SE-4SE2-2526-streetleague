@@ -34,6 +34,7 @@ public class UserMapper {
                 .phone(entity.getPhone())
                 .createdAt(entity.getCreatedAt())
                 .isActive(entity.getIsActive())
+                .profileImageUrl(entity.getProfileImageUrl())
                 .build();
     }
 
@@ -44,5 +45,13 @@ public class UserMapper {
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
+    }
+
+    public void updateProfile(User user, String firstName, String lastName, String email, String phone) {
+        if (user == null) return;
+        if (firstName != null) user.setFirstName(firstName);
+        if (lastName != null) user.setLastName(lastName);
+        if (email != null) user.setEmail(email);
+        if (phone != null) user.setPhone(phone);
     }
 }
