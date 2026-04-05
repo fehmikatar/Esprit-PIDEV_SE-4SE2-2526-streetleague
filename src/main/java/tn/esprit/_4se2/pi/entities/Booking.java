@@ -40,7 +40,7 @@ public class Booking {
 
     @Column(nullable = false)
     @Builder.Default
-    String status = "PENDING";
+    String status = "CONFIRMED";
 
     @Column(name = "created_at")
     LocalDateTime createdAt;

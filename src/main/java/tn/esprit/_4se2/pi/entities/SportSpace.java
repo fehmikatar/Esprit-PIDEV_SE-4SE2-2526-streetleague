@@ -46,10 +46,10 @@ public class SportSpace {
     @Column(length = 500)
     String amenities;
 
-    @Column
+    @Column (nullable= true)
     Double latitude;
 
-    @Column
+    @Column(nullable = true)
     Double longitude;
 
     @Column(name = "is_available")
