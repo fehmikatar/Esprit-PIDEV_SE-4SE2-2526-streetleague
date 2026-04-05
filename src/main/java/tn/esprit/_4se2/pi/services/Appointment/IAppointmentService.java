@@ -1,43 +1,18 @@
 package tn.esprit._4se2.pi.services.Appointment;
 
-import tn.esprit._4se2.pi.entities.Appointment;
-import tn.esprit._4se2.pi.entities.AppointmentStatus;
-
-import java.time.LocalDateTime;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
+import tn.esprit._4se2.pi.Enum.AppointmentStatus;
 import java.util.List;
 
 public interface IAppointmentService {
-    // CRUD de base
-        List<Appointment> getAllAppointments();
-
-        Appointment getAppointmentById(Long id);
-
-        Appointment createAppointment(Appointment appointment);
-
-        Appointment updateAppointment(Long id, Appointment appointment);
-
-        void deleteAppointment(Long id);
-
-        // Recherches spécifiques
-        List<Appointment> getAppointmentsByUser(Long userId);
-
-        List<Appointment> getAppointmentsByDoctor(Long doctorId);
-
-        List<Appointment> getAppointmentsByStatus(AppointmentStatus status);
-
-        List<Appointment> getAppointmentsByDateRange(LocalDateTime start, LocalDateTime end);
-
-        List<Appointment> getAppointmentsByDoctorAndDateRange(Long doctorId, LocalDateTime start, LocalDateTime end);
-
-        List<Appointment> getUserAppointmentsByStatus(Long userId, AppointmentStatus status);
-
-        // Statistiques
-        Long countAppointmentsByDoctor(Long doctorId);
-
-        List<Appointment> getUpcomingAppointmentsByUser(Long userId);
-
-        List<Appointment> getTodayAppointmentsByDoctor(Long doctorId);
-
-        // Vérifications
-        boolean existsById(Long id);
-    }
+    AppointmentResponse createAppointment(AppointmentRequest request);
+    AppointmentResponse getAppointmentById(Long id);
+    List<AppointmentResponse> getAllAppointments();
+    List<AppointmentResponse> getAppointmentsByUserId(Long userId);
+    List<AppointmentResponse> getAppointmentsByDoctorId(Long doctorId);
+    List<AppointmentResponse> getAppointmentsByStatus(AppointmentStatus status);
+    AppointmentResponse updateAppointment(Long id, AppointmentRequest request);
+    void deleteAppointment(Long id);
+    AppointmentResponse updateAppointmentStatus(Long id, AppointmentStatus status);
+}

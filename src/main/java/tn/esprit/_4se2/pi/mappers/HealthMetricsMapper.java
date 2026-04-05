@@ -4,55 +4,64 @@ import org.springframework.stereotype.Component;
 import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsRequest;
 import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsResponse;
 import tn.esprit._4se2.pi.entities.HealthMetrics;
-import tn.esprit._4se2.pi.entities.HealthProfile;
-import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
-import lombok.RequiredArgsConstructor;
-import java.time.LocalDateTime;
 
 @Component
-@RequiredArgsConstructor
 public class HealthMetricsMapper {
-
-    private final IHealthProfileService healthProfileService;
 
     public HealthMetrics toEntity(HealthMetricsRequest request) {
         if (request == null) return null;
 
         HealthMetrics metrics = new HealthMetrics();
+        metrics.setWeight(request.getWeight());
+        metrics.setMuscleMass(request.getMuscleMass());
+        metrics.setBodyFat(request.getBodyFat());
+        metrics.setHydration(request.getHydration());
+        metrics.setRestingHeartRate(request.getRestingHeartRate());
         metrics.setSystolicBP(request.getSystolicBP());
         metrics.setDiastolicBP(request.getDiastolicBP());
-        metrics.setHeartRate(request.getHeartRate());
-        metrics.setTemperature(request.getTemperature());
-        metrics.setWeight(request.getWeight());
         metrics.setSleepHours(request.getSleepHours());
-        metrics.setStepsCount(request.getStepsCount());
+        metrics.setStressLevel(request.getStressLevel());
+        metrics.setEnergyLevel(request.getEnergyLevel());
+        metrics.setMeasuredAt(request.getMeasuredAt());
         metrics.setNotes(request.getNotes());
-        metrics.setMeasuredAt(LocalDateTime.now());
-
-        if (request.getHealthProfileId() != null) {
-            HealthProfile profile = new HealthProfile();
-            profile.setId(request.getHealthProfileId());
-            metrics.setHealthProfile(profile);
-        }
-
         return metrics;
     }
 
-    public HealthMetricsResponse toResponse(HealthMetrics metrics) {
-        if (metrics == null) return null;
+    public HealthMetricsResponse toResponse(HealthMetrics entity) {
+        if (entity == null) return null;
 
         return HealthMetricsResponse.builder()
-                .id(metrics.getId())
-                .healthProfileId(metrics.getHealthProfile() != null ? metrics.getHealthProfile().getId() : null)
-                .systolicBP(metrics.getSystolicBP())
-                .diastolicBP(metrics.getDiastolicBP())
-                .heartRate(metrics.getHeartRate())
-                .temperature(metrics.getTemperature())
-                .weight(metrics.getWeight())
-                .sleepHours(metrics.getSleepHours())
-                .stepsCount(metrics.getStepsCount())
-                .notes(metrics.getNotes())
-                .measuredAt(metrics.getMeasuredAt())
+                .id(entity.getId())
+                .healthProfileId(entity.getHealthProfile() != null ? entity.getHealthProfile().getId() : null)
+                .weight(entity.getWeight())
+                .muscleMass(entity.getMuscleMass())
+                .bodyFat(entity.getBodyFat())
+                .hydration(entity.getHydration())
+                .restingHeartRate(entity.getRestingHeartRate())
+                .systolicBP(entity.getSystolicBP())
+                .diastolicBP(entity.getDiastolicBP())
+                .sleepHours(entity.getSleepHours())
+                .stressLevel(entity.getStressLevel())
+                .energyLevel(entity.getEnergyLevel())
+                .measuredAt(entity.getMeasuredAt())
+                .notes(entity.getNotes())
                 .build();
+    }
+
+    public void updateEntity(HealthMetricsRequest request, HealthMetrics metrics) {
+        if (request == null || metrics == null) return;
+
+        metrics.setWeight(request.getWeight());
+        metrics.setMuscleMass(request.getMuscleMass());
+        metrics.setBodyFat(request.getBodyFat());
+        metrics.setHydration(request.getHydration());
+        metrics.setRestingHeartRate(request.getRestingHeartRate());
+        metrics.setSystolicBP(request.getSystolicBP());
+        metrics.setDiastolicBP(request.getDiastolicBP());
+        metrics.setSleepHours(request.getSleepHours());
+        metrics.setStressLevel(request.getStressLevel());
+        metrics.setEnergyLevel(request.getEnergyLevel());
+        metrics.setMeasuredAt(request.getMeasuredAt());
+        metrics.setNotes(request.getNotes());
     }
 }

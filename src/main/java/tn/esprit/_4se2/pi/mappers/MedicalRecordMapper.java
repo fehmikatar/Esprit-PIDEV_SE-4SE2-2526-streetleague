@@ -4,18 +4,9 @@ import org.springframework.stereotype.Component;
 import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordRequest;
 import tn.esprit._4se2.pi.dto.MedicalRecord.MedicalRecordResponse;
 import tn.esprit._4se2.pi.entities.MedicalRecord;
-import tn.esprit._4se2.pi.entities.HealthProfile;
-import tn.esprit._4se2.pi.entities.User;
-import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
-import tn.esprit._4se2.pi.services.User.IUserService;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class MedicalRecordMapper {
-
-    private final IHealthProfileService healthProfileService;
-    private final IUserService userService;
 
     public MedicalRecord toEntity(MedicalRecordRequest request) {
         if (request == null) return null;
@@ -24,6 +15,7 @@ public class MedicalRecordMapper {
         record.setDiagnosis(request.getDiagnosis());
         record.setInjuryDate(request.getInjuryDate());
         record.setExpectedRecoveryDate(request.getExpectedRecoveryDate());
+        record.setActualRecoveryDate(request.getActualRecoveryDate());
         record.setDoctorNotes(request.getDoctorNotes());
         record.setInjuryType(request.getInjuryType());
         record.setRecoveryStatus(request.getRecoveryStatus());
@@ -31,41 +23,45 @@ public class MedicalRecordMapper {
         record.setTreatment(request.getTreatment());
         record.setMedication(request.getMedication());
         record.setRequiresFollowUp(request.getRequiresFollowUp());
-
-        if (request.getHealthProfileId() != null) {
-            HealthProfile profile = new HealthProfile();
-            profile.setId(request.getHealthProfileId());
-            record.setHealthProfile(profile);
-        }
-
-        if (request.getTreatedByDoctorId() != null) {
-            User doctor = userService.getUserById(request.getTreatedByDoctorId());
-            record.setTreatedBy(doctor);
-        }
-
         return record;
     }
 
-    public MedicalRecordResponse toResponse(MedicalRecord record) {
-        if (record == null) return null;
+    public MedicalRecordResponse toResponse(MedicalRecord entity) {
+        if (entity == null) return null;
 
         return MedicalRecordResponse.builder()
-                .id(record.getId())
-                .healthProfileId(record.getHealthProfile() != null ? record.getHealthProfile().getId() : null)
-                .treatedByDoctorId(record.getTreatedBy() != null ? record.getTreatedBy().getId() : null)
-                .diagnosis(record.getDiagnosis())
-                .injuryDate(record.getInjuryDate())
-                .expectedRecoveryDate(record.getExpectedRecoveryDate())
-                .actualRecoveryDate(record.getActualRecoveryDate())
-                .doctorNotes(record.getDoctorNotes())
-                .injuryType(record.getInjuryType())
-                .recoveryStatus(record.getRecoveryStatus())
-                .medicalCertificateUrl(record.getMedicalCertificateUrl())
-                .treatment(record.getTreatment())
-                .medication(record.getMedication())
-                .requiresFollowUp(record.getRequiresFollowUp())
-                .createdAt(record.getCreatedAt())
-                .updatedAt(record.getUpdatedAt())
+                .id(entity.getId())
+                .healthProfileId(entity.getHealthProfile() != null ? entity.getHealthProfile().getId() : null)
+                .diagnosis(entity.getDiagnosis())
+                .injuryDate(entity.getInjuryDate())
+                .expectedRecoveryDate(entity.getExpectedRecoveryDate())
+                .actualRecoveryDate(entity.getActualRecoveryDate())
+                .doctorNotes(entity.getDoctorNotes())
+                .injuryType(entity.getInjuryType())
+                .recoveryStatus(entity.getRecoveryStatus())
+                .medicalCertificateUrl(entity.getMedicalCertificateUrl())
+                .treatment(entity.getTreatment())
+                .medication(entity.getMedication())
+                .requiresFollowUp(entity.getRequiresFollowUp())
+                .treatedByDoctorId(entity.getTreatedBy() != null ? entity.getTreatedBy().getId() : null)
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
+    }
+
+    public void updateEntity(MedicalRecordRequest request, MedicalRecord record) {
+        if (request == null || record == null) return;
+
+        record.setDiagnosis(request.getDiagnosis());
+        record.setInjuryDate(request.getInjuryDate());
+        record.setExpectedRecoveryDate(request.getExpectedRecoveryDate());
+        record.setActualRecoveryDate(request.getActualRecoveryDate());
+        record.setDoctorNotes(request.getDoctorNotes());
+        record.setInjuryType(request.getInjuryType());
+        record.setRecoveryStatus(request.getRecoveryStatus());
+        record.setMedicalCertificateUrl(request.getMedicalCertificateUrl());
+        record.setTreatment(request.getTreatment());
+        record.setMedication(request.getMedication());
+        record.setRequiresFollowUp(request.getRequiresFollowUp());
     }
 }

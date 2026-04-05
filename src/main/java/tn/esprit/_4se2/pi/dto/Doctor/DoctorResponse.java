@@ -1,8 +1,7 @@
-package tn.esprit._4se2.pi.dto.User;
+package tn.esprit._4se2.pi.dto.Doctor;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,13 +9,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class DoctorResponse {
     Long id;
     String firstName;
     String lastName;
+    String specialty;
+    String licenseNumber;
     String email;
-    String phone;
-    LocalDateTime createdAt;
-    Boolean isActive;
-    String profileImageUrl;
+    String phoneNumber;
+    String address;
 }

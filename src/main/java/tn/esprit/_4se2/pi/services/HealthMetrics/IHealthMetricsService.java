@@ -1,24 +1,16 @@
 package tn.esprit._4se2.pi.services.HealthMetrics;
 
-import tn.esprit._4se2.pi.entities.HealthMetrics;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsRequest;
+import tn.esprit._4se2.pi.dto.HealthMetrics.HealthMetricsResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IHealthMetricsService {
-    // CRUD de base
-    List<HealthMetrics> getAllHealthMetrics();
-    HealthMetrics getHealthMetricsById(Long id);
-    HealthMetrics createHealthMetrics(HealthMetrics healthMetrics);
-    HealthMetrics updateHealthMetrics(Long id, HealthMetrics healthMetrics);
+    HealthMetricsResponse createHealthMetrics(HealthMetricsRequest request);
+    HealthMetricsResponse getHealthMetricsById(Long id);
+    List<HealthMetricsResponse> getAllHealthMetrics();
+    List<HealthMetricsResponse> getHealthMetricsByHealthProfileId(Long healthProfileId);
+    List<HealthMetricsResponse> getHealthMetricsByDateRange(Long healthProfileId, LocalDateTime start, LocalDateTime end);
+    HealthMetricsResponse updateHealthMetrics(Long id, HealthMetricsRequest request);
     void deleteHealthMetrics(Long id);
-
-    // Recherches spécifiques - CORRIGÉ
-    List<HealthMetrics> getHealthMetricsByHealthProfile(Long healthProfileId);
-    HealthMetrics getLatestHealthMetricsByHealthProfile(Long healthProfileId);
-    List<HealthMetrics> getHealthMetricsByDateRange(Long healthProfileId, LocalDateTime startDate, LocalDateTime endDate);
-    List<HealthMetrics> getHealthMetricsByDate(LocalDateTime date);
-    List<HealthMetrics> getHealthMetricsByHeartRateRange(int min, int max);
-    List<HealthMetrics> getHealthMetricsByBloodPressureMin(int minSystolic, int minDiastolic);
-    List<HealthMetrics> getAbnormalHeartRateMetrics();
-    List<Object[]> getWeightProgression(Long healthProfileId);
 }

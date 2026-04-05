@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import tn.esprit._4se2.pi.security.CustomUserDetailsService;
-
 import java.io.IOException;
 
 @Component
@@ -23,19 +22,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/api/auth/");
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // 1. Lire le header Authorization
         String authHeader = request.getHeader("Authorization");
 
+        // 2. Si pas de token → on laisse passer
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // 3. Extraire le token (enlever "Bearer ")
         String token = authHeader.substring(7);
         String email;
 
@@ -46,21 +54,31 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // 4. Si email extrait et pas encore authentifié
+        if (email != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(email);
 
+            // 5. Valider le token
             if (jwtService.isTokenValid(token, userDetails)) {
+
+                // 6. Créer l'objet d'authentification
                 var authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // 7. Stocker dans le contexte de sécurité
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authToken);
             }
         }
 
+        // 8. Continuer la chaîne de filtres
         filterChain.doFilter(request, response);
     }
 }

@@ -1,6 +1,9 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
+import tn.esprit._4se2.pi.Enum.InjuryType;
+import tn.esprit._4se2.pi.Enum.RecoveryStatus;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,7 +14,7 @@ public class MedicalRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "health_profile_id")
     private HealthProfile healthProfile;
 
@@ -32,9 +35,9 @@ public class MedicalRecord {
     private String medication;
     private Boolean requiresFollowUp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "treated_by_doctor_id")
-    private User treatedBy;
+    private Doctor treatedBy;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -90,8 +93,8 @@ public class MedicalRecord {
     public Boolean getRequiresFollowUp() { return requiresFollowUp; }
     public void setRequiresFollowUp(Boolean requiresFollowUp) { this.requiresFollowUp = requiresFollowUp; }
 
-    public User getTreatedBy() { return treatedBy; }
-    public void setTreatedBy(User treatedBy) { this.treatedBy = treatedBy; }
+    public Doctor getTreatedBy() { return treatedBy; }
+    public void setTreatedBy(Doctor treatedBy) { this.treatedBy = treatedBy; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

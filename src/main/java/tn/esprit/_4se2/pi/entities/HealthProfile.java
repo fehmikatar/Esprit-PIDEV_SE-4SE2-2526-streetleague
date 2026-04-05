@@ -1,8 +1,10 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
+import tn.esprit._4se2.pi.Enum.FitnessStatus;
+
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,8 +14,8 @@ public class HealthProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     private Double weight;
@@ -31,25 +33,16 @@ public class HealthProfile {
     private String allergies;
     private String medicalConditions;
 
-    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MedicalRecord> medicalRecords = new ArrayList<>();
+    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL)
+    private List<MedicalRecord> medicalRecords;
 
-    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HealthMetrics> healthMetrics = new ArrayList<>();
+    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL)
+    private List<HealthMetrics> healthMetrics;
 
-    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DietPlan> dietPlans = new ArrayList<>();
+    @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL)
+    private List<DietPlan> dietPlans;
 
-    @PrePersist
-    @PreUpdate
-    protected void validateUserRole() {
-        if (user != null && !user.isPatient()) {
-            throw new RuntimeException("Health profile can only be created for users with role PATIENT");
-        }
-        lastUpdated = LocalDate.now();
-    }
-
-    // Calcul du BMI
+    // Calcul automatique du BMI
     @Transient
     public Double getBmi() {
         if (height != null && weight != null && height > 0) {
@@ -59,7 +52,7 @@ public class HealthProfile {
     }
 
     @Transient
-    public String getBmiCategory() {  // ✅ Doit retourner String
+    public String getBmiCategory() {
         Double bmi = getBmi();
         if (bmi == null) return "Non disponible";
         if (bmi < 18.5) return "Insuffisance pondérale";
@@ -68,35 +61,10 @@ public class HealthProfile {
         return "Obésité";
     }
 
-    // Méthodes helpers
-    public void addMedicalRecord(MedicalRecord record) {
-        medicalRecords.add(record);
-        record.setHealthProfile(this);
-    }
-
-    public void removeMedicalRecord(MedicalRecord record) {
-        medicalRecords.remove(record);
-        record.setHealthProfile(null);
-    }
-
-    public void addHealthMetric(HealthMetrics metric) {
-        healthMetrics.add(metric);
-        metric.setHealthProfile(this);
-    }
-
-    public void removeHealthMetric(HealthMetrics metric) {
-        healthMetrics.remove(metric);
-        metric.setHealthProfile(null);
-    }
-
-    public void addDietPlan(DietPlan plan) {
-        dietPlans.add(plan);
-        plan.setHealthProfile(this);
-    }
-
-    public void removeDietPlan(DietPlan plan) {
-        dietPlans.remove(plan);
-        plan.setHealthProfile(null);
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdated = LocalDate.now();
     }
 
     // Getters et Setters

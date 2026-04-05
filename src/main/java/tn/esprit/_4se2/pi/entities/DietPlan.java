@@ -11,7 +11,7 @@ public class DietPlan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "health_profile_id")
     private HealthProfile healthProfile;
 
@@ -25,6 +25,7 @@ public class DietPlan {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isActive;
+
     private String dietaryRestrictions;
     private String nutritionalGoals;
     private String createdBy;

@@ -1,6 +1,7 @@
 package tn.esprit._4se2.pi.dto.HealthMetrics;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 
 @Getter
@@ -8,16 +9,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HealthMetricsResponse {
-    private Long id;
-    private Long healthProfileId;
-    private Integer systolicBP;
-    private Integer diastolicBP;
-    private Integer heartRate;
-    private Double temperature;
-    private Double weight;
-    private Integer sleepHours;
-    private Integer stepsCount;
-    private String notes;
-    private LocalDateTime measuredAt;
+    Long id;
+    Long healthProfileId;
+    Double weight;
+    Double muscleMass;
+    Double bodyFat;
+    Double hydration;
+    Integer restingHeartRate;
+    Integer systolicBP;
+    Integer diastolicBP;
+    Integer sleepHours;
+    Integer stressLevel;
+    Integer energyLevel;
+    LocalDateTime measuredAt;
+    String notes;
 }

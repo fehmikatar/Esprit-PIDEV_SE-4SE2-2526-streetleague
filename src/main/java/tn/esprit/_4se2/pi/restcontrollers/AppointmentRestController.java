@@ -1,58 +1,58 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import tn.esprit._4se2.pi.entities.Appointment;
-import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
-import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
-import tn.esprit._4se2.pi.services.Appointment.IAppointmentService;
-import tn.esprit._4se2.pi.mappers.AppointmentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import tn.esprit._4se2.pi.Enum.AppointmentStatus;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
+import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
+import tn.esprit._4se2.pi.services.Appointment.IAppointmentService;
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/appointments")
-@Tag(name = "Appointments", description = "📅 Appointment management operations")
 @RequiredArgsConstructor
 public class AppointmentRestController {
 
     private final IAppointmentService appointmentService;
-    private final AppointmentMapper appointmentMapper;
 
-    @GetMapping
-    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
-        List<Appointment> appointments = appointmentService.getAllAppointments();
-        List<AppointmentResponse> responses = appointments.stream()
-                .map(appointmentMapper::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+    @PostMapping
+    public ResponseEntity<AppointmentResponse> createAppointment(@Valid @RequestBody AppointmentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(appointmentService.createAppointment(request));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentResponse> getAppointmentById(@PathVariable Long id) {
-        Appointment appointment = appointmentService.getAppointmentById(id);
-        AppointmentResponse response = appointmentMapper.toResponse(appointment);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(appointmentService.getAppointmentById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody AppointmentRequest request) {
-        Appointment appointment = appointmentMapper.toEntity(request);
-        Appointment created = appointmentService.createAppointment(appointment);
-        AppointmentResponse response = appointmentMapper.toResponse(created);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
+        return ResponseEntity.ok(appointmentService.getAllAppointments());
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByUserId(userId));
+    }
+
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByDoctorId(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctorId(doctorId));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByStatus(@PathVariable AppointmentStatus status) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByStatus(status));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable Long id, @RequestBody AppointmentRequest request) {
-        Appointment appointment = appointmentMapper.toEntity(request);
-        Appointment updated = appointmentService.updateAppointment(id, appointment);
-        AppointmentResponse response = appointmentMapper.toResponse(updated);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<AppointmentResponse> updateAppointment(
+            @PathVariable Long id,
+            @Valid @RequestBody AppointmentRequest request) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -61,21 +61,10 @@ public class AppointmentRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/doctor/{doctorId}")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByDoctor(@PathVariable Long doctorId) {
-        List<Appointment> appointments = appointmentService.getAppointmentsByDoctor(doctorId);
-        List<AppointmentResponse> responses = appointments.stream()
-                .map(appointmentMapper::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByUser(@PathVariable Long userId) {
-        List<Appointment> appointments = appointmentService.getAppointmentsByUser(userId);
-        List<AppointmentResponse> responses = appointments.stream()
-                .map(appointmentMapper::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(
+            @PathVariable Long id,
+            @RequestParam AppointmentStatus status) {
+        return ResponseEntity.ok(appointmentService.updateAppointmentStatus(id, status));
     }
 }

@@ -4,15 +4,9 @@ import org.springframework.stereotype.Component;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
 import tn.esprit._4se2.pi.entities.Appointment;
-import tn.esprit._4se2.pi.entities.User;
-import tn.esprit._4se2.pi.services.User.IUserService;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class AppointmentMapper {
-
-    private final IUserService userService;
 
     public Appointment toEntity(AppointmentRequest request) {
         if (request == null) return null;
@@ -20,35 +14,35 @@ public class AppointmentMapper {
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(request.getAppointmentDate());
         appointment.setReason(request.getReason());
-        appointment.setStatus(request.getStatus());
+        appointment.setStatus(request.getStatus()); // can be null, service will set default
         appointment.setNotes(request.getNotes());
-
-        if (request.getUserId() != null) {
-            User user = userService.getUserById(request.getUserId());
-            appointment.setUser(user);
-        }
-
-        if (request.getDoctorId() != null) {
-            User doctor = userService.getUserById(request.getDoctorId());
-            appointment.setDoctor(doctor);
-        }
-
+        // user and doctor will be set by service (since they need to be fetched from DB)
         return appointment;
     }
 
-    public AppointmentResponse toResponse(Appointment appointment) {
-        if (appointment == null) return null;
+    public AppointmentResponse toResponse(Appointment entity) {
+        if (entity == null) return null;
 
         return AppointmentResponse.builder()
-                .id(appointment.getId())
-                .userId(appointment.getUser() != null ? appointment.getUser().getId() : null)
-                .doctorId(appointment.getDoctor() != null ? appointment.getDoctor().getId() : null)
-                .appointmentDate(appointment.getAppointmentDate())
-                .reason(appointment.getReason())
-                .status(appointment.getStatus())
-                .notes(appointment.getNotes())
-                .createdAt(appointment.getCreatedAt())
-                .updatedAt(appointment.getUpdatedAt())
+                .id(entity.getId())
+                .userId(entity.getUser() != null ? entity.getUser().getId() : null)
+                .doctorId(entity.getDoctor() != null ? entity.getDoctor().getId() : null)
+                .appointmentDate(entity.getAppointmentDate())
+                .reason(entity.getReason())
+                .status(entity.getStatus())
+                .notes(entity.getNotes())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
+    }
+
+    public void updateEntity(AppointmentRequest request, Appointment appointment) {
+        if (request == null || appointment == null) return;
+
+        appointment.setAppointmentDate(request.getAppointmentDate());
+        appointment.setReason(request.getReason());
+        appointment.setStatus(request.getStatus());
+        appointment.setNotes(request.getNotes());
+        // Relationships (user, doctor) are not updated via mapper, service will handle if needed
     }
 }

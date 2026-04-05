@@ -21,15 +21,17 @@ public class JwtService {
             @Value("${app.jwt.secret}") String secret,
             @Value("${app.jwt.expiration-ms}") long expirationMs
     ) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.key = Keys.hmacShaKeyFor(
+                secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMs = expirationMs;
     }
 
+    // 🔑 Génère un token JWT après connexion
     public String generateToken(UserDetails userDetails) {
         String role = userDetails.getAuthorities().stream()
                 .findFirst()
                 .map(a -> a.getAuthority())
-                .orElse("ROLE_PATIENT");
+                .orElse("ROLE_PLAYER");
 
         Date now = new Date();
         Date exp = new Date(now.getTime() + expirationMs);
@@ -39,18 +41,21 @@ public class JwtService {
                 .addClaims(Map.of("role", role))
                 .setIssuedAt(now)
                 .setExpiration(exp)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key, io.jsonwebtoken.SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // 📧 Extrait l'email depuis le token
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
+    // ✅ Vérifie que le token est valide
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             String email = extractEmail(token);
-            return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+            return email.equals(userDetails.getUsername())
+                    && !isTokenExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -60,6 +65,7 @@ public class JwtService {
         return parseClaims(token).getExpiration().before(new Date());
     }
 
+    // 🔍 Parse et extrait les claims du token
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

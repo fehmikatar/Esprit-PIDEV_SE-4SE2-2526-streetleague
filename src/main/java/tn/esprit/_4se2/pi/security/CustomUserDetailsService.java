@@ -18,18 +18,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
+        // 1. Chercher l'utilisateur par email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found: " + email));
 
-        // ✅ Préfixe "ROLE_" obligatoire pour hasRole()
-        var authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+        // 2. Convertir son rôle en autorité Spring Security
+        var authority = new SimpleGrantedAuthority(user.getRole().name());
 
+        // 3. Retourner l'objet UserDetails
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPasswordHash())
                 .authorities(List.of(authority))
-                .disabled(!user.isActive())    // Utilisez isActive() si le champ s'appelle active
+                .disabled(!user.getIsActive())
                 .build();
     }
 }

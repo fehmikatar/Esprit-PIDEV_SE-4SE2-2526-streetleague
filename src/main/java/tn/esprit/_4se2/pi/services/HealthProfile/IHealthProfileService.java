@@ -1,15 +1,12 @@
 package tn.esprit._4se2.pi.services.HealthProfile;
 
-import tn.esprit._4se2.pi.entities.HealthProfile;
-import tn.esprit._4se2.pi.entities.FitnessStatus;
-import java.util.List;
+import tn.esprit._4se2.pi.dto.HealthProfile.HealthProfileRequest;
+import tn.esprit._4se2.pi.dto.HealthProfile.HealthProfileResponse;
 
 public interface IHealthProfileService {
-    List<HealthProfile> getAllHealthProfiles();
-    HealthProfile getHealthProfileById(Long id);
-    HealthProfile createHealthProfile(HealthProfile healthProfile);
-    HealthProfile updateHealthProfile(Long id, HealthProfile healthProfile);
+    HealthProfileResponse createHealthProfile(HealthProfileRequest request);
+    HealthProfileResponse getHealthProfileById(Long id);
+    HealthProfileResponse getHealthProfileByUserId(Long userId);
+    HealthProfileResponse updateHealthProfile(Long id, HealthProfileRequest request);
     void deleteHealthProfile(Long id);
-    HealthProfile getHealthProfileByUser(Long userId);
-    List<HealthProfile> getHealthProfilesByFitnessStatus(FitnessStatus status);
 }

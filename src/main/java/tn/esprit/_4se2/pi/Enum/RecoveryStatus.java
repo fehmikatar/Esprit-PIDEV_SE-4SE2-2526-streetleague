@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.entities;
+package tn.esprit._4se2.pi.Enum;
 
 public enum RecoveryStatus {
     PENDING,        // En attente de traitement

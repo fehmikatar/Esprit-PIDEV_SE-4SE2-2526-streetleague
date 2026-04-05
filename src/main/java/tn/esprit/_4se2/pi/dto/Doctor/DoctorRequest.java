@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.dto.User;
+package tn.esprit._4se2.pi.dto.Doctor;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,7 +10,7 @@ import jakarta.validation.constraints.*;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserRequest {
+public class DoctorRequest {
 
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50)
@@ -20,15 +20,22 @@ public class UserRequest {
     @Size(min = 2, max = 50)
     String lastName;
 
+    @NotBlank(message = "Specialty is required")
+    @Size(min = 2, max = 100)
+    String specialty;
+
+    @NotBlank(message = "License number is required")
+    @Size(min = 5, max = 50)
+    String licenseNumber;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     String email;
 
-    @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^\\d{8,}$", message = "Phone should contain at least 8 digits")
-    String phone;
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\d{8,}$", message = "Phone number should contain at least 8 digits")
+    String phoneNumber;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, max = 255)
-    String password;
+    @Size(max = 255)
+    String address;
 }
