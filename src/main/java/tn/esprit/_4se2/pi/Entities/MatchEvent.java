@@ -27,7 +27,7 @@ public class MatchEvent {
     @Column(length=1000)
     private String description;
 
-    // getters/setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getMatchId() { return matchId; }

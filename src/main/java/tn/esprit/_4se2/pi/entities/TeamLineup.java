@@ -19,13 +19,13 @@ public class TeamLineup {
     @Column(nullable=false)
     private Long teamId;
 
-    private String formation; // "4-3-3"
+    private String formation;
 
-    // Exemple simple: JSON string (ou tu peux faire LineupPlayer table)
+
     @Column(length=4000)
     private String playersJson;
 
-    // getters/setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getMatchId() { return matchId; }
