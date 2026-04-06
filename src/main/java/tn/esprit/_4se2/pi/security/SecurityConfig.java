@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import tn.esprit._4se2.pi.security.jwt.JwtAuthFilter;
-
 import java.util.List;
 
 @Configuration
@@ -39,72 +38,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(sm -> sm
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())  // Désactiver CSRF pour les API REST
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS configuration
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Session sans état
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
-
-                        // ── Public endpoints ──────────────────────────
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/auth/password/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                        // ── Authenticated users can update their own profile and upload images ──
-                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/users/**").authenticated()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/users/*/profile-image").authenticated()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*/profile-image").authenticated()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*/profile-image/content").authenticated()
-
-                        // ── Role-restricted admin/field-owner/player ──
-                        .requestMatchers("/api/admins/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
-                        .requestMatchers("/api/field-owners/**").hasRole("FIELD_OWNER")
-                        // Allow admins to read players (needed for performance management)
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/players/**").hasAnyRole("ADMIN", "PLAYER")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/players/**").hasRole("PLAYER")
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/players/**").hasRole("PLAYER")
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/players/**").hasRole("PLAYER")
-
-                        // ── Team module — all authenticated ───────────
-                        // Read-only team info is open to any logged-in user
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.GET,
-                                "/api/teams",
-                                "/api/teams/*",
-                                "/api/teams/*/members",
-                                "/api/teams/*/posts"
-                        ).authenticated()
-
-                        // All community GET endpoints open to authenticated users
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.GET,
-                                "/api/communities/**",
-                                "/api/community/posts",
-                                "/api/posts/*/comments"
-                        ).authenticated()
-
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.POST,
-                                "/api/communities/*/posts"
-                        ).authenticated()
-
-                        // All other requests require authentication
-                        // (business-level role checks are in the service layer)
-                        .anyRequest().authenticated()
+                        .requestMatchers("/**").permitAll()  // Permet l'accès à **toutes** les routes sans restriction
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Ajoute le filtre JWT
 
         return http.build();
     }
@@ -112,9 +60,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedOrigins(List.of("http://localhost:4200"));  // Frontend Angular (ajuste l'origine si nécessaire)
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
