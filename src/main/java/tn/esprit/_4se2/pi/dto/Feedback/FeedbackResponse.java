@@ -16,6 +16,7 @@ public class FeedbackResponse {
     String userName;
     Long sportSpaceId;
     String sportSpaceName;
+    Long bookingId;
     Integer rating;
     String comment;
     String status;

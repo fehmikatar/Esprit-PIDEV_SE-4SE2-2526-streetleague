@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceRequest;
 import tn.esprit._4se2.pi.dto.SportSpace.SportSpaceResponse;
+import tn.esprit._4se2.pi.entities.Feedback;
 import tn.esprit._4se2.pi.entities.SportSpace;
 import tn.esprit._4se2.pi.mappers.SportSpaceMapper;
+import tn.esprit._4se2.pi.repositories.BookingRepository;
+import tn.esprit._4se2.pi.repositories.FeedbackRepository;
 import tn.esprit._4se2.pi.repositories.SportSpaceRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +23,8 @@ public class SportSpaceService implements ISportSpaceService {
 
     private final SportSpaceRepository sportSpaceRepository;
     private final SportSpaceMapper sportSpaceMapper;
+    private final FeedbackRepository feedbackRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public SportSpaceResponse createSportSpace(SportSpaceRequest request) {
@@ -39,7 +44,7 @@ public class SportSpaceService implements ISportSpaceService {
     public SportSpaceResponse getSportSpaceById(Long id) {
         log.info("Fetching sport space with id: {}", id);
         return sportSpaceRepository.findById(id)
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .orElseThrow(() -> new RuntimeException("Sport space not found with id: " + id));
     }
 
@@ -49,7 +54,7 @@ public class SportSpaceService implements ISportSpaceService {
         log.info("Fetching all sport spaces");
         return sportSpaceRepository.findAll()
                 .stream()
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +64,7 @@ public class SportSpaceService implements ISportSpaceService {
         log.info("Fetching sport spaces for field owner: {}", fieldOwnerId);
         return sportSpaceRepository.findByFieldOwnerId(fieldOwnerId)
                 .stream()
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +74,7 @@ public class SportSpaceService implements ISportSpaceService {
         log.info("Fetching sport spaces by type: {}", sportType);
         return sportSpaceRepository.findBySportType(sportType)
                 .stream()
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +84,7 @@ public class SportSpaceService implements ISportSpaceService {
         log.info("Fetching available sport spaces");
         return sportSpaceRepository.findByIsAvailableTrue()
                 .stream()
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +94,7 @@ public class SportSpaceService implements ISportSpaceService {
         log.info("Searching sport spaces by location: {}", location);
         return sportSpaceRepository.findByLocationContainingIgnoreCase(location)
                 .stream()
-                .map(sportSpaceMapper::toResponse)
+                .map(this::mapWithStats)
                 .collect(Collectors.toList());
     }
 
@@ -104,7 +109,7 @@ public class SportSpaceService implements ISportSpaceService {
         SportSpace updatedSportSpace = sportSpaceRepository.save(sportSpace);
         log.info("Sport space updated successfully with id: {}", id);
 
-        return sportSpaceMapper.toResponse(updatedSportSpace);
+        return mapWithStats(updatedSportSpace);
     }
 
     @Override
@@ -117,5 +122,25 @@ public class SportSpaceService implements ISportSpaceService {
 
         sportSpaceRepository.deleteById(id);
         log.info("Sport space deleted successfully with id: {}", id);
+    }
+
+    private SportSpaceResponse mapWithStats(SportSpace sportSpace) {
+        SportSpaceResponse response = sportSpaceMapper.toResponse(sportSpace);
+
+        List<Feedback> approvedFeedbacks = feedbackRepository.findBySportSpaceIdAndStatus(sportSpace.getId(), "APPROVED");
+        double averageRating = approvedFeedbacks.stream()
+                .mapToInt(Feedback::getRating)
+                .average()
+                .orElse(0.0);
+
+        int totalBookings = (int) bookingRepository.findBySportSpaceId(sportSpace.getId()).stream()
+                .filter(booking -> !"CANCELLED".equalsIgnoreCase(booking.getStatus()))
+                .count();
+
+        response.setAverageRating(approvedFeedbacks.isEmpty() ? null : averageRating);
+        response.setReviewCount((long) approvedFeedbacks.size());
+        response.setTotalBookings(totalBookings);
+
+        return response;
     }
 }

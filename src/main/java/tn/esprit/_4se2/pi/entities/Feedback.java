@@ -25,6 +25,9 @@ public class Feedback {
     @Column(nullable = false)
     Long sportSpaceId;
 
+    @Column(nullable = false, unique = true)
+    Long bookingId;
+
     @Column(nullable = false)
     Integer rating; // 1-5
 
@@ -37,4 +40,7 @@ public class Feedback {
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
+    @Column(name = "approved_at")
+    LocalDateTime approvedAt;
 }
