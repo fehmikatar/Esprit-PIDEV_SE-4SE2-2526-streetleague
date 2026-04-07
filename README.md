@@ -36,7 +36,7 @@ L'architecture est modulaire et divisée de manière académique :
 ### Déploiement Local
 1. **Cloner le repository**
    ```bash
-   git clone https://github.com/votre_profil/Esprit-PIDEV_SE-4SE2-2526-streetleague.git
+   git clone https://github.com/ehmikatar/Esprit-PIDEV_SE-4SE2-2526-streetleague.git
    cd Esprit-PIDEV_SE-4SE2-2526-streetleague
    ```
 2. **Compiler et exécuter les tests Unitaires (JUnit 5)**
