@@ -21,6 +21,9 @@ public class FeedbackRequest {
     Long sportSpaceId;
 
     @NotNull
+    Long bookingId;
+
+    @NotNull
     @Min(1) @Max(5)
     Integer rating;
 

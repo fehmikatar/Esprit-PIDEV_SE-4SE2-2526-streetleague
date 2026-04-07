@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import tn.esprit._4se2.pi.entities.Booking;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -12,4 +13,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBySportSpaceId(Long sportSpaceId);
     List<Booking> findByStatus(String status);
     List<Booking> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
+    Optional<Booking> findByIdAndUserId(Long id, Long userId);
 }

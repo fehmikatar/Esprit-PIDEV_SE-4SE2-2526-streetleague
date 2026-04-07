@@ -24,5 +24,6 @@ public class SportSpaceResponse {
     String amenities;
     Boolean isAvailable;
     Double averageRating;
+    Long reviewCount;
     Integer totalBookings;
 }
