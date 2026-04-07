@@ -57,4 +57,7 @@ public class Product {
 
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Performance> performances = new ArrayList<>();
 }
