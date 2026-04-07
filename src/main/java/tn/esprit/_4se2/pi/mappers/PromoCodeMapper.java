@@ -9,7 +9,6 @@ public class PromoCodeMapper {
 
     public PromoCode toEntity(PromoCodeDTO dto) {
         if (dto == null) return null;
-
         return PromoCode.builder()
                 .code(dto.getCode())
                 .discountType(PromoCode.DiscountType.valueOf(dto.getDiscountType()))
@@ -22,7 +21,6 @@ public class PromoCodeMapper {
 
     public PromoCodeDTO toDTO(PromoCode entity) {
         if (entity == null) return null;
-
         return PromoCodeDTO.builder()
                 .id(entity.getId())
                 .code(entity.getCode())
