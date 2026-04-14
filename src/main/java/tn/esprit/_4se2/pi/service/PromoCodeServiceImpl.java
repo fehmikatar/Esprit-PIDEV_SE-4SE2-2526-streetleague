@@ -3,9 +3,9 @@ package tn.esprit._4se2.pi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
-import tn.esprit._4se2.pi.repository.PromoCodeRepository;
 import tn.esprit._4se2.pi.entities.PromoCode;
 import tn.esprit._4se2.pi.mappers.PromoCodeMapper;
+import tn.esprit._4se2.pi.repositories.PromoCodeRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

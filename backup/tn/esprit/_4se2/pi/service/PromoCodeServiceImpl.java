@@ -3,7 +3,6 @@ package tn.esprit._4se2.pi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.PromoCodeDTO;
-import tn.esprit._4se2.pi.repository.PromoCodeRepository;
 import tn.esprit._4se2.pi.entities.PromoCode;
 import tn.esprit._4se2.pi.mappers.PromoCodeMapper;
 

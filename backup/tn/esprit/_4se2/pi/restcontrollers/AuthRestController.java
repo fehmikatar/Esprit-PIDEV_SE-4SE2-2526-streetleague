@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.entities.EtatPanier;
-import tn.esprit._4se2.pi.repository.UserRepository;
 import tn.esprit._4se2.pi.security.jwt.JwtService;
 import java.util.Map;
 
