@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.entities.User;
-import tn.esprit._4se2.pi.repository.UserRepository;
+
 import java.util.List;
 
 @Service

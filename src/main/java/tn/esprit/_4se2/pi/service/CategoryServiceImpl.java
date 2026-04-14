@@ -3,9 +3,9 @@ package tn.esprit._4se2.pi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
-import tn.esprit._4se2.pi.repository.CategoryRepository;
 import tn.esprit._4se2.pi.entities.Category;
 import tn.esprit._4se2.pi.mappers.CategoryMapper;
+import tn.esprit._4se2.pi.repositories.CategoryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

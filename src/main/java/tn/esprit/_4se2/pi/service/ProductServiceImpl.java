@@ -6,12 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
-import tn.esprit._4se2.pi.repository.ProductRepository;
-import tn.esprit._4se2.pi.repository.CategoryRepository;
 import tn.esprit._4se2.pi.entities.Category;
 import tn.esprit._4se2.pi.entities.Product;
 import tn.esprit._4se2.pi.entities.ProductVariant;
 import tn.esprit._4se2.pi.mappers.ProductMapper;
+import tn.esprit._4se2.pi.repositories.CategoryRepository;
+import tn.esprit._4se2.pi.repositories.ProductRepository;
 
 import java.io.IOException;
 import java.math.BigDecimal;
