@@ -1,12 +1,21 @@
 package tn.esprit._4se2.pi.services.PlayerLevel;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tn.esprit._4se2.pi.Enum.Role;
+import tn.esprit._4se2.pi.dto.PlayerRanking.PlayerRankingDTO;
+import tn.esprit._4se2.pi.dto.PositionStats.PositionStatsDTO;
 import tn.esprit._4se2.pi.entities.Player;
 import tn.esprit._4se2.pi.entities.PlayerLevel;
 import tn.esprit._4se2.pi.repositories.PlayerLevelRepository;
+import tn.esprit._4se2.pi.repositories.PlayerRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +24,7 @@ import tn.esprit._4se2.pi.repositories.PlayerLevelRepository;
 public class PlayerLevelService implements IPlayerLevelService {
 
     private final PlayerLevelRepository playerLevelRepository;
+    private final PlayerRepository playerRepository;
 
     private static final int BASE_XP = 100;
     private static final double MULTIPLIER = 1.5;
@@ -70,5 +80,63 @@ public class PlayerLevelService implements IPlayerLevelService {
                     log.info("Created new PlayerLevel for player {}", player.getId());
                     return playerLevelRepository.save(newLevel);
                 });
+    }
+    @Scheduled(cron = "0 0 9 * * *") // tous les jours à 9h
+    public void giveDailyBonusToAllPlayers() {
+        List<Player> players = playerRepository.findAll();
+        players.forEach(player -> addXp(player, 10));
+        log.info("Daily 10 XP bonus given to all players");
+    }
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Override
+    public List<PlayerRankingDTO> getPlayerRankingWithStats() {
+        String jpql = """
+        SELECT new tn.esprit._4se2.pi.dto.PlayerRankingDTO(
+            u.id,
+            u.firstName,
+            u.lastName,
+            u.email,
+            pl.currentLevel,
+            pl.totalXp,
+            p.gamesPlayed,
+            CASE WHEN p.gamesPlayed > 0 THEN pl.totalXp / p.gamesPlayed ELSE 0 END
+        )
+        FROM User u
+        JOIN Player p ON u.id = p.id
+        LEFT JOIN PlayerLevel pl ON p.id = pl.player.id
+        WHERE u.role = :role
+        ORDER BY pl.currentLevel DESC, pl.totalXp DESC
+        """;
+
+        return entityManager.createQuery(jpql, PlayerRankingDTO.class)
+                .setParameter("role", Role.ROLE_PLAYER)
+                .getResultList();
+    }
+    @Override
+    public List<PositionStatsDTO> getPositionStatsWithMinPlayers(int minPlayers, double minAvgLevel) {
+        String jpql = """
+        SELECT new tn.esprit._4se2.pi.dto.PositionStatsDTO(
+            p.position,
+            COUNT(p.id),
+            AVG(pl.currentLevel),
+            AVG(pl.totalXp),
+            AVG(CASE WHEN p.gamesPlayed > 0 THEN pl.totalXp / p.gamesPlayed ELSE 0 END),
+            100.0 * SUM(CASE WHEN p.skillLevel >= 8 AND pl.currentLevel >= 5 THEN 1 ELSE 0 END) / COUNT(p.id)
+        )
+        FROM Player p
+        JOIN p.user u          
+        LEFT JOIN PlayerLevel pl ON p.id = pl.player.id
+        WHERE u.isActive = true
+          AND p.gamesPlayed > 0
+        GROUP BY p.position
+        HAVING COUNT(p.id) >= :minPlayers AND AVG(pl.currentLevel) >= :minAvgLevel
+        ORDER BY AVG(pl.totalXp) DESC
+        """;
+
+        return entityManager.createQuery(jpql, PositionStatsDTO.class)
+                .setParameter("minPlayers", minPlayers)
+                .setParameter("minAvgLevel", minAvgLevel)
+                .getResultList();
     }
 }

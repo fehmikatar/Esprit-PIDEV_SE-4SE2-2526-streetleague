@@ -22,4 +22,15 @@ public class PlayerLevelController {
                 .orElseThrow(() -> new RuntimeException("Player not found"));
         return ResponseEntity.ok(playerLevelService.getPlayerLevel(player));
     }
+    @PostMapping("/{playerId}/add-xp")
+    public ResponseEntity<PlayerLevel> addXpToPlayer(
+            @PathVariable Long playerId,
+            @RequestParam int xpGained) {
+
+        Player player = playerRepository.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found with id: " + playerId));
+
+        PlayerLevel updatedLevel = playerLevelService.addXp(player, xpGained);
+        return ResponseEntity.ok(updatedLevel);
+    }
 }
