@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import tn.esprit._4se2.pi.Enum.FitnessStatus;
 import jakarta.validation.constraints.*;
+import tn.esprit._4se2.pi.Enum.Gender;
 
 @Getter
 @Setter
@@ -47,4 +48,7 @@ public class HealthProfileRequest {
 
     @Size(max = 500)
     String medicalConditions;
+
+    @NotNull(message = "Gender is required")
+    Gender gender;
 }

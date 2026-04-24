@@ -12,6 +12,9 @@ import tn.esprit._4se2.pi.mappers.HealthProfileMapper;
 import tn.esprit._4se2.pi.repositories.HealthProfileRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,13 @@ public class HealthProfileService implements IHealthProfileService {
         log.info("Health profile created with id: {}", saved.getId());
 
         return healthProfileMapper.toResponse(saved);
+    }
+    @Override
+    public List<HealthProfileResponse> getAllHealthProfiles() {
+        return healthProfileRepository.findAll()
+                .stream()
+                .map(healthProfileMapper::toResponse)   // ✅ utilisation du mapper
+                .collect(Collectors.toList());
     }
 
     @Override

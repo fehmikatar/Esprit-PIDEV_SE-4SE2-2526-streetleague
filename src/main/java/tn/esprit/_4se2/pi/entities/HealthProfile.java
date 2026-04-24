@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
 import tn.esprit._4se2.pi.Enum.FitnessStatus;
+import tn.esprit._4se2.pi.Enum.Gender;
 
 
 import java.time.LocalDate;
@@ -25,6 +26,9 @@ public class HealthProfile {
 
     @Enumerated(EnumType.STRING)
     private FitnessStatus fitnessStatus;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private LocalDate lastUpdated;
     private String emergencyContact;
@@ -115,4 +119,6 @@ public class HealthProfile {
 
     public List<DietPlan> getDietPlans() { return dietPlans; }
     public void setDietPlans(List<DietPlan> dietPlans) { this.dietPlans = dietPlans; }
+    public Gender getGender() { return gender; }
+    public void setGender(Gender gender) { this.gender = gender; }
 }

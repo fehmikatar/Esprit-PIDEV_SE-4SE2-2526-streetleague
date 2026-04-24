@@ -22,7 +22,7 @@ public class HealthProfileMapper {
         profile.setBloodType(request.getBloodType());
         profile.setAllergies(request.getAllergies());
         profile.setMedicalConditions(request.getMedicalConditions());
-        // user will be set by service
+        profile.setGender(request.getGender());  // Ajout
         return profile;
     }
 
@@ -45,6 +45,7 @@ public class HealthProfileMapper {
                 .medicalConditions(entity.getMedicalConditions())
                 .bmi(entity.getBmi())
                 .bmiCategory(entity.getBmiCategory())
+                .gender(entity.getGender())  // Ajout
                 .build();
     }
 
@@ -61,5 +62,6 @@ public class HealthProfileMapper {
         profile.setBloodType(request.getBloodType());
         profile.setAllergies(request.getAllergies());
         profile.setMedicalConditions(request.getMedicalConditions());
+        profile.setGender(request.getGender());  // Ajout
     }
 }

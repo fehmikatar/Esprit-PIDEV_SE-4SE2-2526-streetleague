@@ -9,6 +9,8 @@ import tn.esprit._4se2.pi.dto.HealthProfile.HealthProfileResponse;
 import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/health-profiles")
 @RequiredArgsConstructor
@@ -24,6 +26,10 @@ public class HealthProfileRestController {
     @GetMapping("/{id}")
     public ResponseEntity<HealthProfileResponse> getHealthProfileById(@PathVariable Long id) {
         return ResponseEntity.ok(healthProfileService.getHealthProfileById(id));
+    }
+    @GetMapping
+    public ResponseEntity<List<HealthProfileResponse>> getAllHealthProfiles() {
+        return ResponseEntity.ok(healthProfileService.getAllHealthProfiles());
     }
 
     @GetMapping("/user/{userId}")

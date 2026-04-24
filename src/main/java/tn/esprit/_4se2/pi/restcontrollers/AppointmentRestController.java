@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.Enum.AppointmentStatus;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
+import tn.esprit._4se2.pi.dto.AppointmentDetails.AppointmentDetailsDTO;
 import tn.esprit._4se2.pi.services.Appointment.IAppointmentService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -66,5 +68,14 @@ public class AppointmentRestController {
             @PathVariable Long id,
             @RequestParam AppointmentStatus status) {
         return ResponseEntity.ok(appointmentService.updateAppointmentStatus(id, status));
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<List<AppointmentDetailsDTO>> getAppointmentDetails() {
+        return ResponseEntity.ok(appointmentService.getAppointmentDetails());
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<AppointmentResponse>> searchAppointments(@RequestParam String keyword) {
+        return ResponseEntity.ok(appointmentService.searchAppointments(keyword));
     }
 }

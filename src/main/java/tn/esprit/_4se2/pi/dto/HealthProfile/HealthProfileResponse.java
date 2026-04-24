@@ -3,6 +3,8 @@ package tn.esprit._4se2.pi.dto.HealthProfile;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import tn.esprit._4se2.pi.Enum.FitnessStatus;
+import tn.esprit._4se2.pi.Enum.Gender;
+
 import java.time.LocalDate;
 
 @Getter
@@ -26,5 +28,6 @@ public class HealthProfileResponse {
     String allergies;
     String medicalConditions;
     Double bmi;               // calculated
-    String bmiCategory;       // calculated
+    String bmiCategory;
+    Gender gender;// calculated
 }

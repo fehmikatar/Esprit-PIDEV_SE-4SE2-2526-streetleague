@@ -13,4 +13,5 @@ public interface DietPlanRepository extends JpaRepository<DietPlan, Long> {
     List<DietPlan> findByHealthProfileIdAndIsActiveTrue(Long healthProfileId);
     List<DietPlan> findByStartDateAfter(LocalDate date);
     List<DietPlan> findByEndDateBefore(LocalDate date);
+    List<DietPlan> findByEndDateBeforeAndIsActiveTrue(LocalDate date);
 }

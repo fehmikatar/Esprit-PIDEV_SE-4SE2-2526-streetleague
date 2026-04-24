@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
+import tn.esprit._4se2.pi.dto.AppointmentDetails.AppointmentDetailsDTO;
 import tn.esprit._4se2.pi.entities.Appointment;
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.entities.Doctor;
@@ -149,5 +150,19 @@ public class AppointmentService implements IAppointmentService {
         appointment.setStatus(status);
         Appointment updated = appointmentRepository.save(appointment);
         return appointmentMapper.toResponse(updated);
+    }
+
+
+    @Override
+    public List<AppointmentDetailsDTO> getAppointmentDetails() {
+        return appointmentRepository.getAppointmentDetails();
+    }
+
+    @Override
+    public List<AppointmentResponse> searchAppointments(String keyword) {
+        List<Appointment> appointments = appointmentRepository.searchAppointmentsByKeyword(keyword);
+        return appointments.stream()
+                .map(appointmentMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }
