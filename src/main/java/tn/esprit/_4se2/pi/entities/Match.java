@@ -34,6 +34,8 @@ public class Match {
     private Integer homeScore = 0;
     private Integer awayScore = 0;
 
+    private LocalDateTime startedAt;
+
     // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -53,4 +55,6 @@ public class Match {
     public void setHomeScore(Integer homeScore) { this.homeScore = homeScore; }
     public Integer getAwayScore() { return awayScore; }
     public void setAwayScore(Integer awayScore) { this.awayScore = awayScore; }
+    public LocalDateTime getStartedAt() { return startedAt; }
+    public void setStartedAt(LocalDateTime startedAt) { this.startedAt = startedAt; }
 }

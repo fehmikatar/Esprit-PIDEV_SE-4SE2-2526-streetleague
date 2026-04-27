@@ -39,6 +39,12 @@ public class Competition {
     // simplifié: organiserId au lieu de relation User
     private Long organizerId;
 
+    @Column(nullable = false)
+    private String sportType = "FOOTBALL"; // Default for retrocompatibility
+
+    @Column(nullable = false)
+    private Boolean isIndividualSport = false;
+
     // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -60,4 +66,8 @@ public class Competition {
     public void setLocation(String location) { this.location = location; }
     public Long getOrganizerId() { return organizerId; }
     public void setOrganizerId(Long organizerId) { this.organizerId = organizerId; }
+    public String getSportType() { return sportType; }
+    public void setSportType(String sportType) { this.sportType = sportType; }
+    public Boolean getIsIndividualSport() { return isIndividualSport; }
+    public void setIsIndividualSport(Boolean isIndividualSport) { this.isIndividualSport = isIndividualSport; }
 }

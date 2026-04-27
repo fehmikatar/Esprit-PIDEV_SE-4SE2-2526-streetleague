@@ -3,6 +3,9 @@ package tn.esprit._4se2.pi.services.Team;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.entities.Team;
 import tn.esprit._4se2.pi.repositories.TeamRepository;
+import tn.esprit._4se2.pi.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,16 +14,44 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
 
-    public TeamService(TeamRepository teamRepository) {
+    public TeamService(TeamRepository teamRepository, UserRepository userRepository) {
         this.teamRepository = teamRepository;
+        this.userRepository = userRepository;
     }
 
     // Créer une équipe
-    public Team create(Team team) {
+    public Team create(Team team, Long userId) {
         if (team.getCreatedAt() == null) {
             team.setCreatedAt(LocalDateTime.now());
         }
+
+        if (team.getCreatedBy() == null) {
+            // Priority 1: Use userId from request parameter
+            if (userId != null) {
+                userRepository.findById(userId).ifPresent(team::setCreatedBy);
+            }
+            
+            // Priority 2: Use Security Context
+            if (team.getCreatedBy() == null) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+                    String email = authentication.getName();
+                    userRepository.findByEmail(email).ifPresent(team::setCreatedBy);
+                }
+            }
+            
+            // Priority 3: Fallback to the first user in the DB (for development/testing)
+            if (team.getCreatedBy() == null) {
+                userRepository.findAll().stream().findFirst().ifPresent(team::setCreatedBy);
+            }
+            
+            if (team.getCreatedBy() == null) {
+                throw new RuntimeException("Could not assign a creator to the team (created_by_id cannot be null). User ID provided was: " + userId + ". Please ensure this user exists in the database.");
+            }
+        }
+
         return teamRepository.save(team);
     }
 
