@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "post")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,7 +38,14 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
 
+<<<<<<< Updated upstream
     @JsonIgnore
+=======
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_id")
+    private Community community;
+
+>>>>>>> Stashed changes
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 

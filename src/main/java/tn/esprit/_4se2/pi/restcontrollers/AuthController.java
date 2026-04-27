@@ -9,6 +9,8 @@ import tn.esprit._4se2.pi.dto.Auth.LoginRequest;
 import tn.esprit._4se2.pi.dto.Auth.RegisterRequest;
 import tn.esprit._4se2.pi.services.Auth.AuthService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<Map<String, String>> register(
             @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }

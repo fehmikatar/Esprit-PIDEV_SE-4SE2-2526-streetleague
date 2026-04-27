@@ -10,7 +10,16 @@ public interface ICategoryService {
 
     List<CategoryResponse> getAllCategories();
 
+<<<<<<< Updated upstream
     CategoryResponse getCategoryById(Long id);
+=======
+    CategoryDTO getCategoryById(Long id);
+    CategoryDTO getCategoryByIdOrElse(Long id);
+    List<CategoryDTO> getAllCategories();
+    List<CategoryDTO> getRootCategories();
+    CategoryDTO getCategoryWithSubCategories(Long id);
+    List<CategoryDTO> searchByKeywordAcrossCategoryAndProducts(String keyword);
+>>>>>>> Stashed changes
 
     CategoryResponse updateCategory(Long id, CategoryRequest request);
 

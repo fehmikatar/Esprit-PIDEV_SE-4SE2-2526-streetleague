@@ -22,8 +22,7 @@ public class PlayerRequest {
     @Email
     String email;
 
-    @NotBlank(message = "Phone is required")
-    String phone;
+    String phone; // Optional field
 
     @NotBlank(message = "Password is required")
     String password;

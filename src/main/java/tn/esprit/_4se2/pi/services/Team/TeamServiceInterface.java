@@ -12,4 +12,6 @@ public interface TeamServiceInterface {
     Team getByName(String name);
     Team update(Long id, Team updatedTeam);
     void delete(Long id);
+    List<Team> searchByCategoryAndOwnerKeyword(String categoryKeyword, String ownerKeyword);
+    int archiveDormantTeams(int olderThanDays);
 }

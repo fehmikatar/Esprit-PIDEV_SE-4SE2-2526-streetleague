@@ -10,23 +10,29 @@ import tn.esprit._4se2.pi.dto.Auth.AuthResponse;
 import tn.esprit._4se2.pi.dto.Auth.LoginRequest;
 import tn.esprit._4se2.pi.dto.Auth.RegisterRequest;
 import tn.esprit._4se2.pi.entities.*;
+import tn.esprit._4se2.pi.repositories.PlayerRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 import tn.esprit._4se2.pi.security.CustomUserDetailsService;
 import tn.esprit._4se2.pi.security.jwt.JwtService;
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
 
     // 📝 Inscription
-    public String register(RegisterRequest req) {
+    public Map<String, String> register(RegisterRequest req) {
 
         // Validations
         if (req.email() == null || req.email().isBlank())
@@ -73,8 +79,12 @@ public class AuthService {
                 player.setFirstName(req.firstName());
                 player.setLastName(req.lastName());
                 player.setEmail(req.email());
+<<<<<<< Updated upstream
                 player.setPasswordHash(
                         passwordEncoder.encode(req.password()));
+=======
+                player.setPasswordHash(passwordEncoder.encode(req.password()));
+>>>>>>> Stashed changes
                 player.setRole(Role.ROLE_PLAYER);
                 player.setIsActive(true);
                 player.setCreatedAt(LocalDateTime.now());
@@ -83,7 +93,16 @@ public class AuthService {
         };
 
         userRepository.save(user);
+<<<<<<< Updated upstream
         return "Utilisateur créé : " + user.getEmail();
+=======
+
+        return Map.of(
+                "message", "Utilisateur créé avec succès",
+                "email", user.getEmail(),
+                "role", user.getRole().name()
+        );
+>>>>>>> Stashed changes
     }
 
     // 🔐 Connexion

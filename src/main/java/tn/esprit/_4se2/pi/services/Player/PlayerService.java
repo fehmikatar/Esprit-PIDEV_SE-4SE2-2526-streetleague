@@ -55,7 +55,12 @@ public class PlayerService implements IPlayerService {
     @Transactional(readOnly = true)
     public List<PlayerResponse> getPlayersBySkillLevel(Integer skillLevel) {
         log.info("Fetching players with skill level: {}", skillLevel);
-        return playerRepository.findBySkillLevel(skillLevel)
+        tn.esprit._4se2.pi.entities.enums.SkillLevel levelEnum = null;
+        if (skillLevel != null) {
+            int index = Math.max(0, Math.min(skillLevel - 1, tn.esprit._4se2.pi.entities.enums.SkillLevel.values().length - 1));
+            levelEnum = tn.esprit._4se2.pi.entities.enums.SkillLevel.values()[index];
+        }
+        return playerRepository.findBySkillLevel(levelEnum)
                 .stream()
                 .map(playerMapper::toResponse)
                 .collect(Collectors.toList());
@@ -65,18 +70,51 @@ public class PlayerService implements IPlayerService {
     @Transactional(readOnly = true)
     public List<PlayerResponse> getPlayersByPosition(String position) {
         log.info("Fetching players with position: {}", position);
-        return playerRepository.findByPosition(position)
+        tn.esprit._4se2.pi.entities.enums.PlayPosition posEnum = null;
+        if (position != null) {
+            try {
+                posEnum = tn.esprit._4se2.pi.entities.enums.PlayPosition.valueOf(position.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Ignore parsing errors, repository will just return an empty list or be handled below
+            }
+        }
+        return playerRepository.findByPosition(posEnum)
                 .stream()
                 .map(playerMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public PlayerResponse updatePlayer(Long id, PlayerRequest request) {
         log.info("Updating player with id: {}", id);
+<<<<<<< Updated upstream
 
         Player player = playerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Player not found with id: " + id));
+=======
+        
+        Player player = playerRepository.findById(id).orElse(null);
+        
+        if (player == null) {
+            log.info("Player entry not found for id {}, checking if User exists...", id);
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+            
+            // Create the player row for this existing user
+            player = new Player();
+            player.setId(user.getId());
+            // Sync user fields from the existing user entity to the new player entity
+            player.setFirstName(user.getFirstName());
+            player.setLastName(user.getLastName());
+            player.setEmail(user.getEmail());
+            player.setPhone(user.getPhone());
+            player.setPasswordHash(user.getPasswordHash());
+            player.setRole(user.getRole());
+            player.setCreatedAt(user.getCreatedAt());
+            player.setIsActive(user.getIsActive());
+        }
+>>>>>>> Stashed changes
 
         playerMapper.updateEntity(request, player);
         Player updatedPlayer = playerRepository.save(player);

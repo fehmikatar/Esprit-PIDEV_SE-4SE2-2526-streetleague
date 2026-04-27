@@ -34,6 +34,24 @@ public class CategoryRestController {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
+<<<<<<< Updated upstream
+=======
+    @GetMapping("/{id}/with-subcategories")
+    public ResponseEntity<CategoryDTO> getCategoryWithSubCategories(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryWithSubCategories(id));
+    }
+
+    @GetMapping("/search/keyword")
+    public ResponseEntity<List<CategoryDTO>> searchCategoryByKeyword(@RequestParam(defaultValue = "") String keyword) {
+        return ResponseEntity.ok(categoryService.searchByKeywordAcrossCategoryAndProducts(keyword));
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        return new ResponseEntity<>(categoryService.addCategory(categoryDTO), HttpStatus.CREATED);
+    }
+
+>>>>>>> Stashed changes
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest category) {

@@ -1,6 +1,7 @@
 package tn.esprit._4se2.pi.services.Team;
 
 import lombok.RequiredArgsConstructor;
+<<<<<<< Updated upstream
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit._4se2.pi.Enum.*;
@@ -8,6 +9,25 @@ import tn.esprit._4se2.pi.dto.*;
 import tn.esprit._4se2.pi.entities.*;
 import tn.esprit._4se2.pi.exception.*;
 import tn.esprit._4se2.pi.repositories.*;
+=======
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import tn.esprit._4se2.pi.Enum.Role;
+import tn.esprit._4se2.pi.Enum.TeamStatus;
+import tn.esprit._4se2.pi.entities.Category;
+import tn.esprit._4se2.pi.entities.Team;
+import tn.esprit._4se2.pi.entities.User;
+import tn.esprit._4se2.pi.repositories.CategoryRepository;
+import tn.esprit._4se2.pi.repositories.MessageRepository;
+import tn.esprit._4se2.pi.repositories.TeamJoinRequestRepository;
+import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
+import tn.esprit._4se2.pi.repositories.TeamRepository;
+import tn.esprit._4se2.pi.repositories.UserRepository;
+>>>>>>> Stashed changes
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+<<<<<<< Updated upstream
 public class TeamService implements ITeamService {
 
     private final TeamRepository teamRepository;
@@ -50,6 +71,43 @@ public class TeamService implements ITeamService {
         team = teamRepository.save(team);
 
         return mapToTeamResponse(team, authenticatedUserId);
+=======
+@Transactional
+@Slf4j
+public class TeamService implements TeamServiceInterface {
+
+    private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final TeamJoinRequestRepository teamJoinRequestRepository;
+    private final TeamMemberRepository teamMemberRepository;
+    private final MessageRepository messageRepository;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public Team create(Team team) {
+        if (team.getName() == null || team.getName().isBlank()) {
+            throw new IllegalArgumentException("Team name is required");
+        }
+
+        if (team.getStatus() == null) {
+            team.setStatus(TeamStatus.ACTIVE);
+        }
+
+        if (team.getCreatedAt() == null) {
+            team.setCreatedAt(LocalDateTime.now());
+        }
+
+        if (team.getCreatedBy() == null) {
+            resolveCurrentUser().ifPresent(team::setCreatedBy);
+        }
+
+        if (team.getCreatedBy() == null) {
+            throw new IllegalArgumentException("Authenticated user is required to create a team");
+        }
+
+        return teamRepository.save(team);
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -273,6 +331,7 @@ public class TeamService implements ITeamService {
             throw new IllegalArgumentException("Action must be APPROVED or REJECTED.");
         }
 
+<<<<<<< Updated upstream
         if (joinRequest.getStatus() != JoinRequestStatus.PENDING) {
             if (joinRequest.getStatus() == newStatus) {
                 return;
@@ -463,5 +522,109 @@ public class TeamService implements ITeamService {
                 .reviewedById(reviewer != null ? reviewer.getId() : null)
                 .reviewedByName(reviewer != null ? reviewer.getFirstName() + " " + reviewer.getLastName() : null)
                 .build();
+=======
+        existing.setName(updatedTeam.getName());
+        existing.setSport(updatedTeam.getSport());
+        existing.setLevel(updatedTeam.getLevel());
+        existing.setDescription(updatedTeam.getDescription());
+        existing.setCity(updatedTeam.getCity());
+        existing.setLogo(updatedTeam.getLogo());
+        if (updatedTeam.getCategory() != null && updatedTeam.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(updatedTeam.getCategory().getId()).orElse(null);
+            existing.setCategory(category);
+        }
+        if (updatedTeam.getStatus() != null) {
+            existing.setStatus(updatedTeam.getStatus());
+        }
+
+        return teamRepository.save(existing);
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!teamRepository.existsById(id)) {
+            return;
+        }
+
+        // Explicitly delete dependent rows to satisfy FK constraints in legacy schema.
+        messageRepository.deleteByTeam_Id(id);
+        teamJoinRequestRepository.deleteByTeam_Id(id);
+        teamMemberRepository.deleteByTeam_Id(id);
+        deleteLegacyTeamMembersRows(id);
+
+        teamRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Team> searchByCategoryAndOwnerKeyword(String categoryKeyword, String ownerKeyword) {
+        String safeCategoryKeyword = categoryKeyword == null ? "" : categoryKeyword.trim();
+        String safeOwnerKeyword = ownerKeyword == null ? "" : ownerKeyword.trim();
+        return teamRepository.findDistinctByCategory_NomContainingIgnoreCaseAndCreatedBy_FirstNameContainingIgnoreCase(
+                safeCategoryKeyword,
+                safeOwnerKeyword
+        );
+    }
+
+    @Override
+    public int archiveDormantTeams(int olderThanDays) {
+        int safeDays = Math.max(1, olderThanDays);
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(safeDays);
+        int archived = teamRepository.archiveDormantTeams(cutoff);
+        if (archived > 0) {
+            log.info("Archived {} dormant team(s) older than {} days", archived, safeDays);
+        }
+        return archived;
+    }
+
+    private void deleteLegacyTeamMembersRows(Long teamId) {
+        if (teamId == null || !tableExists("team_members")) {
+            return;
+        }
+        jdbcTemplate.update("DELETE FROM team_members WHERE team_id = ?", teamId);
+    }
+
+    private boolean tableExists(String tableName) {
+        Integer count = jdbcTemplate.queryForObject("""
+                SELECT COUNT(*)
+                FROM information_schema.TABLES
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = ?
+                """, Integer.class, tableName);
+        return count != null && count > 0;
+    }
+
+    private boolean isCurrentUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+
+        if (authentication.getAuthorities() != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()))) {
+            return true;
+        }
+
+        String email = authentication.getName();
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+
+        return userRepository.findByEmail(email)
+                .map(user -> user.getRole() == Role.ROLE_ADMIN)
+                .orElse(false);
+    }
+
+    private java.util.Optional<User> resolveCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return java.util.Optional.empty();
+        }
+        String email = authentication.getName();
+        if (email == null || email.isBlank()) {
+            return java.util.Optional.empty();
+        }
+        return userRepository.findByEmail(email);
+>>>>>>> Stashed changes
     }
 }

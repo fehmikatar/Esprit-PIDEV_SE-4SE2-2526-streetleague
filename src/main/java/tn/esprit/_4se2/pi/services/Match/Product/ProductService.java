@@ -1,4 +1,4 @@
-package tn.esprit._4se2.pi.services.Product;
+package tn.esprit._4se2.pi.services.Match.Product;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

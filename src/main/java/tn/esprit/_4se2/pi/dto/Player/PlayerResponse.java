@@ -23,4 +23,5 @@ public class PlayerResponse {
     Double rating;
     LocalDateTime createdAt;
     Boolean isActive;
+    String profileImageUrl;
 }

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import tn.esprit._4se2.pi.Enum.Role;
 import tn.esprit._4se2.pi.dto.User.UserRequest;
 import tn.esprit._4se2.pi.dto.User.UserResponse;
 import tn.esprit._4se2.pi.entities.User;
@@ -20,6 +22,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse createUser(UserRequest request) {
@@ -30,6 +33,8 @@ public class UserService implements IUserService {
         }
 
         User user = userMapper.toEntity(request);
+    user.setRole(Role.ROLE_PLAYER);
+    user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
         log.info("User created successfully with id: {}", savedUser.getId());
 

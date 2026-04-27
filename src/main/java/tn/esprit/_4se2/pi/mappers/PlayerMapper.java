@@ -13,6 +13,7 @@ public class PlayerMapper {
         if (request == null) return null;
 
         Player player = new Player();
+<<<<<<< Updated upstream
         player.setFirstName(request.getFirstName());
         player.setLastName(request.getLastName());
         player.setEmail(request.getEmail());
@@ -20,6 +21,21 @@ public class PlayerMapper {
         player.setPasswordHash(request.getPassword());
         player.setSkillLevel(request.getSkillLevel());
         player.setPosition(request.getPosition());
+=======
+        // User fields are set in the service AFTER userRepository.save()
+        // Only set Player-specific fields here
+        if (request.getSkillLevel() != null) {
+            int index = Math.max(0, Math.min(request.getSkillLevel() - 1, tn.esprit._4se2.pi.entities.enums.SkillLevel.values().length - 1));
+            player.setSkillLevel(tn.esprit._4se2.pi.entities.enums.SkillLevel.values()[index]);
+        }
+        if (request.getPosition() != null) {
+            try {
+                player.setPosition(tn.esprit._4se2.pi.entities.enums.PlayPosition.valueOf(request.getPosition().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Ignore or log error
+            }
+        }
+>>>>>>> Stashed changes
         player.setGamesPlayed(request.getGamesPlayed() != null ? request.getGamesPlayed() : 0);
         player.setRating(request.getRating() != null ? request.getRating() : 0.0);
         player.setCreatedAt(LocalDateTime.now());
@@ -36,8 +52,9 @@ public class PlayerMapper {
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
-                .skillLevel(entity.getSkillLevel())
-                .position(entity.getPosition())
+                .profileImageUrl(entity.getProfileImageUrl())
+                .skillLevel(entity.getSkillLevel() != null ? entity.getSkillLevel().ordinal() + 1 : 1)
+                .position(entity.getPosition() != null ? entity.getPosition().name() : "")
                 .gamesPlayed(entity.getGamesPlayed())
                 .rating(entity.getRating())
                 .createdAt(entity.getCreatedAt())
@@ -52,6 +69,7 @@ public class PlayerMapper {
         player.setLastName(request.getLastName());
         player.setEmail(request.getEmail());
         player.setPhone(request.getPhone());
+<<<<<<< Updated upstream
         player.setSkillLevel(request.getSkillLevel());
         player.setPosition(request.getPosition());
         if (request.getGamesPlayed() != null) {
@@ -60,5 +78,20 @@ public class PlayerMapper {
         if (request.getRating() != null) {
             player.setRating(request.getRating());
         }
+=======
+        if (request.getSkillLevel() != null) {
+            int index = Math.max(0, Math.min(request.getSkillLevel() - 1, tn.esprit._4se2.pi.entities.enums.SkillLevel.values().length - 1));
+            player.setSkillLevel(tn.esprit._4se2.pi.entities.enums.SkillLevel.values()[index]);
+        }
+        if (request.getPosition() != null) {
+            try {
+                player.setPosition(tn.esprit._4se2.pi.entities.enums.PlayPosition.valueOf(request.getPosition().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Ignore or log error
+            }
+        }
+        if (request.getGamesPlayed() != null) player.setGamesPlayed(request.getGamesPlayed());
+        if (request.getRating() != null) player.setRating(request.getRating());
+>>>>>>> Stashed changes
     }
 }
