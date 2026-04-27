@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.*;
+
 public class FavoriteDTOs {
 
     @Data
@@ -14,6 +16,7 @@ public class FavoriteDTOs {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FavoriteRequest {
+        @NotNull(message = "L'ID du produit est obligatoire")
         private Long productId;
         private Long categoryId;
     }

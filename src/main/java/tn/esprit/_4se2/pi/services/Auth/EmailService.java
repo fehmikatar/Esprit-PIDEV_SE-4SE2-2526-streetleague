@@ -28,4 +28,25 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendLowStockAlertEmail(String toEmail, String productName, Integer stock) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("🔥 Alerte Stock : Votre produit favori est bientôt épuisé !");
+        message.setText("""
+                Bonjour,
+                
+                Nous vous informons qu'un produit que vous avez ajouté à vos favoris est presque en rupture de stock.
+                
+                Produit : %s
+                Quantité restante : %d
+                
+                Profitez vite de l'occasion pour l'acheter avant la rupture de stock définitive !
+                
+                Cordialement,
+                L'équipe StreetLeague
+                """.formatted(productName, stock));
+
+        mailSender.send(message);
+    }
 }

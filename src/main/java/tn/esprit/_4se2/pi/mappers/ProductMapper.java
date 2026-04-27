@@ -1,6 +1,5 @@
 package tn.esprit._4se2.pi.mappers;
 
-
 import org.springframework.stereotype.Component;
 import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
@@ -13,19 +12,32 @@ import java.util.stream.Collectors;
 public class ProductMapper {
 
     public Product toEntity(ProductDTOs.ProductRequest request) {
-        if (request == null) return null;
+        if (request == null)
+            return null;
+
+        Product.ProductStatus mappedStatus = Product.ProductStatus.EN_STOCK;
+        if (request.getStatus() != null) {
+            try {
+                mappedStatus = Product.ProductStatus.valueOf(request.getStatus().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Default gracefully
+            }
+        }
 
         return Product.builder()
                 .nom(request.getNom())
+                .marque(request.getMarque())
                 .description(request.getDescription())
                 .prix(request.getPrix())
                 .stock(request.getStock())
                 .images(request.getImages())
+                .status(mappedStatus)
                 .build();
     }
 
     public ProductDTOs.ProductResponse toDTO(Product product) {
-        if (product == null) return null;
+        if (product == null)
+            return null;
 
         CategoryDTO categoryDTO = null;
         if (product.getCategory() != null) {
@@ -38,6 +50,7 @@ public class ProductMapper {
         return ProductDTOs.ProductResponse.builder()
                 .id(product.getId())
                 .nom(product.getNom())
+                .marque(product.getMarque())
                 .description(product.getDescription())
                 .prix(product.getPrix())
                 .stock(product.getStock())
@@ -49,11 +62,13 @@ public class ProductMapper {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .deleted(product.getDeleted())
+                .status(product.getStatus() != null ? product.getStatus().name() : null)
                 .build();
     }
 
     public ProductDTOs.ProductVariantDTO toVariantDTO(ProductVariant variant) {
-        if (variant == null) return null;
+        if (variant == null)
+            return null;
 
         return ProductDTOs.ProductVariantDTO.builder()
                 .id(variant.getId())
@@ -66,7 +81,8 @@ public class ProductMapper {
     }
 
     public ProductVariant toVariantEntity(ProductDTOs.ProductVariantDTO dto, Product product) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
 
         return ProductVariant.builder()
                 .size(dto.getSize())

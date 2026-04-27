@@ -1,6 +1,7 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
@@ -27,9 +28,13 @@ public class CartItem {
     @JoinColumn(name = "product_id", nullable = false)
     Product product;
 
+    @NotNull(message = "La quantité est obligatoire")
+    @Positive(message = "La quantité doit être strictement positive")
     @Column(nullable = false)
     Integer quantity;
 
+    @NotNull(message = "Le prix ne peut pas être nul")
+    @PositiveOrZero(message = "Le prix ne peut pas être négatif")
     @Column(precision = 10, scale = 2)
     BigDecimal price;
 

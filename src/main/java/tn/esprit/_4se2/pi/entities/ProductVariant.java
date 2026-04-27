@@ -1,6 +1,7 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
@@ -19,12 +20,18 @@ public class ProductVariant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Size(max = 50)
     String size;
+    
+    @Size(max = 50)
     String color;
 
+    @NotBlank(message = "Le SKU est obligatoire")
     @Column(unique = true)
     String sku;
 
+    @NotNull(message = "Le stock du variant est obligatoire")
+    @PositiveOrZero(message = "Le stock ne peut pas être négatif")
     Integer stock;
 
     BigDecimal priceAdjustment;

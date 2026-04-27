@@ -49,33 +49,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             email = jwtService.extractEmail(token);
-        } catch (Exception e) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
-        // 4. Si email extrait et pas encore authentifié
-        if (email != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+            // 4. Si email extrait et pas encore authentifié
+            if (email != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(email);
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(email);
 
-            // 5. Valider le token
-            if (jwtService.isTokenValid(token, userDetails)) {
+                // 5. Valider le token
+                if (jwtService.isTokenValid(token, userDetails)) {
 
-                // 6. Créer l'objet d'authentification
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+                    // 6. Créer l'objet d'authentification
+                    var authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
 
-                // 7. Stocker dans le contexte de sécurité
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
+                    // 7. Stocker dans le contexte de sécurité
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
+                }
             }
+        } catch (Exception e) {
+            // En cas d'erreur (token invalide, utilisateur inexistant, etc.), 
+            // on ignore simplement l'authentification pour permettre aux 
+            // endpoints permitAll de fonctionner.
+            System.err.println("JWT Filter Error: " + e.getMessage());
         }
 
         // 8. Continuer la chaîne de filtres

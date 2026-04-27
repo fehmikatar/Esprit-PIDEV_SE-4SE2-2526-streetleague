@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
-import tn.esprit._4se2.pi.service.IProductService;
+import tn.esprit._4se2.pi.services.Product.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +114,12 @@ public class ProductRestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/high-demand")
+    @Operation(summary = "Get high demand products", description = "Returns products currently in multiple active carts")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProductDTOs.ProductHighDemandDTO>> getHighDemandProducts() {
+        return ResponseEntity.ok(productService.getHighDemandProducts());
     }
 }

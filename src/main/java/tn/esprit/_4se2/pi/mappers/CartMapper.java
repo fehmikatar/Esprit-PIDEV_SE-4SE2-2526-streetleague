@@ -3,12 +3,16 @@ package tn.esprit._4se2.pi.mappers;
 import tn.esprit._4se2.pi.dto.Sponsor.CartDTOs;
 import tn.esprit._4se2.pi.entities.Cart;
 import tn.esprit._4se2.pi.entities.CartItem;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class CartMapper {
+
+    private final ProductMapper productMapper;
 
     public CartDTOs.CartResponse toDTO(Cart cart) {
         if (cart == null) return null;
@@ -25,6 +29,7 @@ public class CartMapper {
 
         return CartDTOs.CartResponse.builder()
                 .id(cart.getId())
+                .orderCode(cart.getOrderCode())
                 .items(items)
                 .subtotal(subtotal)
                 .discount(discount)
@@ -34,6 +39,19 @@ public class CartMapper {
                 .status(cart.getStatus() != null ? cart.getStatus().name() : "ACTIVE")
                 .createdAt(cart.getCreatedAt())
                 .lastModified(cart.getLastModified())
+                .clientName(cart.getClientName())
+                .clientAddress(cart.getClientAddress())
+                .clientPostalCode(cart.getClientPostalCode())
+                .clientCity(cart.getClientCity())
+                .clientPhone(cart.getClientPhone())
+                .deliveryMode(cart.getDeliveryMode())
+                .paymentMode(cart.getPaymentMode())
+                .deliveryFee(cart.getDeliveryFee())
+                .deliveryStatus(cart.getDeliveryStatus())
+                .cardNumber(cart.getCardNumber())
+                .expiryDate(cart.getExpiryDate())
+                .cvv(cart.getCvv())
+                .clientEmail(cart.getClientEmail())
                 .build();
     }
 
@@ -51,6 +69,7 @@ public class CartMapper {
                 .productImage(productImage)
                 .price(item.getPrice())
                 .quantity(item.getQuantity())
+                .selectedVariant(productMapper.toVariantDTO(item.getSelectedVariant()))
                 .addedAt(item.getAddedAt())
                 .build();
     }

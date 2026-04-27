@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ public class FavoriteCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotBlank(message = "Le nom de la catégorie favorite est obligatoire")
+    @Size(min = 2, max = 100, message = "Le nom doit contenir entre 2 et 100 caractères")
     @Column(nullable = false)
     String name;
 
