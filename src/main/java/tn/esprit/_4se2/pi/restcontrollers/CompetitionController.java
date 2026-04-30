@@ -64,4 +64,14 @@ public class CompetitionController {
     public ResponseEntity<CompetitionAnalyticsDto> getAnalytics(@PathVariable Long id) {
         return ResponseEntity.ok(competitionService.getAnalytics(id));
     }
+
+    // ─── MÉTIER 3 — Automatic Draw ───────────────────────────────────────────
+    @PostMapping("/{id}/generate-draw")
+    public ResponseEntity<?> generateDraw(@PathVariable Long id, @RequestBody(required = false) Object body) {
+        try {
+            return ResponseEntity.ok(competitionService.generateDrawByLevel(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur lors de la génération du tirage: " + e.getMessage());
+        }
+    }
 }

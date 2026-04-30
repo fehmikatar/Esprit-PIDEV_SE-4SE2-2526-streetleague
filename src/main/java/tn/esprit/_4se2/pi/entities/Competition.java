@@ -45,6 +45,8 @@ public class Competition {
     @Column(nullable = false)
     private Boolean isIndividualSport = false;
 
+    private Long sportSpaceId;
+
     // getters/setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -70,4 +72,6 @@ public class Competition {
     public void setSportType(String sportType) { this.sportType = sportType; }
     public Boolean getIsIndividualSport() { return isIndividualSport; }
     public void setIsIndividualSport(Boolean isIndividualSport) { this.isIndividualSport = isIndividualSport; }
+    public Long getSportSpaceId() { return sportSpaceId; }
+    public void setSportSpaceId(Long sportSpaceId) { this.sportSpaceId = sportSpaceId; }
 }

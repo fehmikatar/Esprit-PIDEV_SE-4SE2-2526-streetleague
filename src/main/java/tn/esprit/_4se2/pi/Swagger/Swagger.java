@@ -31,6 +31,7 @@ import org.springdoc.core.models.GroupedOpenApi;
                         | **📋 Événements de Match** | Gestion des événements durant les matchs |
                         | **📝 Inscriptions** | Gestion des inscriptions des équipes |
                         | **👥 Equipes** | Gestion des informations des équipes |
+                        | **🤖 IA Prédiction** | Prédiction du résultat des matchs (ML) |
                         
                         ---
                         *Développé avec Spring Boot & SpringDoc OpenAPI 3.0*
@@ -76,5 +77,13 @@ public class Swagger {
     }
     @Bean public GroupedOpenApi teamsApi() {
         return GroupedOpenApi.builder().group("👥 Equipes").pathsToMatch("/api/teams/**").build();
+    }
+
+    /** Groupe dédié aux endpoints de prédiction IA */
+    @Bean public GroupedOpenApi aiPredictionApi() {
+        return GroupedOpenApi.builder()
+                .group("🤖 IA Prédiction")
+                .pathsToMatch("/api/matches/predict/**")
+                .build();
     }
 }

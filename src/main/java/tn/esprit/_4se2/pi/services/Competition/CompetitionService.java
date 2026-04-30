@@ -236,4 +236,62 @@ public class CompetitionService {
         }
         return upsets;
     }
+
+    // ─── MÉTIER 3 — Automatic Draw ───────────────────────────────────────────
+    public List<Match> generateDrawByLevel(Long competitionId) {
+        System.out.println("Génération du tirage pour la compétition ID: " + competitionId);
+        Competition competition = getById(competitionId);
+        List<tn.esprit._4se2.pi.entities.Registration> registrations = registrationRepository.findByCompetitionId(competitionId);
+        System.out.println("Inscriptions trouvées: " + (registrations != null ? registrations.size() : 0));
+        
+        // Ensure teams exist
+        if (registrations == null || registrations.isEmpty()) {
+            System.out.println("Aucune inscription trouvée, arrêt.");
+            return Collections.emptyList();
+        }
+        
+        List<Team> teams = registrations.stream().map(r -> {
+            Team t = teamRepository.findById(r.getTeamId()).orElse(null);
+            if (t == null) System.out.println("ALERTE: Team ID " + r.getTeamId() + " introuvable !");
+            return t;
+        })
+        .filter(java.util.Objects::nonNull).toList();
+        System.out.println("Équipes chargées: " + teams.size());
+        
+        // Group by level and shuffle within levels
+        Map<String, List<Team>> byLevel = teams.stream().collect(Collectors.groupingBy(t -> t.getLevel() != null ? t.getLevel() : "1000"));
+        List<Team> shuffledTeams = new ArrayList<>();
+        byLevel.values().forEach(list -> {
+            List<Team> mutable = new ArrayList<>(list);
+            Collections.shuffle(mutable);
+            shuffledTeams.addAll(mutable);
+        });
+
+        List<Match> matches = new ArrayList<>();
+        // Create knockout placeholder bracket
+        int n = shuffledTeams.size();
+        // Just pairing them sequentially for the first round (Quart de finale/Huitièmes)
+        for (int i = 0; i < n / 2; i++) {
+            Match m = new Match();
+            m.setCompetitionId(competitionId);
+            m.setHomeTeamId(shuffledTeams.get(i * 2).getId());
+            m.setAwayTeamId(shuffledTeams.get(i * 2 + 1).getId());
+            m.setRound("Tirage");
+            m.setStatus(tn.esprit._4se2.pi.Enum.MatchStatus.SCHEDULED);
+            // Fix: Column 'scheduled_at' cannot be null
+            if (competition.getStartDate() != null) {
+                m.setScheduledAt(competition.getStartDate().atTime(10, 0));
+            } else {
+                m.setScheduledAt(java.time.LocalDateTime.now().plusDays(1));
+            }
+            matches.add(matchRepository.save(m));
+        }
+
+        /* 
+         * Note: Placeholders for Demi-finales and Finale are removed for now 
+         * because the database enforces NOT NULL on home_team_id and away_team_id.
+         * These matches should be created when the previous round finishes.
+         */
+        return matches;
+    }
 }

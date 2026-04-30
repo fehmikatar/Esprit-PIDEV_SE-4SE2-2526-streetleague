@@ -16,14 +16,16 @@ public class Match {
     @Column(nullable=false)
     private Long competitionId;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private Long homeTeamId;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private Long awayTeamId;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private LocalDateTime scheduledAt;
+
+    private String round;
 
     private String venue;
 
@@ -57,4 +59,6 @@ public class Match {
     public void setAwayScore(Integer awayScore) { this.awayScore = awayScore; }
     public LocalDateTime getStartedAt() { return startedAt; }
     public void setStartedAt(LocalDateTime startedAt) { this.startedAt = startedAt; }
+    public String getRound() { return round; }
+    public void setRound(String round) { this.round = round; }
 }

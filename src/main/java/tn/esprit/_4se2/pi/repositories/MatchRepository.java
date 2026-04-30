@@ -28,4 +28,8 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
             @Param("teamId") Long teamId,
             @Param("dayStart") LocalDateTime dayStart,
             @Param("dayEnd") LocalDateTime dayEnd);
+
+    /** Utilisée par MatchPredictionService pour calculer la forme d'une équipe. */
+    @Query("SELECT m FROM Match m WHERE (m.homeTeamId = :teamId OR m.awayTeamId = :teamId) AND m.status = tn.esprit._4se2.pi.Enum.MatchStatus.FINISHED ORDER BY m.scheduledAt ASC")
+    List<Match> findFinishedByTeam(@Param("teamId") Long teamId);
 }
