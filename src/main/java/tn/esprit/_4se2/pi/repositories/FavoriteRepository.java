@@ -33,6 +33,21 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     List<Favorite> findByUserId(Long userId);
 
 
+    @Query("SELECT f FROM Favorite f JOIN FETCH f.product p JOIN FETCH p.category WHERE f.user.id = :userId")
+    List<Favorite> findByUserIdWithProductAndCategory(@Param("userId") Long userId);
+
+
+    @Query("SELECT f.product.id FROM Favorite f WHERE f.user.id = :userId")
+    List<Long> findProductIdsByUserId(@Param("userId") Long userId);
+
+
+    @Query("SELECT DISTINCT p.category.id FROM Favorite f JOIN f.product p WHERE f.user.id = :userId")
+    List<Long> findFavoriteCategoryIdsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(f) FROM Favorite f JOIN f.product p WHERE f.user.id = :userId AND p.category.id = :categoryId")
+    long countFavoritesByUserAndProductCategory(@Param("userId") Long userId, @Param("categoryId") Long categoryId);
+
+
     @Query("SELECT cat.name, COUNT(f.id) " +
            "FROM Favorite f " +
            "JOIN f.category cat " +

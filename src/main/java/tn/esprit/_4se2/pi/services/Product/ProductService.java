@@ -86,7 +86,21 @@ public class ProductService implements IProductService {
         product.setDescription(request.getDescription());
         product.setPrix(request.getPrix());
         product.setStock(request.getStock());
-        product.setImages(request.getImages());
+        
+        if (request.getImages() != null) {
+            java.util.List<tn.esprit._4se2.pi.entities.ProductImage> productImages = new java.util.ArrayList<>();
+            for (String img : request.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(null, img));
+                } else if (img != null && !img.trim().isEmpty()) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(img, null));
+                }
+            }
+            product.getImages().clear();
+            product.getImages().addAll(productImages);
+        } else {
+            product.getImages().clear();
+        }
 
         if (request.getStatus() != null) {
             try {
@@ -109,11 +123,30 @@ public class ProductService implements IProductService {
 
         // Mettre à jour les variantes
         if (request.getVariants() != null) {
+            // Utiliser une clé composite (Taille + Couleur) pour identifier les variants existants
+            java.util.Map<String, ProductVariant> existingVariants = product.getVariants().stream()
+                    .collect(Collectors.toMap(
+                        v -> (v.getSize() + "-" + (v.getColor() != null ? v.getColor() : "")).toLowerCase(), 
+                        v -> v, 
+                        (v1, v2) -> v1
+                    ));
+            
             product.getVariants().clear();
             LocalDateTime now = LocalDateTime.now();
+            
             request.getVariants().forEach(variantDTO -> {
-                ProductVariant variant = productMapper.toVariantEntity(variantDTO, product);
-                variant.setCreatedAt(now);
+                String key = (variantDTO.getSize() + "-" + (variantDTO.getColor() != null ? variantDTO.getColor() : "")).toLowerCase();
+                ProductVariant variant = existingVariants.get(key);
+                
+                if (variant != null) {
+                    variant.setStock(variantDTO.getStock());
+                    variant.setSku(variantDTO.getSku());
+                    variant.setColor(variantDTO.getColor());
+                    variant.setPriceAdjustment(variantDTO.getPriceAdjustment());
+                } else {
+                    variant = productMapper.toVariantEntity(variantDTO, product);
+                    variant.setCreatedAt(now);
+                }
                 product.getVariants().add(variant);
             });
         }

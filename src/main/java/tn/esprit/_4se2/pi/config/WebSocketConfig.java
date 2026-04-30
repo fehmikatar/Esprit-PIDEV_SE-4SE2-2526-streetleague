@@ -42,8 +42,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 // Endpoint principal WebSocket
                 .addEndpoint("/ws")
-                // Permet les connexions depuis le front-end Angular
-                .setAllowedOrigins("http://localhost:4200", "http://localhost:3000")
+                // Permet les connexions depuis le front-end Angular (toutes origines pour le dev)
+                .setAllowedOriginPatterns("*")
                 // Fallback pour les navigateurs sans WebSocket
                 .withSockJS();
     }

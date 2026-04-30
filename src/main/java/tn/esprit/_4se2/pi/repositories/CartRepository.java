@@ -28,6 +28,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
 
     Optional<Cart> findByOrderCode(String orderCode);
+    Optional<Cart> findByDeliveryConfirmationCode(String deliveryConfirmationCode);
 
 
     List<Cart> findByUserIdAndStatusOrderByCreatedAtDesc(Long userId, Cart.CartStatus status);

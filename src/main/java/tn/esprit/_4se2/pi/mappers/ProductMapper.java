@@ -24,13 +24,24 @@ public class ProductMapper {
             }
         }
 
+        java.util.List<tn.esprit._4se2.pi.entities.ProductImage> productImages = new java.util.ArrayList<>();
+        if (request.getImages() != null) {
+            for (String img : request.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(null, img));
+                } else if (img != null && !img.trim().isEmpty()) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(img, null));
+                }
+            }
+        }
+
         return Product.builder()
                 .nom(request.getNom())
                 .marque(request.getMarque())
                 .description(request.getDescription())
                 .prix(request.getPrix())
                 .stock(request.getStock())
-                .images(request.getImages())
+                .images(productImages)
                 .status(mappedStatus)
                 .build();
     }
@@ -47,6 +58,17 @@ public class ProductMapper {
                     .build();
         }
 
+        java.util.List<String> dtoImages = new java.util.ArrayList<>();
+        if (product.getImages() != null) {
+            for (tn.esprit._4se2.pi.entities.ProductImage pi : product.getImages()) {
+                if (pi.getUploadImage() != null && !pi.getUploadImage().trim().isEmpty()) {
+                    dtoImages.add(pi.getUploadImage());
+                } else if (pi.getImageUrl() != null && !pi.getImageUrl().trim().isEmpty()) {
+                    dtoImages.add(pi.getImageUrl());
+                }
+            }
+        }
+
         return ProductDTOs.ProductResponse.builder()
                 .id(product.getId())
                 .nom(product.getNom())
@@ -54,7 +76,7 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .prix(product.getPrix())
                 .stock(product.getStock())
-                .images(product.getImages())
+                .images(dtoImages)
                 .category(categoryDTO)
                 .variants(product.getVariants().stream()
                         .map(this::toVariantDTO)

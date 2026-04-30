@@ -8,10 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
 import tn.esprit._4se2.pi.entities.Product;
+import tn.esprit._4se2.pi.repositories.FavoriteRepository;
 import tn.esprit._4se2.pi.repositories.ProductRepository;
+import tn.esprit._4se2.pi.services.Sponsor.FlaskMLService;
 import tn.esprit._4se2.pi.services.Sponsor.SponsoredRecommendationService;
 import tn.esprit._4se2.pi.services.Sponsor.SponsoredTrackingService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +23,15 @@ import java.util.Map;
 @RequestMapping("/api/sponsored")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@Tag(name = "🤖 Sponsored AI", description = "IA de recommandation sponsorisée")
+@Tag(name = " Sponsored AI", description = "IA de recommandation sponsorisée")
 @SecurityRequirement(name = "bearerAuth")
 public class SponsoredController {
 
     private final SponsoredRecommendationService recommendationService;
     private final SponsoredTrackingService trackingService;
     private final ProductRepository productRepository;
+    private final FlaskMLService flaskMLService;
+    private final FavoriteRepository favoriteRepository;
 
     @GetMapping("/recommendations")
     @Operation(summary = "Obtenir les recommandations sponsorisées")
@@ -43,6 +48,85 @@ public class SponsoredController {
             @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(recommendationService.getAdvancedRecommendations(userId, limit));
     }
+
+
+
+    @GetMapping("/recommendations/ai")
+    @Operation(summary = " Recommandations IA - Classement par catégorie, taille et favoris")
+    public ResponseEntity<Map<String, Object>> getAIRecommendations(
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        List<Map<String, Object>> ranked = flaskMLService.getAIRecommendations(userId, limit);
+
+        List<Long> favProductIds = favoriteRepository.findProductIdsByUserId(userId);
+        List<Long> favCategoryIds = favoriteRepository.findFavoriteCategoryIdsByUserId(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user_id", userId);
+        response.put("total", ranked.size());
+        response.put("flask_available", flaskMLService.isFlaskApiAvailable());
+        response.put("debug_favorite_products", favProductIds);
+        response.put("debug_preferred_categories", favCategoryIds);
+        response.put("ranked_products", ranked);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/debug")
+    @Operation(summary = "Debug - Voir les données de l'utilisateur pour l'IA")
+    public ResponseEntity<Map<String, Object>> debugUserData(@RequestParam Long userId) {
+        List<Long> favProductIds = favoriteRepository.findProductIdsByUserId(userId);
+        List<Long> favCategoryIds = favoriteRepository.findFavoriteCategoryIdsByUserId(userId);
+        List<Product> allProducts = productRepository.findByDeletedFalse();
+
+        List<Map<String, Object>> productDetails = new ArrayList<>();
+        for (Product p : allProducts) {
+            Long catId = p.getCategory() != null ? p.getCategory().getId() : 0L;
+            boolean isFav = favProductIds.contains(p.getId());
+            boolean isPrefCat = favCategoryIds.contains(catId);
+            long freq = favoriteRepository.countFavoritesByUserAndProductCategory(userId, catId);
+
+            Map<String, Object> detail = new HashMap<>();
+            detail.put("product_id", p.getId());
+            detail.put("product_name", p.getNom());
+            detail.put("category_id", catId);
+            detail.put("is_favorite", isFav);
+            detail.put("is_preferred_category", isPrefCat);
+            detail.put("search_frequency", freq);
+            productDetails.add(detail);
+        }
+
+        Map<String, Object> debug = new HashMap<>();
+        debug.put("user_id", userId);
+        debug.put("favorite_product_ids", favProductIds);
+        debug.put("preferred_category_ids", favCategoryIds);
+        debug.put("product_count", allProducts.size());
+        debug.put("products", productDetails);
+        return ResponseEntity.ok(debug);
+    }
+
+    @GetMapping("/predict-score")
+    @Operation(summary = "Prédire le score de recommandation pour un produit")
+    public ResponseEntity<Map<String, Object>> predictScore(
+            @RequestParam Long userId,
+            @RequestParam Long productId) {
+
+        Double score = flaskMLService.predictScore(userId, productId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user_id", userId);
+        response.put("product_id", productId);
+        response.put("recommendation_score", score);
+        response.put("priority", score > 70 ? "HIGH" : score > 50 ? "MEDIUM" : "LOW");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/model-info")
+    @Operation(summary = "Informations sur le modèle IA Flask")
+    public ResponseEntity<Map<String, Object>> getModelInfo() {
+        return ResponseEntity.ok(flaskMLService.getModelInfo());
+    }
+
 
     @PostMapping("/impression")
     @Operation(summary = "Enregistrer une impression sponsorisée")

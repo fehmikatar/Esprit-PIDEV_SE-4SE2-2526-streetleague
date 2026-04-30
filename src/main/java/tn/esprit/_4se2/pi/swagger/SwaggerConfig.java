@@ -16,11 +16,11 @@ import java.util.List;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "API du projet PI ESPRIT", version = "1.0"))
-@SecurityScheme(  // Annotation pour définir un schéma de sécurité HTTP avec Bearer JWT
-        name = "bearerAuth",  // Nom du schéma de sécurité
-        type = SecuritySchemeType.HTTP,  // Type HTTP pour Bearer Token
-        scheme = "bearer",  // Utilise le schéma "bearer"
-        bearerFormat = "JWT"  // Format du token (JWT)
+@SecurityScheme(  
+        name = "bearerAuth",  
+        type = SecuritySchemeType.HTTP,  
+        scheme = "bearer",  
+        bearerFormat = "JWT"  
 )
 public class SwaggerConfig {
 
@@ -28,7 +28,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new io.swagger.v3.oas.models.info.Info()
-                        .title("🏟️ Sport Space API")  // Titre de l'API
+                        .title("🏟️ Sport Space API")  
                         .description("""
                                 API du projet **PI ESPRIT**, permettant la gestion complète :
                                 - des Utilisateurs
@@ -144,6 +144,64 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("Performances API")
                 .pathsToMatch("/api/performances/**")
+                .build();
+    }
+
+ 
+
+    @Bean
+    public GroupedOpenApi sponsoredApi() {
+        return GroupedOpenApi.builder()
+                .group("Sponsored AI")
+                .pathsToMatch("/api/sponsored/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi productApi() {
+        return GroupedOpenApi.builder()
+                .group("Products")
+                .pathsToMatch("/api/products/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi categoryApi() {
+        return GroupedOpenApi.builder()
+                .group("Categories")
+                .pathsToMatch("/api/categories/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi favoriteApi() {
+        return GroupedOpenApi.builder()
+                .group("Favorites")
+                .pathsToMatch("/api/favorites/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi cartApi() {
+        return GroupedOpenApi.builder()
+                .group("Cart")
+                .pathsToMatch("/api/cart/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi promoCodeApi() {
+        return GroupedOpenApi.builder()
+                .group("Promo Codes")
+                .pathsToMatch("/api/promo-codes/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi allEndpointsApi() {
+        return GroupedOpenApi.builder()
+                .group("Tous les endpoints")
+                .pathsToMatch("/api/**")
                 .build();
     }
 }

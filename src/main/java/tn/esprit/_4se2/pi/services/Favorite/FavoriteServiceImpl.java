@@ -67,6 +67,10 @@ public class FavoriteServiceImpl implements IFavoriteService {
                 .build();
 
         Favorite saved = favoriteRepository.save(favorite);
+
+        // Immediately notify user if the product they just favorited has low/no stock
+        stockNotificationScheduler.checkAndNotifySingleFavorite(user, product);
+
         return favoriteMapper.toDTO(saved);
     }
 

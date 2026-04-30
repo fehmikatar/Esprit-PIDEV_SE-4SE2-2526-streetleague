@@ -157,4 +157,28 @@ public class WebSocketNotificationService {
             log.error("Erreur lors de la diffusion de la notification", e);
         }
     }
+
+    /**
+     * Diffuser une mise à jour de commande à tous les administrateurs
+     */
+    public void sendOrderUpdateNotification(Long cartId, String status, String orderCode) {
+        try {
+            GenericNotificationMessage notification = new GenericNotificationMessage();
+            notification.setType("ORDER_UPDATE");
+            notification.setTitle("Commande Mise à Jour");
+            notification.setMessage("La commande " + orderCode + " est maintenant " + status);
+            notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
+            
+            // On peut ajouter des métadonnées personnalisées si besoin
+            // Pour l'instant, on broadcast sur /topic/notifications
+            messagingTemplate.convertAndSend("/topic/notifications", notification);
+            
+            // Spécifiquement pour les mises à jour d'état (utilisé pour le refresh auto)
+            messagingTemplate.convertAndSend("/topic/orders", notification);
+            
+            log.info("Notification de mise à jour de commande envoyée pour: {}", orderCode);
+        } catch (Exception e) {
+            log.error("Erreur lors de l'envoi de la notification de commande", e);
+        }
+    }
 }

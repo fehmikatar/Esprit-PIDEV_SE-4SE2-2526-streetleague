@@ -184,4 +184,47 @@ public class CartRestController {
     public ResponseEntity<BigDecimal> getCartTotal() {
         return ResponseEntity.ok(cartService.getCartTotal(getCurrentUserId()));
     }
+
+    @GetMapping("/calculate-delivery")
+    @Operation(summary = "Calculate delivery fee", description = "Calculates fee based on address")
+    public ResponseEntity<BigDecimal> calculateDelivery(@RequestParam String address) {
+        return ResponseEntity.ok(cartService.calculateDeliveryFee(address));
+    }
+
+    @GetMapping("/confirm-delivery/{code}")
+    @Operation(summary = "Get delivery details for confirmation", description = "Shows order info and confirmation button")
+    public ResponseEntity<String> confirmDelivery(@PathVariable String code) {
+        CartDTOs.CartResponse response = cartService.getCartByConfirmationCode(code);
+        if (response == null) {
+            return ResponseEntity.status(404).body("<html><body style='font-family: sans-serif; text-align: center; padding: 50px;'><h1 style='color: #e74c3c;'>Code invalide</h1><p>Ce code de confirmation est introuvable.</p></body></html>");
+        }
+        
+        if ("LIVRE".equals(response.getDeliveryStatus())) {
+            return ResponseEntity.ok("<html><body style='font-family: sans-serif; text-align: center; padding: 50px;'><h1 style='color: #27ae60;'>Déjà Livrée</h1><p>Cette commande a déjà été confirmée comme livrée.</p></body></html>");
+        }
+
+        String html = "<html><body style='font-family: sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;'>" +
+                "<div style='background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%;'>" +
+                "<div style='font-size: 48px; margin-bottom: 20px;'>📦</div>" +
+                "<h1 style='margin: 0 0 10px 0; color: #1e293b; font-size: 24px;'>Confirmer la Livraison</h1>" +
+                "<p style='color: #64748b; margin-bottom: 30px;'>Commande: <strong>" + response.getOrderCode() + "</strong><br>Client: " + response.getClientName() + "<br>Adresse: " + response.getClientAddress() + "</p>" +
+                "<form method='POST' action='/api/cart/confirm-delivery/" + code + "'>" +
+                "<button type='submit' style='background: #22c55e; color: white; border: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.4); transition: transform 0.2s;'>✅ CONFIRMER LA RÉCEPTION</button>" +
+                "</form>" +
+                "<p style='margin-top: 20px; font-size: 12px; color: #94a3b8;'>En cliquant sur ce bouton, vous confirmez que le colis a été remis en mains propres.</p>" +
+                "</div>" +
+                "</body></html>";
+        
+        return ResponseEntity.ok(html);
+    }
+
+    @PostMapping("/confirm-delivery/{code}")
+    @Operation(summary = "Perform delivery confirmation", description = "Triggered by the button on the confirmation page")
+    public ResponseEntity<String> confirmDeliveryPost(@PathVariable String code) {
+        CartDTOs.CartResponse response = cartService.confirmDelivery(code);
+        if (response == null) {
+            return ResponseEntity.status(404).body("<html><body style='font-family: sans-serif; text-align: center; padding: 50px;'><h1 style='color: #e74c3c;'>Erreur</h1><p>Impossible de confirmer la livraison.</p></body></html>");
+        }
+        return ResponseEntity.ok("<html><body style='font-family: sans-serif; text-align: center; padding: 50px;'><h1 style='color: #27ae60;'>Livraison Confirmée !</h1><p>La commande <strong>" + response.getOrderCode() + "</strong> est maintenant livrée.</p></body></html>");
+    }
 }

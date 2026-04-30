@@ -54,40 +54,39 @@ public class SecurityConfig {
                 .authenticationProvider(authProvider())
                 .authorizeHttpRequests(auth -> auth
 
-                        // ── Public endpoints ──────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/password/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         
-                        // ── Public Storefront endpoints ──────────────────────────
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categories/**").permitAll()
-                        .requestMatchers("/api/cart/**").permitAll() // Allow all cart ops for now to fix the 403
+                        .requestMatchers("/api/cart/**").permitAll() 
                         .requestMatchers("/api/favorites/check/**").permitAll()
-                        // Endpoints sponsorisés - authentification REQUISE
-                        .requestMatchers("/api/sponsored/**").authenticated()
+                        .requestMatchers("/api/favorites/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sponsored/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/sponsored/impression").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/sponsored/click/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/sponsored/purchase/**").permitAll()
 
-                        // ── Authenticated users can update their own profile and upload images ──
                         .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/users/**").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/users/*/profile-image").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*/profile-image").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*/profile-image/content").authenticated()
 
-                        // ── Role-restricted admin/field-owner/player ──
                         .requestMatchers("/api/admins/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers("/api/field-owners/**").hasRole("FIELD_OWNER")
-                        // Allow admins to read players (needed for performance management)
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/players/**").hasAnyRole("ADMIN", "PLAYER")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/players/**").hasRole("PLAYER")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/players/**").hasRole("PLAYER")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/players/**").hasRole("PLAYER")
 
-                        // ── Team module — all authenticated ───────────
-                        // Read-only team info is open to any logged-in user
+
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
                                 "/api/teams",
@@ -96,7 +95,6 @@ public class SecurityConfig {
                                 "/api/teams/*/posts"
                         ).authenticated()
 
-                        // All community GET endpoints open to authenticated users
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
                                 "/api/communities/**",
@@ -109,8 +107,6 @@ public class SecurityConfig {
                                 "/api/communities/*/posts"
                         ).authenticated()
 
-                        // All other requests require authentication
-                        // (business-level role checks are in the service layer)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

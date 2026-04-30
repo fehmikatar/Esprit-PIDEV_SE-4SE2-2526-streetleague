@@ -49,9 +49,8 @@ public class Product {
 
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
     @Builder.Default
-    List<String> images = new ArrayList<>();
+    List<ProductImage> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

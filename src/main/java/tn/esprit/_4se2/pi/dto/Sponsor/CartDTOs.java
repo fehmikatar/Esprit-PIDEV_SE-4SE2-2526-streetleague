@@ -36,6 +36,7 @@ public class CartDTOs {
         private String paymentMode;
         private BigDecimal deliveryFee;
         private String deliveryStatus;
+        private String deliveryConfirmationCode;
         private String cardNumber;
         private String expiryDate;
         private String cvv;

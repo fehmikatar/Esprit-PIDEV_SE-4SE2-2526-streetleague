@@ -79,6 +79,9 @@ public class Cart {
     @Column(name = "delivery_status")
     String deliveryStatus; // EN_COURS_DE_TRAITEMENT, EXPEDIE, LIVRE
 
+    @Column(name = "delivery_confirmation_code", unique = true)
+    String deliveryConfirmationCode;
+
     // Credit Card Details (Optional, only for CARTE mode)
     @Column(name = "card_number")
     String cardNumber;
