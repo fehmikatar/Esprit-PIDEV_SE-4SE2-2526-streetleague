@@ -14,4 +14,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     List<Feedback> findByStatus(String status);
     List<Feedback> findByRatingGreaterThanEqual(Integer rating);
     Optional<Feedback> findByBookingId(Long bookingId);
+    List<Feedback> findBySportSpaceIdIn(List<Long> sportSpaceIds);
+
 }

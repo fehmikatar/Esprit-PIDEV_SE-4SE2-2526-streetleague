@@ -19,6 +19,8 @@ public class FeedbackMapper {
         feedback.setBookingId(request.getBookingId());
         feedback.setRating(request.getRating());
         feedback.setComment(request.getComment());
+        feedback.setCensoredComment(request.getComment());
+        feedback.setToxic(false);
         feedback.setStatus("APPROVED");
         feedback.setCreatedAt(LocalDateTime.now());
         feedback.setApprovedAt(LocalDateTime.now());
@@ -35,6 +37,8 @@ public class FeedbackMapper {
                 .bookingId(entity.getBookingId())
                 .rating(entity.getRating())
                 .comment(entity.getComment())
+                .censoredComment(entity.getCensoredComment())
+                .isToxic(entity.isToxic())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .approvedAt(entity.getApprovedAt())
@@ -46,5 +50,7 @@ public class FeedbackMapper {
 
         feedback.setRating(request.getRating());
         feedback.setComment(request.getComment());
+        feedback.setCensoredComment(request.getComment());
+        feedback.setToxic(false);
     }
 }

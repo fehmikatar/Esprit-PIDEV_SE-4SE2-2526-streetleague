@@ -25,4 +25,5 @@ public class BookingResponse {
     BigDecimal totalPrice;
     String status;
     LocalDateTime createdAt;
+    String message;
 }

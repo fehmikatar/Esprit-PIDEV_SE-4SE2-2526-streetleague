@@ -1,0 +1,5 @@
+# Copiez ce fichier vers application-local.properties et renseignez votre clé Groq.
+
+groq.api.url=https://api.groq.com/openai/v1/chat/completions
+groq.api.key=${GROQ_API_KEY}
+groq.api.model=llama-3.1-8b-instant

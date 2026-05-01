@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(Long userId);
     List<Booking> findBySportSpaceId(Long sportSpaceId);
+    List<Booking> findBySportSpaceIdIn(List<Long> sportSpaceIds);
     List<Booking> findByStatus(String status);
     List<Booking> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
     Optional<Booking> findByIdAndUserId(Long id, Long userId);

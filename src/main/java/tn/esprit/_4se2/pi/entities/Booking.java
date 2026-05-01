@@ -23,8 +23,12 @@ public class Booking {
     @Column(nullable = false)
     Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "sport_space_id", insertable = false, updatable = false)
     Long sportSpaceId;
+
+    @ManyToOne
+    @JoinColumn(name = "sport_space_id")
+    SportSpace sportSpace;
 
     @Column(name = "booking_date")
     LocalDateTime bookingDate;
@@ -40,7 +44,7 @@ public class Booking {
 
     @Column(nullable = false)
     @Builder.Default
-    String status = "CONFIRMED";
+    String status = "PENDING_CONFIRMATION";
 
     @Column(name = "created_at")
     LocalDateTime createdAt;

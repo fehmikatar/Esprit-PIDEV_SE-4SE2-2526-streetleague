@@ -9,10 +9,15 @@ public interface IBookingService {
     BookingResponse getBookingById(Long id);
     List<BookingResponse> getAllBookings();
     List<BookingResponse> getBookingsByUserId(Long userId);
+    List<BookingResponse> getBookingsByOwnerId(Long ownerId);
+    List<BookingResponse> getBookingsByOwnerEmail(String ownerEmail);
     List<BookingResponse> getBookingsBySportSpaceId(Long sportSpaceId);
     List<BookingResponse> getBookingsByStatus(String status);
     BookingResponse updateBooking(Long id, BookingRequest request);
     void deleteBooking(Long id);
     void cancelBooking(Long id);
     void confirmBooking(Long id);
+    void confirmBooking(Long id, String confirmationReply);
+    void sendBookingConfirmationReminders();
+    void cancelExpiredUnconfirmedBookings();
 }
