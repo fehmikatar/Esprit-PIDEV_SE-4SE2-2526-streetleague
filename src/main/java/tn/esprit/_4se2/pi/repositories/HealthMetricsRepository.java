@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface HealthMetricsRepository extends JpaRepository<HealthMetrics, Long> {
     List<HealthMetrics> findByHealthProfileId(Long healthProfileId);
+    List<HealthMetrics> findByHealthProfileIdOrderByMeasuredAtAsc(Long healthProfileId);
     List<HealthMetrics> findByHealthProfileIdAndMeasuredAtBetween(Long healthProfileId, LocalDateTime start, LocalDateTime end);
     List<HealthMetrics> findByMeasuredAtBetween(LocalDateTime start, LocalDateTime end);
 }

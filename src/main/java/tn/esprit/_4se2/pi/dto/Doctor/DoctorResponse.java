@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.dto.Doctor;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
@@ -18,4 +19,9 @@ public class DoctorResponse {
     String email;
     String phoneNumber;
     String address;
+    String workingHoursStart;
+    String workingHoursEnd;
+    
+    @JsonProperty("isAvailable")
+    boolean available;
 }

@@ -63,7 +63,7 @@ public class AppointmentRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/status")
+    @PutMapping("/{id}/status")
     public ResponseEntity<AppointmentResponse> updateAppointmentStatus(
             @PathVariable Long id,
             @RequestParam AppointmentStatus status) {
@@ -77,5 +77,29 @@ public class AppointmentRestController {
     @GetMapping("/search")
     public ResponseEntity<List<AppointmentResponse>> searchAppointments(@RequestParam String keyword) {
         return ResponseEntity.ok(appointmentService.searchAppointments(keyword));
+    }
+
+    @PostMapping("/{id}/feedback")
+    public ResponseEntity<Void> sendFeedback(@PathVariable Long id, @RequestParam String message) {
+        appointmentService.sendFeedback(id, message);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/feedback")
+    public ResponseEntity<Void> updateFeedback(@PathVariable Long id, @RequestParam String message) {
+        appointmentService.updateFeedback(id, message);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/feedback")
+    public ResponseEntity<Void> deleteFeedback(@PathVariable Long id) {
+        appointmentService.deleteFeedback(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/feedback/general")
+    public ResponseEntity<Void> sendGeneralFeedback(@RequestParam Long userId, @RequestParam String message) {
+        appointmentService.sendGeneralFeedback(userId, message);
+        return ResponseEntity.ok().build();
     }
 }

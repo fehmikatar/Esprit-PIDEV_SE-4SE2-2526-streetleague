@@ -28,6 +28,15 @@ public class HealthProfileResponse {
     String allergies;
     String medicalConditions;
     Double bmi;               // calculated
-    String bmiCategory;
-    Gender gender;// calculated
+    String bmiCategory;       // calculated
+    Gender gender;
+    
+    // Nouveaux champs calculés (Métier Avancé)
+    Integer bmr;
+    Integer maintenanceCalories;
+    Integer weightLossCalories;
+    Integer weightGainCalories;
+    Integer healthScore;
+    String healthScoreMessage;
+    String personalizedAdvice;
 }

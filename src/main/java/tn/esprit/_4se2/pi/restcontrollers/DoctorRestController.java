@@ -42,6 +42,13 @@ public class DoctorRestController {
         return ResponseEntity.ok(doctorService.getDoctorByLicenseNumber(licenseNumber));
     }
 
+    @PatchMapping("/{id}/availability")
+    public ResponseEntity<DoctorResponse> updateAvailability(
+            @PathVariable Long id,
+            @RequestParam boolean available) {
+        return ResponseEntity.ok(doctorService.updateAvailability(id, available));
+    }
+
     @GetMapping("/specialty/{specialty}")
     public ResponseEntity<List<DoctorResponse>> getDoctorsBySpecialty(@PathVariable String specialty) {
         return ResponseEntity.ok(doctorService.getDoctorsBySpecialty(specialty));

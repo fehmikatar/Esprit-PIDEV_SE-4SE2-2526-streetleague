@@ -15,4 +15,6 @@ public interface IDietPlanService {
     void deleteDietPlan(Long id);
     void activateDietPlan(Long id);
     void deactivateDietPlan(Long id);
+    List<java.util.Map<String, Object>> searchFoodCalories(String query);
+    DietPlanResponse generateRecommendedDietPlan(Long healthProfileId, String goal);
 }

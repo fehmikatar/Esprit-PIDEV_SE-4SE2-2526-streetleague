@@ -135,11 +135,11 @@ public class UserService implements IUserService {
 
         // Store image data in the database
         user.setProfileImageData(imageData);
-
+        
         // Generate image URL
         String imageUrl = "/api/users/" + id + "/profile-image/content";
         user.setProfileImageUrl(imageUrl);
-
+        
         userRepository.save(user);
         log.info("Profile image uploaded successfully for user with id: {}", id);
 

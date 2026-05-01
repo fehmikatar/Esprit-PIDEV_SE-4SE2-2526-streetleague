@@ -14,4 +14,5 @@ public interface IDoctorService {
     List<DoctorResponse> searchDoctors(String query);
     DoctorResponse updateDoctor(Long id, DoctorRequest request);
     void deleteDoctor(Long id);
+    DoctorResponse updateAvailability(Long id, boolean available);
 }

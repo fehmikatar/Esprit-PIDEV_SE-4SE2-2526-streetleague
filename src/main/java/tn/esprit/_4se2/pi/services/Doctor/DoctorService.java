@@ -20,6 +20,7 @@ public class DoctorService implements IDoctorService {
 
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public DoctorResponse createDoctor(DoctorRequest request) {
@@ -33,6 +34,11 @@ public class DoctorService implements IDoctorService {
         }
 
         Doctor doctor = doctorMapper.toEntity(request);
+        doctor.setRole(tn.esprit._4se2.pi.Enum.Role.ROLE_ADMIN);
+        doctor.setPasswordHash(passwordEncoder.encode("Doctor123!"));
+        doctor.setCreatedAt(java.time.LocalDateTime.now());
+        doctor.setIsActive(true);
+        
         Doctor saved = doctorRepository.save(doctor);
         log.info("Doctor created with id: {}", saved.getId());
 
@@ -129,5 +135,13 @@ public class DoctorService implements IDoctorService {
         }
         doctorRepository.deleteById(id);
         log.info("Doctor deleted with id: {}", id);
+    }
+
+    @Override
+    public DoctorResponse updateAvailability(Long id, boolean available) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+        doctor.setAvailable(available);
+        return doctorMapper.toResponse(doctorRepository.save(doctor));
     }
 }

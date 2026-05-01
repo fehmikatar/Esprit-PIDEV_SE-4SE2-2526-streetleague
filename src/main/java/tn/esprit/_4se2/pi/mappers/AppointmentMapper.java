@@ -31,6 +31,7 @@ public class AppointmentMapper {
                 .reason(entity.getReason())
                 .status(entity.getStatus())
                 .notes(entity.getNotes())
+                .patientFeedback(entity.getPatientFeedback())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

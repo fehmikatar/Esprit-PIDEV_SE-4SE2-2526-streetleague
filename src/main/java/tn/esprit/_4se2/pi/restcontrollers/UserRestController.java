@@ -32,14 +32,14 @@ public class UserRestController {
         if (authentication == null) {
             return false;
         }
-
+        
         // Allow admins to modify any user profile
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         if (isAdmin) {
             return true;
         }
-
+        
         // Allow users to modify only their own profile
         // The userId in the JWT token should match the requested userId
         Object principal = authentication.getPrincipal();
@@ -49,7 +49,7 @@ public class UserRestController {
             // For now, we'll add a note that this should be implemented
             // A better approach is to use a custom JWT token that includes the userId
         }
-
+        
         // For now, we'll allow the request to proceed and let the service layer handle validation
         // This can be improved with custom JWT claims containing userId
         return true;
@@ -92,18 +92,18 @@ public class UserRestController {
     public ResponseEntity<UserResponse> updateProfile(
             @PathVariable Long id,
             @RequestBody Map<String, String> profileData) {
-
+        
         // Verify that the current user has permission to modify this profile
         if (!canModifyUser(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(null); // Or return an error response object
         }
-
+        
         String firstName = profileData.get("firstName");
         String lastName = profileData.get("lastName");
         String email = profileData.get("email");
         String phone = profileData.get("phone");
-
+        
         UserResponse response = userService.updateProfile(id, firstName, lastName, email, phone);
         return ResponseEntity.ok(response);
     }
@@ -113,14 +113,14 @@ public class UserRestController {
     public ResponseEntity<?> uploadProfileImage(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file) {
-
+        
         // Verify that the current user has permission to upload this profile image
         if (!canModifyUser(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new HashMap<String, String>() {{
                 put("error", "You are not authorized to upload an image for this user");
             }});
         }
-
+        
         try {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(new HashMap<String, String>() {{

@@ -17,8 +17,10 @@ public class DoctorMapper {
         doctor.setSpecialty(request.getSpecialty());
         doctor.setLicenseNumber(request.getLicenseNumber());
         doctor.setEmail(request.getEmail());
-        doctor.setPhoneNumber(request.getPhoneNumber());
-        doctor.setAddress(request.getAddress());
+        doctor.setPhone(request.getPhoneNumber());
+        doctor.setWorkingHoursStart(request.getWorkingHoursStart());
+        doctor.setWorkingHoursEnd(request.getWorkingHoursEnd());
+        doctor.setAvailable(request.isAvailable());
         return doctor;
     }
 
@@ -32,8 +34,11 @@ public class DoctorMapper {
                 .specialty(entity.getSpecialty())
                 .licenseNumber(entity.getLicenseNumber())
                 .email(entity.getEmail())
-                .phoneNumber(entity.getPhoneNumber())
-                .address(entity.getAddress())
+                .phoneNumber(entity.getPhone())
+                .address(entity.getProfileImageUrl()) // Optionnel: détourner un champ User pour l'adresse si besoin
+                .workingHoursStart(entity.getWorkingHoursStart())
+                .workingHoursEnd(entity.getWorkingHoursEnd())
+                .available(entity.isAvailable())
                 .build();
     }
 
@@ -45,7 +50,9 @@ public class DoctorMapper {
         doctor.setSpecialty(request.getSpecialty());
         doctor.setLicenseNumber(request.getLicenseNumber());
         doctor.setEmail(request.getEmail());
-        doctor.setPhoneNumber(request.getPhoneNumber());
-        doctor.setAddress(request.getAddress());
+        doctor.setPhone(request.getPhoneNumber());
+        doctor.setWorkingHoursStart(request.getWorkingHoursStart());
+        doctor.setWorkingHoursEnd(request.getWorkingHoursEnd());
+        doctor.setAvailable(request.isAvailable());
     }
 }

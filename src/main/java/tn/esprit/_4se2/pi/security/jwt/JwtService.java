@@ -41,7 +41,7 @@ public class JwtService {
                 .addClaims(Map.of("role", role))
                 .setIssuedAt(now)
                 .setExpiration(exp)
-                .signWith(key, io.jsonwebtoken.SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

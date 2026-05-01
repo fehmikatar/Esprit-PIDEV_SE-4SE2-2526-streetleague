@@ -37,6 +37,13 @@ public class HealthProfile {
     private String allergies;
     private String medicalConditions;
 
+    private Double healthScore;
+    private String healthAssessment;
+    private String healthFuturePrediction;
+
+    // Getters et setters correspondants
+
+
     @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL)
     private List<MedicalRecord> medicalRecords;
 
@@ -121,4 +128,13 @@ public class HealthProfile {
     public void setDietPlans(List<DietPlan> dietPlans) { this.dietPlans = dietPlans; }
     public Gender getGender() { return gender; }
     public void setGender(Gender gender) { this.gender = gender; }
+
+    public Double getHealthScore() { return healthScore; }
+    public void setHealthScore(Double healthScore) { this.healthScore = healthScore; }
+
+    public String getHealthAssessment() { return healthAssessment; }
+    public void setHealthAssessment(String healthAssessment) { this.healthAssessment = healthAssessment; }
+
+    public String getHealthFuturePrediction() { return healthFuturePrediction; }
+    public void setHealthFuturePrediction(String healthFuturePrediction) { this.healthFuturePrediction = healthFuturePrediction; }
 }

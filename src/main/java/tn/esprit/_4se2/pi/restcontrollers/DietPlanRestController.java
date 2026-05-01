@@ -9,10 +9,12 @@ import tn.esprit._4se2.pi.dto.DietPlan.DietPlanResponse;
 import tn.esprit._4se2.pi.services.DietPlan.IDietPlanService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/diet-plans")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DietPlanRestController {
 
     private final IDietPlanService dietPlanService;
@@ -70,5 +72,18 @@ public class DietPlanRestController {
     public ResponseEntity<Void> deactivateDietPlan(@PathVariable Long id) {
         dietPlanService.deactivateDietPlan(id);
         return ResponseEntity.noContent().build();
+    }
+    // Dans DietPlanRestController.java
+    @GetMapping("/search-calories")
+    public ResponseEntity<List<Map<String, Object>>> searchCalories(@RequestParam String query) {
+        return ResponseEntity.ok(dietPlanService.searchFoodCalories(query));
+    }
+
+    @PostMapping("/health-profile/{healthProfileId}/recommend")
+    public ResponseEntity<DietPlanResponse> generateRecommendedDietPlan(
+            @PathVariable Long healthProfileId,
+            @RequestParam(required = false) String goal) {
+        DietPlanResponse recommendedPlan = dietPlanService.generateRecommendedDietPlan(healthProfileId, goal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(recommendedPlan);
     }
 }

@@ -19,6 +19,7 @@ public class AppointmentResponse {
     String reason;
     AppointmentStatus status;
     String notes;
+    String patientFeedback;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

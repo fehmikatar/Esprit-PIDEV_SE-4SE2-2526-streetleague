@@ -19,4 +19,8 @@ public interface IAppointmentService {
     AppointmentResponse updateAppointmentStatus(Long id, AppointmentStatus status);
     List<AppointmentDetailsDTO> getAppointmentDetails();
     List<AppointmentResponse> searchAppointments(String keyword);
+    void sendFeedback(Long appointmentId, String message);
+    void updateFeedback(Long appointmentId, String message);
+    void deleteFeedback(Long appointmentId);
+    void sendGeneralFeedback(Long userId, String message);
 }

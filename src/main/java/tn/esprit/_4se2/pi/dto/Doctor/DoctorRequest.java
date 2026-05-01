@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.dto.Doctor;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
@@ -13,19 +14,15 @@ import jakarta.validation.constraints.*;
 public class DoctorRequest {
 
     @NotBlank(message = "First name is required")
-    @Size(min = 2, max = 50)
     String firstName;
 
     @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50)
     String lastName;
 
     @NotBlank(message = "Specialty is required")
-    @Size(min = 2, max = 100)
     String specialty;
 
     @NotBlank(message = "License number is required")
-    @Size(min = 5, max = 50)
     String licenseNumber;
 
     @NotBlank(message = "Email is required")
@@ -33,9 +30,15 @@ public class DoctorRequest {
     String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\d{8,}$", message = "Phone number should contain at least 8 digits")
     String phoneNumber;
 
-    @Size(max = 255)
     String address;
+    @NotBlank(message = "Working hours start is required")
+    String workingHoursStart;
+
+    @NotBlank(message = "Working hours end is required")
+    String workingHoursEnd;
+    
+    @JsonProperty("isAvailable")
+    boolean available;
 }
