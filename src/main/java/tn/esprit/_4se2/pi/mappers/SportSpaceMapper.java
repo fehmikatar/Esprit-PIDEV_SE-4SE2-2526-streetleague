@@ -41,6 +41,8 @@ public class SportSpaceMapper {
                 .capacity(entity.getCapacity())
                 .hourlyRate(entity.getHourlyRate())
                 .amenities(entity.getAmenities())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
                 .isAvailable(entity.getIsAvailable())
                 .build();
     }

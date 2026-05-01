@@ -14,10 +14,16 @@ public class FeedbackMapper {
         if (request == null) return null;
 
         Feedback feedback = new Feedback();
+        feedback.setUserId(request.getUserId());
+        feedback.setSportSpaceId(request.getSportSpaceId());
+        feedback.setBookingId(request.getBookingId());
         feedback.setRating(request.getRating());
         feedback.setComment(request.getComment());
-        feedback.setStatus("PENDING");
+        feedback.setCensoredComment(request.getComment());
+        feedback.setToxic(false);
+        feedback.setStatus("APPROVED");
         feedback.setCreatedAt(LocalDateTime.now());
+        feedback.setApprovedAt(LocalDateTime.now());
         return feedback;
     }
 
@@ -28,10 +34,14 @@ public class FeedbackMapper {
                 .id(entity.getId())
                 .userId(entity.getUserId())
                 .sportSpaceId(entity.getSportSpaceId())
+                .bookingId(entity.getBookingId())
                 .rating(entity.getRating())
                 .comment(entity.getComment())
+                .censoredComment(entity.getCensoredComment())
+                .isToxic(entity.isToxic())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
+                .approvedAt(entity.getApprovedAt())
                 .build();
     }
 
@@ -40,5 +50,7 @@ public class FeedbackMapper {
 
         feedback.setRating(request.getRating());
         feedback.setComment(request.getComment());
+        feedback.setCensoredComment(request.getComment());
+        feedback.setToxic(false);
     }
 }
