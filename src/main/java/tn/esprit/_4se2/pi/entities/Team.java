@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import tn.esprit._4se2.pi.Enum.TeamStatus;
 
 import java.time.LocalDateTime;
@@ -49,8 +47,7 @@ public class Team {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(name = "created_by_id", nullable = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "created_by_id", nullable = false)
     private User createdBy;
 
     @JsonIgnore
