@@ -18,8 +18,8 @@ public class TeamController {
 
     // Créer une équipe
     @PostMapping
-    public Team create(@RequestBody Team team) {
-        return teamService.create(team);
+    public Team create(@RequestBody Team team, @RequestParam(required = false) Long userId) {
+        return teamService.create(team, userId);
     }
 
     // Récupérer toutes les équipes
