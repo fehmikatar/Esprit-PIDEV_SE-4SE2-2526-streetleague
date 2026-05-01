@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.restcontrollers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.dto.Notification.NotificationRequest;
 import tn.esprit._4se2.pi.dto.Notification.NotificationResponse;
@@ -38,9 +39,27 @@ public class NotificationRestController {
         return ResponseEntity.ok(notificationService.getNotificationsByUserId(userId));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<NotificationResponse>> getMyNotifications(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(notificationService.getNotificationsByUserEmail(authentication.getName()));
+    }
+
     @GetMapping("/user/{userId}/unread")
     public ResponseEntity<List<NotificationResponse>> getUnreadNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getUnreadNotifications(userId));
+    }
+
+    @GetMapping("/me/unread")
+    public ResponseEntity<List<NotificationResponse>> getMyUnreadNotifications(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(notificationService.getUnreadNotificationsByUserEmail(authentication.getName()));
     }
 
     @GetMapping("/type/{type}")

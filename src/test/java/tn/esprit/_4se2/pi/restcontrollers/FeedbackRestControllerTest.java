@@ -11,12 +11,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import tn.esprit._4se2.pi.dto.Feedback.FeedbackRequest;
 import tn.esprit._4se2.pi.dto.Feedback.FeedbackResponse;
+import tn.esprit._4se2.pi.dto.Feedback.FeedbackSummaryRequest;
 import tn.esprit._4se2.pi.security.CustomUserDetailsService;
 import tn.esprit._4se2.pi.security.jwt.JwtService;
+import tn.esprit._4se2.pi.services.Feedback.FeedbackSummaryService;
 import tn.esprit._4se2.pi.services.Feedback.IFeedbackService;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +37,8 @@ public class FeedbackRestControllerTest {
 
     @MockBean
     private IFeedbackService feedbackService;
+    @MockBean
+    private FeedbackSummaryService feedbackSummaryService;
     @MockBean
     private JwtService jwtService;
 
@@ -82,6 +87,23 @@ public class FeedbackRestControllerTest {
     }
 
     @Test
+    void testGetFeedbacksForPlayer() throws Exception {
+        FeedbackResponse fb = new FeedbackResponse();
+        fb.setId(3L);
+        fb.setComment("*******");
+        fb.setCensoredComment("*******");
+        fb.setIsToxic(true);
+
+        Mockito.when(feedbackService.getFeedbacksForPlayer(4L)).thenReturn(Arrays.asList(fb));
+
+        mockMvc.perform(get("/api/feedbacks/space/4/player"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].comment").value("*******"))
+                .andExpect(jsonPath("$[0].isToxic").value(true));
+    }
+
+    @Test
     void testDeleteFeedback() throws Exception {
         Mockito.doNothing().when(feedbackService).deleteFeedback(2L);
 
@@ -89,5 +111,21 @@ public class FeedbackRestControllerTest {
                 .andExpect(status().isNoContent());
 
         Mockito.verify(feedbackService).deleteFeedback(2L);
+    }
+
+    @Test
+    void testSummarizeFeedbacks() throws Exception {
+        FeedbackSummaryRequest request = FeedbackSummaryRequest.builder()
+                .comments(List.of("Très bon terrain", "Éclairage moyen mais terrain propre"))
+                .build();
+
+        Mockito.when(feedbackSummaryService.summarizeComments(any(List.class)))
+                .thenReturn("Résumé généré");
+
+        mockMvc.perform(post("/api/feedbacks/summary")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.summary").value("Résumé généré"));
     }
 }

@@ -34,6 +34,13 @@ public class Feedback {
     @Column(length = 1000)
     String comment;
 
+    @Column(name = "is_toxic", nullable = false)
+    @Builder.Default
+    boolean isToxic = false;
+
+    @Column(name = "censored_comment", length = 1000)
+    String censoredComment;
+
     @Column(nullable = false)
     @Builder.Default
     String status = "PENDING"; // PENDING, APPROVED, REJECTED
@@ -43,4 +50,10 @@ public class Feedback {
 
     @Column(name = "approved_at")
     LocalDateTime approvedAt;
+
+    @Column(length = 1000)
+    String ownerReply;
+
+    @Column(name = "owner_replied_at")
+    LocalDateTime ownerRepliedAt;
 }

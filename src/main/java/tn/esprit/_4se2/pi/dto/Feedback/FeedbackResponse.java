@@ -19,6 +19,8 @@ public class FeedbackResponse {
     Long bookingId;
     Integer rating;
     String comment;
+    String censoredComment;
+    Boolean isToxic;
     String status;
     LocalDateTime createdAt;
     LocalDateTime approvedAt;

@@ -72,6 +72,21 @@ public class BookingRestControllerTest {
     }
 
     @Test
+    void testGetBookingsByOwnerId() throws Exception {
+        BookingResponse response = new BookingResponse();
+        response.setId(11L);
+        response.setUserName("Player One");
+        response.setSportSpaceName("Terrain Central");
+
+        Mockito.when(bookingService.getBookingsByOwnerId(7L)).thenReturn(Arrays.asList(response));
+
+        mockMvc.perform(get("/api/bookings/owner/7"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].sportSpaceName").value("Terrain Central"));
+    }
+
+    @Test
     void testCreateBooking() throws Exception {
         BookingRequest request = new BookingRequest();
         request.setUserId(2L);

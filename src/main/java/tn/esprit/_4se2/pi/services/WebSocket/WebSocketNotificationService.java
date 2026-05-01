@@ -96,6 +96,11 @@ public class WebSocketNotificationService {
                 "/queue/notifications",
                 notification
             );
+
+            messagingTemplate.convertAndSend(
+                "/topic/notifications",
+                notification
+            );
         } catch (Exception e) {
             log.error("Erreur lors de l'envoi de la notification d'annulation", e);
         }

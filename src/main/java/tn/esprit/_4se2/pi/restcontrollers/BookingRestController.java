@@ -3,7 +3,9 @@ package tn.esprit._4se2.pi.restcontrollers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit._4se2.pi.dto.Booking.BookingConfirmationRequest;
 import tn.esprit._4se2.pi.dto.Booking.BookingRequest;
 import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import tn.esprit._4se2.pi.services.Booking.IBookingService;
@@ -37,6 +39,20 @@ public class BookingRestController {
         return ResponseEntity.ok(bookingService.getBookingsByUserId(userId));
     }
 
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<BookingResponse>> getBookingsByOwnerId(@PathVariable Long ownerId) {
+        return ResponseEntity.ok(bookingService.getBookingsByOwnerId(ownerId));
+    }
+
+    @GetMapping("/owner/me")
+    public ResponseEntity<List<BookingResponse>> getMyOwnerBookings(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(bookingService.getBookingsByOwnerEmail(authentication.getName()));
+    }
+
     @GetMapping("/sport-space/{sportSpaceId}")
     public ResponseEntity<List<BookingResponse>> getBookingsBySportSpaceId(@PathVariable Long sportSpaceId) {
         return ResponseEntity.ok(bookingService.getBookingsBySportSpaceId(sportSpaceId));
@@ -67,8 +83,10 @@ public class BookingRestController {
     }
 
     @PatchMapping("/{id}/confirm")
-    public ResponseEntity<Void> confirmBooking(@PathVariable Long id) {
-        bookingService.confirmBooking(id);
+    public ResponseEntity<Void> confirmBooking(
+            @PathVariable Long id,
+            @RequestBody(required = false) BookingConfirmationRequest request) {
+        bookingService.confirmBooking(id, request == null ? "CONFIRMER" : request.getResponse());
         return ResponseEntity.noContent().build();
     }
 }

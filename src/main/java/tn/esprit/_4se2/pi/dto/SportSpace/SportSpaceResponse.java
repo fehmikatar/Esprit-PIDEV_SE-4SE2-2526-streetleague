@@ -22,6 +22,8 @@ public class SportSpaceResponse {
     Integer capacity;
     BigDecimal hourlyRate;
     String amenities;
+    Double latitude;
+    Double longitude;
     Boolean isAvailable;
     Double averageRating;
     Long reviewCount;
