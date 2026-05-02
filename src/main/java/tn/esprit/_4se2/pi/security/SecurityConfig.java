@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,22 +31,22 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthFilter jwtAuthFilter;
 
+    // ✅ SecurityFilterChain #1 - Pour /uploads/** SEULEMENT - PRIORITÉ MAXIMALE
     @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
+    @Order(1)
+    public SecurityFilterChain uploadSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/uploads/**")
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(csrf -> csrf.disable());
+        
+        return http.build();
     }
 
+    // ✅ SecurityFilterChain #2 - Pour tout le reste de l'application
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(2)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -60,6 +61,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/password/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        // ── WebSocket upgrade paths (SockJS handshake) ─
+                        .requestMatchers("/ws/**", "/ws-chat/**").permitAll()
 
                         // ── Authenticated users can update their own profile and upload images ──
                         .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/users/**").authenticated()
@@ -80,32 +84,34 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/players/**").hasRole("PLAYER")
 
                         // ── Team module — all authenticated ───────────
-                        // Read-only team info is open to any logged-in user
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
                                 "/api/teams/**"
                         ).hasAnyRole("ADMIN", "PLAYER", "FIELD_OWNER")
 
-                        // All community GET endpoints open to authenticated users
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.GET,
-                                "/api/communities/**",
-                                "/api/community/posts",
-                                "/api/posts/*/comments"
-                        ).authenticated()
-
-                        .requestMatchers(
-                                org.springframework.http.HttpMethod.POST,
-                                "/api/communities/*/posts"
-                        ).authenticated()
+                        // ── Community feed ────────────────────────────
+                        .requestMatchers("/api/community/**").authenticated()
 
                         // All other requests require authentication
-                        // (business-level role checks are in the service layer)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean

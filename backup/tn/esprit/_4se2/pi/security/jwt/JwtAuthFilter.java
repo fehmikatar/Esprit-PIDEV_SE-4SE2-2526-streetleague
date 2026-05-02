@@ -75,4 +75,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // 8. Continuer la chaîne de filtres
         filterChain.doFilter(request, response);
     }
+    @Override
+protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getRequestURI();
+    return path.startsWith("/uploads/") ||
+           path.startsWith("/ws/") ||
+           path.startsWith("/ws-chat/") ||
+           path.startsWith("/api/auth/");
+}
 }
