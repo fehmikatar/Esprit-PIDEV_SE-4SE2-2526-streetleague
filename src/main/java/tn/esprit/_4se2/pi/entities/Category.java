@@ -1,5 +1,7 @@
 package tn.esprit._4se2.pi.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,14 +28,18 @@ public class Category {
 
     String description;
 
+    Integer capacity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
     Category parentCategory;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
     @Builder.Default
     List<Category> subCategories = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     @Builder.Default
     List<Product> products = new ArrayList<>();
