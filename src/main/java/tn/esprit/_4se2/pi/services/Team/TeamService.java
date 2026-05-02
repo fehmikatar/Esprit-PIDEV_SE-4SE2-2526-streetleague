@@ -77,4 +77,8 @@ public class TeamService implements TeamServiceInterface {
         return authentication.getAuthorities().stream()
                 .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
     }
+    public Team getTeamById(Long teamId) {
+    return teamRepository.findById(teamId)
+            .orElseThrow(() -> new RuntimeException("Team not found with id: " + teamId));
+}
 }

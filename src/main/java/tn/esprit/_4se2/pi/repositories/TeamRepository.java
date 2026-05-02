@@ -3,12 +3,18 @@ package tn.esprit._4se2.pi.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import tn.esprit._4se2.pi.entities.Team;
+import tn.esprit._4se2.pi.entities.TeamManager;
+import tn.esprit._4se2.pi.entities.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Team findByName(String name);
+
+    Optional<Team> findByCreatedBy(User user);
+
+    Optional<Team> findByManager(TeamManager manager);
 
     @Query(value = """
         SELECT t.*

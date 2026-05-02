@@ -54,6 +54,11 @@ public class Team {
     private User createdBy;
 
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", nullable = true)
+    private TeamManager manager;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<TeamMember> members = new ArrayList<>();
