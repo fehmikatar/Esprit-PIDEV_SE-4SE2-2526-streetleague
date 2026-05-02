@@ -22,8 +22,11 @@ public interface IFavoriteService {
 
     void categorizeFavorite(Long favoriteId, Long categoryId);
     void removeFromCategory(Long favoriteId);
+    void triggerStockCheck();
 
     boolean isProductInFavorites(Long userId, Long productId);
     long countUserFavorites(Long userId);
     long getFavoritesCountByProduct(Long productId);
+    List<FavoriteDTOs.FavoriteResponse> searchFavorites(String productName, String categoryName);
+    List<FavoriteDTOs.FavoriteResponse> getLowStockFavorites(Long userId);
 }

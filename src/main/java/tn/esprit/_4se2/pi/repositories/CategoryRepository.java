@@ -13,6 +13,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByNom(String nom);
 
+    Optional<Category> findByNomIgnoreCase(String nom);
+
     List<Category> findByParentCategoryIsNull();
 
     @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories WHERE c.parentCategory IS NULL")

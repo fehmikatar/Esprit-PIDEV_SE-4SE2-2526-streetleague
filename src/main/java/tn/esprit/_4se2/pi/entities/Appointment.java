@@ -26,7 +26,9 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
+    // TODO: choose the correct version where conflicts are unresolved.
     private String notes;
+    private String patientFeedback;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -62,6 +64,9 @@ public class Appointment {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public String getPatientFeedback() { return patientFeedback; }
+    public void setPatientFeedback(String patientFeedback) { this.patientFeedback = patientFeedback; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

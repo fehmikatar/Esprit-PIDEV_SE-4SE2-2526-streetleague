@@ -29,4 +29,21 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Query("SELECT COUNT(c) FROM Cart c WHERE c.status = 'ABANDONED'")
     long countAbandonedCarts();
+
+    @Query("""
+        SELECT ci.product.id, ci.product.nom, COALESCE(ci.product.category.nom, 'Sans catégorie'),
+               SUM(ci.quantity), SUM(ci.price * ci.quantity)
+        FROM CartItem ci
+        GROUP BY ci.product.id, ci.product.nom, ci.product.category.nom
+        ORDER BY SUM(ci.quantity) DESC
+    """)
+    List<Object[]> findTopSellingProductsWithCategory();
+
+    @Query("""
+        SELECT COALESCE(c.user.email, 'Unknown'), COUNT(c), COALESCE(SUM(c.total), 0)
+        FROM Cart c
+        WHERE c.status = 'ABANDONED'
+        GROUP BY c.user.email
+    """)
+    List<Object[]> findAbandonedCartStatsByCity();
 }

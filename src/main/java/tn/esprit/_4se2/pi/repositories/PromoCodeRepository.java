@@ -17,5 +17,13 @@ public interface PromoCodeRepository extends JpaRepository<PromoCode, Long> {
     @Query("SELECT p FROM PromoCode p WHERE p.expiryDate < :date AND p.active = true")
     List<PromoCode> findExpiredActivePromoCodes(@Param("date") LocalDateTime date);
 
+    @Query("""
+        SELECT p.code, p.timesUsed, COALESCE(SUM(c.total), 0)
+        FROM Cart c JOIN c.appliedPromoCode p
+        GROUP BY p.code, p.timesUsed
+        ORDER BY COALESCE(SUM(c.total), 0) DESC
+    """)
+    List<Object[]> findPromoCodeRevenueStats();
+
     boolean existsByCode(String code);
 }
