@@ -1,25 +1,38 @@
 package tn.esprit._4se2.pi.entities;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
 import java.util.List;
 
 @Entity
 @Table(name = "doctors")
-@Data
-public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Doctor extends User {
+    // TODO: choose the correct version where conflicts are unresolved.
+    String specialty;
+    String licenseNumber;
+    String address;
+    String workingHoursStart;
+    String workingHoursEnd;
 
-    private String firstName;
-    private String lastName;
-    private String specialty;
-    private String licenseNumber;
-    private String email;
-    private String phoneNumber;
-    private String address;
+    @JsonProperty("isAvailable")
+    boolean available = true;
 
     @OneToMany(mappedBy = "doctor")
-    private List<Appointment> appointments;
+    List<Appointment> appointments;
 }

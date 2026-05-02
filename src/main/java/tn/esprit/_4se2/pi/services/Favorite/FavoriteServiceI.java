@@ -3,6 +3,7 @@ package tn.esprit._4se2.pi.services.Favorite;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import tn.esprit._4se2.pi.dto.Sponsor.FavoriteDTOs;
 import tn.esprit._4se2.pi.repositories.FavoriteCategoryRepository;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import tn.esprit._4se2.pi.entities.User;
 @Service
+@Primary
 @AllArgsConstructor
 public class FavoriteServiceI implements IFavoriteService {
 
@@ -183,5 +185,28 @@ public class FavoriteServiceI implements IFavoriteService {
     @Override
     public long getFavoritesCountByProduct(Long productId) {
         return favoriteRepository.countByProductId(productId);
+    }
+
+    @Override
+    public void triggerStockCheck() {
+        // TODO: choose the correct version between FavoriteServiceI and FavoriteServiceImpl.
+    }
+
+    @Override
+    public List<FavoriteDTOs.FavoriteResponse> searchFavorites(String productName, String categoryName) {
+        return favoriteRepository.findByProductNomContainingIgnoreCaseAndProductCategoryNomContainingIgnoreCase(
+                productName,
+                categoryName
+        ).stream().map(favoriteMapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FavoriteDTOs.FavoriteResponse> getLowStockFavorites(Long userId) {
+        return favoriteRepository.findByUserId(userId).stream()
+                .filter(favorite -> favorite.getProduct().getDeleted() != null && !favorite.getProduct().getDeleted())
+                .filter(favorite -> favorite.getProduct().getStock() != null)
+                .filter(favorite -> favorite.getProduct().getStock() > 0 && favorite.getProduct().getStock() <= 6)
+                .map(favoriteMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

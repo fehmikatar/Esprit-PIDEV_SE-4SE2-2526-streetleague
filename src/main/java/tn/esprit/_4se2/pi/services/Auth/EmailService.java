@@ -28,4 +28,12 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendLowStockAlertEmail(String toEmail, String productName, Integer stock) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Alerte stock faible");
+        message.setText("Le produit '" + productName + "' est en stock faible (" + stock + ").");
+        mailSender.send(message);
+    }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import tn.esprit._4se2.pi.entities.User;
-@Service
+@Service("legacyFavoriteServiceImpl")
 @AllArgsConstructor
 public class FavoriteServiceImpl implements IFavoriteService {
 

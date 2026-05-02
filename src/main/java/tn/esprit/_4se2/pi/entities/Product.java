@@ -18,6 +18,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Product {
+    public enum ProductStatus {
+        EN_STOCK,
+        EN_ARRIVAGE,
+        RUPTURE_DE_STOCK
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -58,6 +64,27 @@ public class Product {
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
+    @Transient
+    @Builder.Default
+    ProductStatus status = ProductStatus.EN_STOCK;
+
     @ManyToMany(mappedBy = "products")
+    @Builder.Default
     private List<Performance> performances = new ArrayList<>();
+
+    public ProductStatus getStatus() {
+        if (status != null) {
+            return status;
+        }
+
+        if (stock == null || stock <= 0) {
+            return ProductStatus.RUPTURE_DE_STOCK;
+        }
+
+        return ProductStatus.EN_STOCK;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
 }

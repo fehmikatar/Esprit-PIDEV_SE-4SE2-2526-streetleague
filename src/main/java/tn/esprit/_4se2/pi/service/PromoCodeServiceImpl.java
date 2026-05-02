@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@Service("legacyPromoCodeServiceImpl")
 @AllArgsConstructor
 public class PromoCodeServiceImpl implements IPromoCodeService {
 

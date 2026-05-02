@@ -16,7 +16,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByIdAndDeletedFalse(Long id);
 
+    List<Product> findByDeletedFalse();
+
     Page<Product> findByDeletedFalse(Pageable pageable);
+
+    List<Product> findByCategoryIdAndDeletedFalse(Long categoryId);
 
     boolean existsByNomAndDeletedFalse(String nom);
 
