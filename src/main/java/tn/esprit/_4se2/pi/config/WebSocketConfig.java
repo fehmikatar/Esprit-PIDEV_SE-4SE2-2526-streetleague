@@ -25,10 +25,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // Préfixe pour les messages du client
         config.setApplicationDestinationPrefixes("/app");
-        
+
         // Utilisateur préfixe pour les messages privés
         config.setUserDestinationPrefix("/user");
-        
+
         // Utiliser un broker simple pour les distributions de messages
         config.enableSimpleBroker("/topic", "/queue");
     }
@@ -40,12 +40,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-            // Endpoint principal WebSocket
-            .addEndpoint("/ws")
-            // Permet les connexions depuis le front-end Angular
-            .setAllowedOrigins("http://localhost:4200", "http://localhost:3000")
-            // Fallback pour les navigateurs sans WebSocket
-            .withSockJS();
+                // Endpoint principal WebSocket
+                .addEndpoint("/ws")
+                // Permet les connexions depuis le front-end Angular (toutes origines pour le dev)
+                .setAllowedOriginPatterns("*")
+                // Fallback pour les navigateurs sans WebSocket
+                .withSockJS();
     }
 
     /**
@@ -54,8 +54,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
         registry
-            .setMessageSizeLimit(128 * 1024) // 128 KB
-            .setSendTimeLimit(15 * 1000)      // 15 secondes
-            .setSendBufferSizeLimit(512 * 1024); // 512 KB
+                .setMessageSizeLimit(128 * 1024) // 128 KB
+                .setSendTimeLimit(15 * 1000)      // 15 secondes
+                .setSendBufferSizeLimit(512 * 1024); // 512 KB
     }
 }

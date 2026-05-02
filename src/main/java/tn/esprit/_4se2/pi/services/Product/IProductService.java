@@ -31,4 +31,6 @@ public interface IProductService {
 
     List<ProductDTOs.ProductResponse> bulkImportProducts(MultipartFile file) throws IOException;
     byte[] bulkExportProducts() throws IOException;
+
+    List<ProductDTOs.ProductHighDemandDTO> getHighDemandProducts();
 }

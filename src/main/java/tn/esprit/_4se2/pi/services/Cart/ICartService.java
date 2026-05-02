@@ -16,6 +16,14 @@ public interface ICartService {
     CartDTOs.CartResponse updateCartItem(Long userId, Long itemId, CartDTOs.UpdateCartItemRequest request);
     CartDTOs.CartResponse removeFromCart(Long userId, Long itemId);
     CartDTOs.CartResponse clearCart(Long userId);
+    CartDTOs.CartResponse checkoutCart(Long userId, CartDTOs.CheckoutRequest request);
+
+    // Orders Management
+    List<CartDTOs.CartResponse> getMyOrders(Long userId);
+    List<CartDTOs.CartResponse> getAllOrders();
+    CartDTOs.CartResponse updateOrderStatus(Long cartId, String newStatus);
+    CartDTOs.CartResponse confirmDelivery(String confirmationCode);
+    CartDTOs.CartResponse getCartByConfirmationCode(String confirmationCode);
 
     // Promo codes
     CartDTOs.CartResponse applyPromoCode(Long userId, String promoCode);
@@ -36,4 +44,5 @@ public interface ICartService {
     // Utilitaires
     int getCartItemsCount(Long userId);
     BigDecimal getCartTotal(Long userId);
+    BigDecimal calculateDeliveryFee(String address);
 }
