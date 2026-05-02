@@ -25,12 +25,9 @@ public class HealthMetrics {
     private Integer stressLevel;         // Niveau de stress (1-10)
     private Integer energyLevel;         // Niveau d'énergie (1-10)
 
-    // TODO: choose the correct version where conflicts are unresolved.
     private Double healthScore;
-
     @Column(columnDefinition = "TEXT")
     private String assessment;
-
     @Column(columnDefinition = "TEXT")
     private String prediction;
 
@@ -74,6 +71,12 @@ public class HealthMetrics {
     public Integer getEnergyLevel() { return energyLevel; }
     public void setEnergyLevel(Integer energyLevel) { this.energyLevel = energyLevel; }
 
+    public LocalDateTime getMeasuredAt() { return measuredAt; }
+    public void setMeasuredAt(LocalDateTime measuredAt) { this.measuredAt = measuredAt; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
+
     public Double getHealthScore() { return healthScore; }
     public void setHealthScore(Double healthScore) { this.healthScore = healthScore; }
 
@@ -82,10 +85,4 @@ public class HealthMetrics {
 
     public String getPrediction() { return prediction; }
     public void setPrediction(String prediction) { this.prediction = prediction; }
-
-    public LocalDateTime getMeasuredAt() { return measuredAt; }
-    public void setMeasuredAt(LocalDateTime measuredAt) { this.measuredAt = measuredAt; }
-
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
 }
