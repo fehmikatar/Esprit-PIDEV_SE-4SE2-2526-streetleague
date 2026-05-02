@@ -26,7 +26,6 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
-    // TODO: choose the correct version where conflicts are unresolved.
     private String notes;
     private String patientFeedback;
     private LocalDateTime createdAt;
