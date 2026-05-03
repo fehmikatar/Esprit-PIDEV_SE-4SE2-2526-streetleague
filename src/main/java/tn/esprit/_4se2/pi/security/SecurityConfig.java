@@ -66,6 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner/me").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers("/api/feedbacks/**").permitAll()
+                        .requestMatchers("/api/cart/confirm-delivery/**").permitAll()
 
 
                         // ── Authenticated users can update their own profile and upload images ──
