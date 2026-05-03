@@ -19,15 +19,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.setApplicationDestinationPrefixes("/app");
+        
+        // Utilisateur préfixe pour les messages privés
         config.setUserDestinationPrefix("/user");
+
+        // Utiliser un broker simple pour les distributions de messages
         config.enableSimpleBroker("/topic", "/queue");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Primary endpoint
+        // Primary endpoint (merged configurations)
         registry.addEndpoint("/ws")
             .setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+            .setAllowedOriginPatterns("*")
             .withSockJS();
 
         // Fallback endpoint tried by chat.service.ts
@@ -44,8 +49,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
         registry
-            .setMessageSizeLimit(128 * 1024)
-            .setSendTimeLimit(15 * 1000)
-            .setSendBufferSizeLimit(512 * 1024);
+            .setMessageSizeLimit(128 * 1024) // 128 KB
+            .setSendTimeLimit(15 * 1000)      // 15 secondes
+            .setSendBufferSizeLimit(512 * 1024); // 512 KB
     }
 }

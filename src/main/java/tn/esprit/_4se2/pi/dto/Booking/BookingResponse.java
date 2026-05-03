@@ -15,6 +15,8 @@ public class BookingResponse {
     Long id;
     Long userId;
     String userName;
+    String userEmail;
+    String userPhone;
     Long sportSpaceId;
     String sportSpaceName;
     LocalDateTime bookingDate;
@@ -23,4 +25,5 @@ public class BookingResponse {
     BigDecimal totalPrice;
     String status;
     LocalDateTime createdAt;
+    String message;
 }

@@ -62,6 +62,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/password/**").permitAll()
                         .requestMatchers("/api/matching/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/feedbacks/space/*/owner").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/feedbacks/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/feedbacks/*/reply").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner/me").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers("/api/feedbacks/**").permitAll()
+                        .requestMatchers("/api/cart/confirm-delivery/**").permitAll()
+
 
                         // ── WebSocket upgrade paths (SockJS handshake) ─
                         .requestMatchers("/ws/**", "/ws-chat/**").permitAll()
@@ -74,6 +82,9 @@ public class SecurityConfig {
 
                         // ── Role-restricted admin/field-owner/player ──
                         .requestMatchers("/api/admins/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/my-bookings").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sport-spaces/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")

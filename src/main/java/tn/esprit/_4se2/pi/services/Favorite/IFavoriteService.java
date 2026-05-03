@@ -26,4 +26,8 @@ public interface IFavoriteService {
     boolean isProductInFavorites(Long userId, Long productId);
     long countUserFavorites(Long userId);
     long getFavoritesCountByProduct(Long productId);
+
+    List<FavoriteDTOs.FavoriteResponse> searchFavorites(String productName, String categoryName);
+    List<FavoriteDTOs.FavoriteResponse> getLowStockFavorites(Long userId);
+    void triggerStockCheck();
 }

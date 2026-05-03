@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
 import tn.esprit._4se2.pi.Enum.FitnessStatus;
+import tn.esprit._4se2.pi.Enum.Gender;
 
 
 import java.time.LocalDate;
@@ -26,12 +27,22 @@ public class HealthProfile {
     @Enumerated(EnumType.STRING)
     private FitnessStatus fitnessStatus;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     private LocalDate lastUpdated;
     private String emergencyContact;
     private String emergencyPhone;
     private String bloodType;
     private String allergies;
     private String medicalConditions;
+
+    private Double healthScore;
+    private String healthAssessment;
+    private String healthFuturePrediction;
+
+    // Getters et setters correspondants
+
 
     @OneToMany(mappedBy = "healthProfile", cascade = CascadeType.ALL)
     private List<MedicalRecord> medicalRecords;
@@ -115,4 +126,15 @@ public class HealthProfile {
 
     public List<DietPlan> getDietPlans() { return dietPlans; }
     public void setDietPlans(List<DietPlan> dietPlans) { this.dietPlans = dietPlans; }
+    public Gender getGender() { return gender; }
+    public void setGender(Gender gender) { this.gender = gender; }
+
+    public Double getHealthScore() { return healthScore; }
+    public void setHealthScore(Double healthScore) { this.healthScore = healthScore; }
+
+    public String getHealthAssessment() { return healthAssessment; }
+    public void setHealthAssessment(String healthAssessment) { this.healthAssessment = healthAssessment; }
+
+    public String getHealthFuturePrediction() { return healthFuturePrediction; }
+    public void setHealthFuturePrediction(String healthFuturePrediction) { this.healthFuturePrediction = healthFuturePrediction; }
 }

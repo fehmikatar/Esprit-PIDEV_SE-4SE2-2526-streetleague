@@ -3,7 +3,10 @@ package tn.esprit._4se2.pi.restcontrollers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit._4se2.pi.security.jwt.JwtService;
+import tn.esprit._4se2.pi.dto.Booking.BookingConfirmationRequest;
 import tn.esprit._4se2.pi.dto.Booking.BookingRequest;
 import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import tn.esprit._4se2.pi.services.Booking.IBookingService;
@@ -16,6 +19,7 @@ import java.util.List;
 public class BookingRestController {
 
     private final IBookingService bookingService;
+    private final JwtService jwtService;
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
@@ -35,6 +39,50 @@ public class BookingRestController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BookingResponse>> getBookingsByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(bookingService.getBookingsByUserId(userId));
+    }
+
+    @GetMapping("/my-bookings")
+    public ResponseEntity<List<BookingResponse>> getMyBookings(
+            Authentication authentication,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        Long userId = extractUserIdFromToken(authorizationHeader);
+
+        if (userId == null && (authentication == null || authentication.getName() == null)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BookingResponse> reservations = userId != null
+                ? bookingService.getBookingsByUserId(userId)
+                : bookingService.getBookingsByUserEmail(authentication.getName());
+
+        System.out.println("Reservations trouvées: " + reservations.size());
+        return ResponseEntity.ok(reservations);
+    }
+
+    private Long extractUserIdFromToken(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        try {
+            return jwtService.extractUserId(authorizationHeader.substring(7));
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<BookingResponse>> getBookingsByOwnerId(@PathVariable Long ownerId) {
+        return ResponseEntity.ok(bookingService.getBookingsByOwnerId(ownerId));
+    }
+
+    @GetMapping("/owner/me")
+    public ResponseEntity<List<BookingResponse>> getMyOwnerBookings(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(bookingService.getBookingsByOwnerEmail(authentication.getName()));
     }
 
     @GetMapping("/sport-space/{sportSpaceId}")
@@ -67,8 +115,10 @@ public class BookingRestController {
     }
 
     @PatchMapping("/{id}/confirm")
-    public ResponseEntity<Void> confirmBooking(@PathVariable Long id) {
-        bookingService.confirmBooking(id);
+    public ResponseEntity<Void> confirmBooking(
+            @PathVariable Long id,
+            @RequestBody(required = false) BookingConfirmationRequest request) {
+        bookingService.confirmBooking(id, request == null ? "CONFIRMER" : request.getResponse());
         return ResponseEntity.noContent().build();
     }
 }

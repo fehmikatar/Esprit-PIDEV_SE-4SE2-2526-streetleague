@@ -9,7 +9,9 @@ public interface INotificationService {
     NotificationResponse getNotificationById(Long id);
     List<NotificationResponse> getAllNotifications();
     List<NotificationResponse> getNotificationsByUserId(Long userId);
+    List<NotificationResponse> getNotificationsByUserEmail(String email);
     List<NotificationResponse> getUnreadNotifications(Long userId);
+    List<NotificationResponse> getUnreadNotificationsByUserEmail(String email);
     List<NotificationResponse> getNotificationsByType(String type);
     NotificationResponse updateNotification(Long id, NotificationRequest request);
     void deleteNotification(Long id);

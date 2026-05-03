@@ -8,6 +8,7 @@ import tn.esprit._4se2.pi.entities.TeamJoinRequest;
 import tn.esprit._4se2.pi.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeamJoinRequestRepository extends JpaRepository<TeamJoinRequest, Long> {
@@ -20,4 +21,13 @@ public interface TeamJoinRequestRepository extends JpaRepository<TeamJoinRequest
     
     // Nouvelle méthode pour récupérer toutes les demandes par statut
     List<TeamJoinRequest> findByStatus(JoinRequestStatus status);
+
+    // Methods from integration
+    List<TeamJoinRequest> findAllByTeamIdAndStatus(Long teamId, JoinRequestStatus status);
+
+    List<TeamJoinRequest> findAllByTeamIdOrderByCreatedAtDesc(Long teamId);
+
+    boolean existsByTeamIdAndUserIdAndStatus(Long teamId, Long userId, JoinRequestStatus status);
+
+    Optional<TeamJoinRequest> findByIdAndTeamId(Long id, Long teamId);
 }

@@ -132,8 +132,11 @@ public class AuthService {
         UserDetails userDetails =
                 userDetailsService.loadUserByUsername(req.email());
 
+        User authenticatedUser = userRepository.findByEmail(req.email())
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable: " + req.email()));
+
         // 3. Générer le JWT
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetails, authenticatedUser.getId());
 
         // 4. Récupérer le rôle
         String role = userDetails.getAuthorities().stream()
@@ -141,6 +144,6 @@ public class AuthService {
                 .map(a -> a.getAuthority())
                 .orElse("UNKNOWN");
 
-        return new AuthResponse(token, req.email(), role);
+        return new AuthResponse(token, authenticatedUser.getEmail(), role);
     }
 }
