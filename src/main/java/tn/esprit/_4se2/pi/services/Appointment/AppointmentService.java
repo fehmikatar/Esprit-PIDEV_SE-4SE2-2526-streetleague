@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentRequest;
 import tn.esprit._4se2.pi.dto.Appointment.AppointmentResponse;
 import tn.esprit._4se2.pi.dto.AppointmentDetails.AppointmentDetailsDTO;
@@ -39,22 +40,36 @@ public class AppointmentService implements IAppointmentService {
         log.info("Creating appointment for user {} with doctor {}", request.getUserId(), request.getDoctorId());
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "User not found with id: " + request.getUserId()));
 
         Doctor doctor = doctorRepository.findById(request.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found with id: " + request.getDoctorId()));
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Doctor not found with id: " + request.getDoctorId()));
 
         if (!doctor.isAvailable()) {
-            throw new RuntimeException("Doctor is currently not available for appointments.");
+            throw new IllegalArgumentException("Doctor is currently not available for appointments.");
         }
 
         if (doctor.getWorkingHoursStart() != null && doctor.getWorkingHoursEnd() != null) {
-            java.time.LocalTime appointmentTime = request.getAppointmentDate().toLocalTime();
-            java.time.LocalTime start = java.time.LocalTime.parse(doctor.getWorkingHoursStart());
-            java.time.LocalTime end = java.time.LocalTime.parse(doctor.getWorkingHoursEnd());
+            try {
+                java.time.LocalTime appointmentTime = request.getAppointmentDate().toLocalTime();
+                
+                // Formatter flexible pour accepter H:mm, HH:mm, etc.
+                java.time.format.DateTimeFormatter timeFormatter = java.time.format.DateTimeFormatter.ofPattern("[HH:mm][H:mm][HH:mm:ss]");
+                
+                java.time.LocalTime start = java.time.LocalTime.parse(doctor.getWorkingHoursStart(), timeFormatter);
+                java.time.LocalTime end = java.time.LocalTime.parse(doctor.getWorkingHoursEnd(), timeFormatter);
 
-            if (appointmentTime.isBefore(start) || appointmentTime.isAfter(end)) {
-                throw new RuntimeException("Doctor only works between " + doctor.getWorkingHoursStart() + " and " + doctor.getWorkingHoursEnd());
+                if (appointmentTime.isBefore(start) || appointmentTime.isAfter(end)) {
+                    log.warn("Le rendez-vous ({}) est en dehors des heures de travail du médecin ({} - {}), mais on l'autorise.", 
+                            appointmentTime, doctor.getWorkingHoursStart(), doctor.getWorkingHoursEnd());
+                    // On ne jette plus d'exception pour laisser plus de flexibilité
+                    // throw new IllegalArgumentException("Le médecin ne travaille qu'entre " + doctor.getWorkingHoursStart() + " et " + doctor.getWorkingHoursEnd());
+                }
+            } catch (java.time.format.DateTimeParseException e) {
+                log.error("Erreur de format d'heure pour le docteur {}: start={}, end={}", 
+                        doctor.getId(), doctor.getWorkingHoursStart(), doctor.getWorkingHoursEnd());
+                // Si le format est invalide, on peut soit bloquer soit autoriser. 
+                // Ici on choisit d'autoriser pour ne pas bloquer l'app à cause d'un mauvais format en BD.
             }
         }
 
@@ -67,7 +82,7 @@ public class AppointmentService implements IAppointmentService {
                         a.getDoctor().getId().equals(request.getDoctorId())
         );
         if (exists) {
-            throw new RuntimeException("Un rendez-vous identique existe déjà pour cette heure.");
+            throw new IllegalArgumentException("Un rendez-vous identique existe déjà pour cette heure.");
         }
 
         Appointment appointment = appointmentMapper.toEntity(request);

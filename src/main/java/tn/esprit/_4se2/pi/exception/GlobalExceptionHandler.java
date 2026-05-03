@@ -12,29 +12,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> handleResponseStatus(ResponseStatusException ex) {
+        String msg = ex.getReason() != null ? ex.getReason() : "Action non autorisée ou ressource introuvable";
         return ResponseEntity.status(ex.getStatusCode())
-                .body(Map.of("error", ex.getReason() != null ? ex.getReason() : "Action non autorisée ou ressource introuvable"));
+                .body(Map.of("error", msg, "message", msg));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
-            errors.put(error.getField(), error.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(Map.of("errors", errors));
+        StringBuilder details = new StringBuilder("Validation failed: ");
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+            details.append("[").append(error.getField()).append(": ").append(error.getDefaultMessage()).append("] ");
+        });
+        return ResponseEntity.badRequest().body(Map.of(
+            "errors", errors, 
+            "message", details.toString().trim(),
+            "error", "Validation failed"
+        ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.badRequest()
-                .body(Map.of("error", ex.getMessage()));
+                .body(Map.of("error", ex.getMessage(), "message", ex.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntime(RuntimeException ex) {
         // Log the exception to help debug
         ex.printStackTrace();
+        String msg = "Une erreur interne est survenue: " + ex.getMessage();
         return ResponseEntity.status(500)
-                .body(Map.of("error", "Une erreur interne est survenue: " + ex.getMessage()));
+                .body(Map.of("error", msg, "message", msg));
     }
 }

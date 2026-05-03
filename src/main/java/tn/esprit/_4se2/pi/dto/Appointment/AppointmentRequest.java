@@ -21,7 +21,7 @@ public class AppointmentRequest {
     Long doctorId;
 
     @NotNull(message = "Appointment date is required")
-    @Future(message = "Appointment date must be in the future")
+    @FutureOrPresent(message = "Appointment date must not be in the past")
     LocalDateTime appointmentDate;
 
     @NotBlank(message = "Reason is required")

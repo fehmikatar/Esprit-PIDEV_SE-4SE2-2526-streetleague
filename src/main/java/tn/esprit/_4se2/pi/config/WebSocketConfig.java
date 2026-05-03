@@ -31,13 +31,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Primary endpoint (merged configurations)
         registry.addEndpoint("/ws")
-            .setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
             .setAllowedOriginPatterns("*")
             .withSockJS();
 
         // Fallback endpoint tried by chat.service.ts
         registry.addEndpoint("/ws-chat")
-            .setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+            .setAllowedOriginPatterns("*")
             .withSockJS();
     }
 
