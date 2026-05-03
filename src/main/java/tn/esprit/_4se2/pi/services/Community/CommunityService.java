@@ -3,9 +3,9 @@ package tn.esprit._4se2.pi.services.Community;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,16 +16,25 @@ import tn.esprit._4se2.pi.dto.Community.CreatePostRequest;
 import tn.esprit._4se2.pi.dto.Community.PostResponse;
 import tn.esprit._4se2.pi.dto.Community.ReactionSummary;
 import tn.esprit._4se2.pi.dto.Community.UserReactionResponse;
-import tn.esprit._4se2.pi.entities.*;
-// ✅ Si manquant
-import tn.esprit._4se2.pi.repositories.*;
-import tn.esprit._4se2.pi.dto.Community.ReactionSummary;
+import tn.esprit._4se2.pi.entities.CommentLike;
+import tn.esprit._4se2.pi.entities.CommunityPost;
+import tn.esprit._4se2.pi.entities.PostComment;
+import tn.esprit._4se2.pi.entities.PostLike;
+import tn.esprit._4se2.pi.entities.ReactionType;
+import tn.esprit._4se2.pi.entities.Team;
+import tn.esprit._4se2.pi.entities.User;
+import tn.esprit._4se2.pi.repositories.CommentLikeRepository;
+import tn.esprit._4se2.pi.repositories.CommunityPostRepository;
+import tn.esprit._4se2.pi.repositories.PostCommentRepository;
+import tn.esprit._4se2.pi.repositories.PostLikeRepository;
+import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
+import tn.esprit._4se2.pi.repositories.TeamRepository;
+import tn.esprit._4se2.pi.repositories.UserRepository;
 
-import java.util.stream.Collectors;
-import java.util.Optional;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,8 +54,6 @@ public class CommunityService {
     private final TeamMemberRepository teamMemberRepository;
     private final UserRepository userRepository;
     private final BadWordsFilterService badWordsFilter;
-        private final CommunityPostRepository communityPostRepository;  // ✅ Doit être présent
-    private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     
@@ -81,11 +88,12 @@ public class CommunityService {
     private PostResponse toPostResponse(CommunityPost post, Long currentUserId) {
         PostResponse r = new PostResponse();
         r.setId(post.getId());
+        r.setTitle("Post");
         r.setContent(post.getContent());
         r.setImageUrl(post.getImageUrl());
         r.setTeamId(post.getTeam().getId());
         r.setCreatedAt(post.getCreatedAt());
-        r.setLikeCount(post.getLikeCount());
+        r.setLikeCount(post.getLikesCount());
         r.setCommentCount(post.getCommentCount());
         r.setLikedByCurrentUser(likeRepository.existsByUserIdAndPostId(currentUserId, post.getId()));
         r.setAuthor(toAuthorInfo(post.getAuthor()));
@@ -256,10 +264,10 @@ public PostResponse likePost(Long postId) {
 
     if (!likeRepository.existsByUserIdAndPostId(user.getId(), postId)) {
         PostLike like = new PostLike();
-        like.setUserId(user.getId());  // ✅ Changé
-        like.setPostId(postId);        // ✅ Changé
+        like.setUser(user);
+        like.setPost(post);
         likeRepository.save(like);
-        post.setLikeCount(post.getLikeCount() + 1);
+        post.setLikesCount(post.getLikesCount() + 1);
         postRepository.save(post);
     }
 
@@ -276,7 +284,7 @@ public PostResponse unlikePost(Long postId) {
     Optional<PostLike> like = likeRepository.findByUserIdAndPostId(user.getId(), postId);
     if (like.isPresent()) {
         likeRepository.delete(like.get());
-        post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
+        post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
         postRepository.save(post);
     }
 
@@ -291,9 +299,10 @@ public List<PostResponse.AuthorInfo> getPostLikers(Long postId) {
 
     return likeRepository.findByPostId(postId).stream()
             .map(like -> {
-                // ✅ Récupérer l'utilisateur via son ID
-                User likerUser = userRepository.findById(like.getUserId())
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                User likerUser = like.getUser();
+                if (likerUser == null) {
+                    throw new RuntimeException("User not found");
+                }
                 return toAuthorInfo(likerUser);
             })
             .collect(Collectors.toList());
@@ -314,8 +323,6 @@ public List<PostResponse.AuthorInfo> getPostLikers(Long postId) {
         if (filename == null || !filename.contains(".")) return "jpg";
         return filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     }
-
-// Ajoutez ces méthodes dans CommunityService
 
 /**
  * Ajoute ou change une réaction sur un post
@@ -344,13 +351,13 @@ public void addOrUpdateReaction(Long postId, String userEmail, ReactionType reac
     } else {
         // Créer une nouvelle réaction
         PostLike newReaction = new PostLike();
-        newReaction.setUserId(user.getId());   // ✅ Changé
-        newReaction.setPostId(postId);         // ✅ Changé
+        newReaction.setUser(user);
+        newReaction.setPost(post);
         newReaction.setReactionType(reactionType);
         likeRepository.save(newReaction);
         
         // Incrémenter le compteur
-        post.setLikeCount(post.getLikeCount() + 1);
+        post.setLikesCount(post.getLikesCount() + 1);
         postRepository.save(post);
     }
 }
@@ -369,7 +376,7 @@ public void removeReaction(Long postId, String userEmail) {
         // Décrémenter le compteur
         CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
+        post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
         postRepository.save(post);
     }
 }
@@ -378,7 +385,7 @@ public void removeReaction(Long postId, String userEmail) {
  * Obtenir le résumé des réactions
  */
 public List<ReactionSummary> getReactionSummary(Long postId) {
-    List<Object[]> results = postLikeRepository.countReactionsByPost(postId);
+    List<Object[]> results = likeRepository.countReactionsByPost(postId);
     
     return results.stream()
             .map(row -> new ReactionSummary(
@@ -393,7 +400,7 @@ public List<ReactionSummary> getReactionSummary(Long postId) {
  * Obtenir la réaction de l'utilisateur courant
  */
 public ReactionType getCurrentUserReaction(Long postId, Long userId) {
-    return postLikeRepository.findByUserIdAndPostId(userId, postId)
+    return likeRepository.findByUserIdAndPostId(userId, postId)
             .map(PostLike::getReactionType)
             .orElse(null);
 }
@@ -445,13 +452,15 @@ public void removeCommentReaction(Long commentId, String userEmail) {
 public List<UserReactionResponse> getPostReactionUsers(Long postId) {
     return likeRepository.findByPostId(postId).stream()
             .map(like -> {
-                User user = userRepository.findById(like.getUserId())
-                        .orElseThrow(() -> new RuntimeException("User not found: " + like.getUserId()));
+                User reactionUser = like.getUser();
+                if (reactionUser == null) {
+                    throw new RuntimeException("User not found for reaction");
+                }
                 return UserReactionResponse.builder()
-                        .userId(user.getId())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .profileImageUrl(user.getProfileImageUrl())
+                        .userId(reactionUser.getId())
+                        .firstName(reactionUser.getFirstName())
+                        .lastName(reactionUser.getLastName())
+                        .profileImageUrl(reactionUser.getProfileImageUrl())
                         .reactionType(like.getReactionType())
                         .build();
             })

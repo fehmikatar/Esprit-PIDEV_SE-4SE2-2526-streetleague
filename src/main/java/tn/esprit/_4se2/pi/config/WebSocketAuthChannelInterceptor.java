@@ -50,7 +50,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
             var principal = new UsernamePasswordAuthenticationToken(
                 email, null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                List.of(new SimpleGrantedAuthority(user.getRole().name()))
             );
             accessor.setUser(principal);
 
