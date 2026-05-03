@@ -59,6 +59,23 @@ public class BookingRestController {
         return ResponseEntity.ok(reservations);
     }
 
+    @GetMapping("/my-team-bookings")
+    public ResponseEntity<List<BookingResponse>> getMyTeamBookings(
+            Authentication authentication,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        Long userId = extractUserIdFromToken(authorizationHeader);
+
+        if (userId == null && (authentication == null || authentication.getName() == null)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BookingResponse> reservations = userId != null
+                ? bookingService.getBookingsByTeamMemberUserId(userId)
+                : bookingService.getBookingsByTeamMemberUserEmail(authentication.getName());
+
+        return ResponseEntity.ok(reservations);
+    }
+
     private Long extractUserIdFromToken(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             return null;

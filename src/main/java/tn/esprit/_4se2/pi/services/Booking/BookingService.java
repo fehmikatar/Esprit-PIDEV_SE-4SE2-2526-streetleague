@@ -9,11 +9,13 @@ import tn.esprit._4se2.pi.dto.Booking.BookingResponse;
 import tn.esprit._4se2.pi.dto.Notification.NotificationRequest;
 import tn.esprit._4se2.pi.entities.Booking;
 import tn.esprit._4se2.pi.entities.SportSpace;
+import tn.esprit._4se2.pi.entities.TeamMember;
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.exception.ConflictException;
 import tn.esprit._4se2.pi.mappers.BookingMapper;
 import tn.esprit._4se2.pi.repositories.BookingRepository;
 import tn.esprit._4se2.pi.repositories.SportSpaceRepository;
+import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 import tn.esprit._4se2.pi.services.Notification.INotificationService;
 import tn.esprit._4se2.pi.services.WebSocket.WebSocketNotificationService;
@@ -21,12 +23,14 @@ import tn.esprit._4se2.pi.services.WebSocket.WebSocketNotificationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +55,7 @@ public class BookingService implements IBookingService {
     private final INotificationService notificationService;
     private final UserRepository userRepository;
     private final SportSpaceRepository sportSpaceRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     @Override
     public BookingResponse createBooking(BookingRequest request) {
@@ -186,6 +191,35 @@ public class BookingService implements IBookingService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
 
         return getBookingsByUserId(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getBookingsByTeamMemberUserId(Long userId) {
+        log.info("Fetching team bookings for user: {}", userId);
+
+        Set<Long> teammateUserIds = resolveTeammateUserIds(userId);
+        if (teammateUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        return bookingRepository.findByUserIdIn(teammateUserIds.stream().toList())
+                .stream()
+                .sorted(Comparator.comparing(Booking::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                .map(this::enrichResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getBookingsByTeamMemberUserEmail(String userEmail) {
+        log.info("Fetching team bookings for user email: {}", userEmail);
+
+        Long userId = userRepository.findByEmail(userEmail)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+
+        return getBookingsByTeamMemberUserId(userId);
     }
 
     @Override
@@ -662,6 +696,31 @@ public class BookingService implements IBookingService {
         return sportSpaceRepository.findById(sportSpaceId)
                 .map(SportSpace::getName)
                 .orElse("Terrain");
+    }
+
+    private Set<Long> resolveTeammateUserIds(Long userId) {
+        Set<Long> teamIds = teamMemberRepository.findByUserId(userId)
+                .stream()
+                .map(teamMember -> teamMember.getId() != null ? teamMember.getId().getTeamId() : null)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        if (teamIds.isEmpty()) {
+            return Set.of(userId);
+        }
+
+        Set<Long> teammateUserIds = new LinkedHashSet<>();
+        for (Long teamId : teamIds) {
+            for (TeamMember member : teamMemberRepository.findByTeamId(teamId)) {
+                Long memberUserId = member.getId() != null ? member.getId().getUserId() : null;
+                if (memberUserId != null) {
+                    teammateUserIds.add(memberUserId);
+                }
+            }
+        }
+
+        teammateUserIds.add(userId);
+        return teammateUserIds;
     }
 
     private String formatDate(LocalDateTime dateTime) {

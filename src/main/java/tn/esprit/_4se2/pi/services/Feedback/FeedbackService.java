@@ -7,6 +7,8 @@ import tn.esprit._4se2.pi.dto.Feedback.ToxicityResult;
 import tn.esprit._4se2.pi.services.Feedback.ToxicityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,17 +17,22 @@ import tn.esprit._4se2.pi.dto.Feedback.FeedbackResponse;
 import tn.esprit._4se2.pi.entities.Booking;
 import tn.esprit._4se2.pi.entities.Feedback;
 import tn.esprit._4se2.pi.entities.SportSpace;
+import tn.esprit._4se2.pi.entities.TeamMember;
 import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.Enum.Role;
 import tn.esprit._4se2.pi.mappers.FeedbackMapper;
 import tn.esprit._4se2.pi.repositories.BookingRepository;
 import tn.esprit._4se2.pi.repositories.FeedbackRepository;
 import tn.esprit._4se2.pi.repositories.SportSpaceRepository;
+import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
 
 import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,6 +46,7 @@ public class FeedbackService implements IFeedbackService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final SportSpaceRepository sportSpaceRepository;
+    private final TeamMemberRepository teamMemberRepository;
     private final ToxicityService toxicityService;
     private final NotificationRepository notificationRepository;
 
@@ -49,8 +57,8 @@ public class FeedbackService implements IFeedbackService {
     public FeedbackResponse createFeedback(FeedbackRequest request) {
         log.info("Creating feedback for sport space: {}", request.getSportSpaceId());
 
-        Booking booking = bookingRepository.findByIdAndUserId(request.getBookingId(), request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Booking not found for this user"));
+        Long currentUserId = resolveCurrentUserId(request.getUserId());
+        Booking booking = resolveAuthorizedBooking(request.getBookingId(), currentUserId);
 
         if (!"CONFIRMED".equalsIgnoreCase(booking.getStatus())
                 && !"COMPLETED".equalsIgnoreCase(booking.getStatus())) {
@@ -65,8 +73,8 @@ public class FeedbackService implements IFeedbackService {
             throw new RuntimeException("Feedback is allowed only after the match has finished");
         }
 
-        if (feedbackRepository.findByBookingId(request.getBookingId()).isPresent()) {
-            throw new RuntimeException("Feedback already exists for this booking");
+        if (feedbackRepository.findByUserIdAndSportSpaceId(currentUserId, request.getSportSpaceId()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vous avez déjà donné un avis pour ce terrain");
         }
 
         // ── Détection toxicité IA ─────────────────────────────────────────────
@@ -85,6 +93,9 @@ public class FeedbackService implements IFeedbackService {
         // ─────────────────────────────────────────────────────────────────────
 
         Feedback feedback = feedbackMapper.toEntity(request);
+        feedback.setUserId(currentUserId);
+        feedback.setBookingId(booking.getId());
+        feedback.setSportSpaceId(booking.getSportSpaceId());
         feedback.setToxic(isToxic);
         feedback.setCensoredComment(censorComment(comment));
         Feedback savedFeedback = feedbackRepository.save(feedback);
@@ -200,8 +211,15 @@ public class FeedbackService implements IFeedbackService {
     public FeedbackResponse updateFeedback(Long id, FeedbackRequest request) {
         log.info("Updating feedback with id: {}", id);
 
+        Long currentUserId = resolveCurrentUserId(request.getUserId());
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feedback not found with id: " + id));
+
+        if (!Objects.equals(feedback.getUserId(), currentUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vous ne pouvez modifier que votre propre avis");
+        }
+
+        resolveAuthorizedBooking(feedback.getBookingId(), currentUserId);
 
         feedbackMapper.updateEntity(request, feedback);
         feedback.setCensoredComment(censorComment(request.getComment()));
@@ -347,5 +365,50 @@ public class FeedbackService implements IFeedbackService {
         String lastName = user.getLastName() == null ? "" : user.getLastName().trim();
         String fullName = (firstName + " " + lastName).trim();
         return fullName.isBlank() ? user.getEmail() : fullName;
+    }
+
+    private Long resolveCurrentUserId(Long fallbackUserId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getName() != null && !"anonymousUser".equalsIgnoreCase(authentication.getName())) {
+            return userRepository.findByEmail(authentication.getName())
+                    .map(User::getId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur authentifié introuvable"));
+        }
+
+        if (fallbackUserId != null) {
+            return fallbackUserId;
+        }
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur non authentifié");
+    }
+
+    private Booking resolveAuthorizedBooking(Long bookingId, Long currentUserId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (Objects.equals(booking.getUserId(), currentUserId)) {
+            return booking;
+        }
+
+        Set<Long> bookingTeamIds = resolveTeamIds(booking.getUserId());
+        Set<Long> currentUserTeamIds = resolveTeamIds(currentUserId);
+
+        boolean sameTeam = bookingTeamIds.stream().anyMatch(currentUserTeamIds::contains);
+        if (!sameTeam) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vous devez appartenir à la même équipe que le réservant pour donner un avis");
+        }
+
+        return booking;
+    }
+
+    private Set<Long> resolveTeamIds(Long userId) {
+        Set<Long> teamIds = new LinkedHashSet<>();
+        for (TeamMember member : teamMemberRepository.findByUserId(userId)) {
+            Long teamId = member.getId() != null ? member.getId().getTeamId() : null;
+            if (teamId != null) {
+                teamIds.add(teamId);
+            }
+        }
+        return teamIds;
     }
 }

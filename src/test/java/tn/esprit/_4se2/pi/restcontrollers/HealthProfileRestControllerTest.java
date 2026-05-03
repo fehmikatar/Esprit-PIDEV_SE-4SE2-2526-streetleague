@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import tn.esprit._4se2.pi.Enum.Gender;
 import tn.esprit._4se2.pi.dto.HealthProfile.HealthProfileRequest;
 import tn.esprit._4se2.pi.dto.HealthProfile.HealthProfileResponse;
 import tn.esprit._4se2.pi.services.HealthProfile.IHealthProfileService;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class HealthProfileRestControllerTest {
 
     @Autowired
@@ -39,6 +40,7 @@ public class HealthProfileRestControllerTest {
         request.setWeight(70.0);
         request.setHeight(175.0);
         request.setAge(25);
+        request.setGender(Gender.MALE);
 
         HealthProfileResponse response = new HealthProfileResponse();
         response.setId(10L);
