@@ -6,7 +6,15 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "feedbacks")
+@Table(
+        name = "feedbacks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_feedback_user_sport_space",
+                        columnNames = {"user_id", "sport_space_id"}
+                )
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,13 +27,13 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "sport_space_id", nullable = false)
     Long sportSpaceId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "booking_id", nullable = false)
     Long bookingId;
 
     @Column(nullable = false)

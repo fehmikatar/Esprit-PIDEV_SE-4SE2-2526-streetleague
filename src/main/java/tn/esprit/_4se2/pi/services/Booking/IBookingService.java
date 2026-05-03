@@ -10,6 +10,8 @@ public interface IBookingService {
     List<BookingResponse> getAllBookings();
     List<BookingResponse> getBookingsByUserId(Long userId);
     List<BookingResponse> getBookingsByUserEmail(String userEmail);
+    List<BookingResponse> getBookingsByTeamMemberUserId(Long userId);
+    List<BookingResponse> getBookingsByTeamMemberUserEmail(String userEmail);
     List<BookingResponse> getBookingsByOwnerId(Long ownerId);
     List<BookingResponse> getBookingsByOwnerEmail(String ownerEmail);
     List<BookingResponse> getBookingsBySportSpaceId(Long sportSpaceId);

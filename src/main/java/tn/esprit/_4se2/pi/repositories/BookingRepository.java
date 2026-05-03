@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(Long userId);
+    List<Booking> findByUserIdIn(List<Long> userIds);
     List<Booking> findBySportSpaceId(Long sportSpaceId);
     List<Booking> findBySportSpaceIdIn(List<Long> sportSpaceIds);
     List<Booking> findByStatus(String status);

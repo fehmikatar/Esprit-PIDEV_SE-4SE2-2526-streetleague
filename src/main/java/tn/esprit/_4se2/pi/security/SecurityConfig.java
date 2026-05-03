@@ -68,7 +68,11 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/feedbacks/*/reply").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*/owner/me").hasAnyRole("FIELD_OWNER", "ADMIN")
-                        .requestMatchers("/api/feedbacks/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/feedbacks/summary").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/feedbacks/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/feedbacks").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/feedbacks/*").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/feedbacks/*").authenticated()
                         .requestMatchers("/api/cart/confirm-delivery/**").permitAll()
 
 
@@ -84,6 +88,7 @@ public class SecurityConfig {
                         // ── Role-restricted admin/field-owner/player ──
                         .requestMatchers("/api/admins/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/my-bookings").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/my-team-bookings").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sport-spaces/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
