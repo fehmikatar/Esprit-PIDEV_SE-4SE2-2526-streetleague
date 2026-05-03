@@ -77,6 +77,7 @@ public class SecurityConfig {
 
                         // ── Role-restricted admin/field-owner/player ──
                         .requestMatchers("/api/admins/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/my-bookings").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/bookings/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sport-spaces/owner/**").hasAnyRole("FIELD_OWNER", "ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
@@ -121,7 +122,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "http://127.0.0.1:4200"
+        ));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
