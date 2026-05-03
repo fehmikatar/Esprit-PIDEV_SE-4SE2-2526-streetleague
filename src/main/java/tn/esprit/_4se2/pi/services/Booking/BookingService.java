@@ -18,8 +18,11 @@ import tn.esprit._4se2.pi.repositories.UserRepository;
 import tn.esprit._4se2.pi.services.Notification.INotificationService;
 import tn.esprit._4se2.pi.services.WebSocket.WebSocketNotificationService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -168,8 +171,21 @@ public class BookingService implements IBookingService {
         log.info("Fetching bookings for user: {}", userId);
         return bookingRepository.findByUserId(userId)
                 .stream()
+                .sorted(Comparator.comparing(Booking::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .map(this::enrichResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getBookingsByUserEmail(String userEmail) {
+        log.info("Fetching bookings for user email: {}", userEmail);
+
+        Long userId = userRepository.findByEmail(userEmail)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+
+        return getBookingsByUserId(userId);
     }
 
     @Override
@@ -396,10 +412,29 @@ public class BookingService implements IBookingService {
                 });
 
         sportSpaceRepository.findById(booking.getSportSpaceId())
-                .map(SportSpace::getName)
-                .ifPresent(response::setSportSpaceName);
+                .ifPresent(sportSpace -> {
+                    response.setSportSpaceName(sportSpace.getName());
+
+                    if (response.getTotalPrice() == null) {
+                        response.setTotalPrice(resolveCalculatedTotalPrice(booking, sportSpace));
+                    }
+                });
 
         return response;
+    }
+
+    private BigDecimal resolveCalculatedTotalPrice(Booking booking, SportSpace sportSpace) {
+        if (booking.getStartTime() == null || booking.getEndTime() == null || sportSpace.getHourlyRate() == null) {
+            return null;
+        }
+
+        long durationInMinutes = Duration.between(booking.getStartTime(), booking.getEndTime()).toMinutes();
+        BigDecimal durationInHours = BigDecimal.valueOf(durationInMinutes)
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+        return sportSpace.getHourlyRate()
+                .multiply(durationInHours)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     private String buildUserName(User user) {
