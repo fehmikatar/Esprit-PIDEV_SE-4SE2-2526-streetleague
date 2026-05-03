@@ -42,39 +42,6 @@ public class BadgePlayerService implements IBadgePlayerService {
         badgePlayer.setObtainDate(LocalDate.now());
         badgePlayer.setPerformance(performance);
 
-        // Vérification des seuils pour générer un code promo
-        if (badge.getLevel() >= THRESHOLD_LEVEL && badge.getRequiredXp() >= THRESHOLD_XP) {
-            log.info("Badge '{}' atteint les seuils → génération d'un code promo", badge.getName());
-
-            String uniqueCode = generatePromoCode(badge, player);
-            BigDecimal discountPercent = calculateDiscountPercentage(badge.getRequiredXp());
-
-            PromoCodeDTO promoCodeDTO = PromoCodeDTO.builder()
-                    .code(uniqueCode)
-                    .discountType("PERCENTAGE")
-                    .discountValue(discountPercent)
-                    .expiryDate(LocalDateTime.now().plusDays(30))
-                    .usageLimit(1)
-                    .active(true)
-                    .build();
-
-            PromoCodeDTO savedPromoCode = promoCodeService.addPromoCode(promoCodeDTO);
-            if (savedPromoCode != null) {
-                // Création de la promotion associée
-                PromotionRequest promotionRequest = PromotionRequest.builder()
-                        .name("Promotion badge: " + badge.getName())
-                        .promoCode(uniqueCode)
-                        .discount(discountPercent.doubleValue())
-                        .startDate(LocalDate.now())
-                        .endDate(LocalDate.now().plusDays(30))
-                        .build();
-                promotionService.createPromotion(promotionRequest);
-                log.info("Code promo {} généré avec {}% de réduction", uniqueCode, discountPercent);
-            } else {
-                log.warn("Échec création code promo (peut-être duplicata)");
-            }
-        }
-
         return badgePlayerRepository.save(badgePlayer);
     }
 

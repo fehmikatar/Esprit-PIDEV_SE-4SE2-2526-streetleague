@@ -1,29 +1,42 @@
 package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
-import tn.esprit._4se2.pi.entities.Order;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Builder
 public class LoyaltyClient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_id", unique = true) // suppose une entité User existante
+    private User user;              // ou clientId selon votre modèle
+
+    @ManyToOne
+    @JoinColumn(name = "current_tier_id")
+    private LoyaltyTier currentTier;
+
     @ManyToOne
     @JoinColumn(name = "program_id")
     private LoyaltyProgram program;
-    private String currentTier;
-    private int totalPoints;
-    private int pointsBalance;
-    @OneToMany(mappedBy = "client")
-    private List<Order> orders = new ArrayList<>();
+
+    private Integer totalPoints;
+    private LocalDateTime tierValidUntil;  // si les tiers sont temporaires
+    private LocalDateTime joinedAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        joinedAt = LocalDateTime.now();
+        totalPoints = 0;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

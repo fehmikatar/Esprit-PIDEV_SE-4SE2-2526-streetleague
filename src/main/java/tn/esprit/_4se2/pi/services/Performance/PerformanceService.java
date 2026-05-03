@@ -47,16 +47,6 @@ public class PerformanceService implements IPerformanceService {
         Performance performance = performanceMapper.toEntity(request);
         Performance saved = performanceRepository.save(performance);
 
-        // Calcul XP via utilitaire
-        int xpGained = XpCalculator.calculateXpGained(saved);
-        PlayerLevel playerLevel = playerLevelService.addXp(saved.getPlayer(), xpGained);
-
-        // Attribution des badges non encore obtenus
-        List<Badge> badgesToAward = badgeRepository.findByRequiredXpLessThanEqual(playerLevel.getTotalXp());
-        for (Badge badge : badgesToAward) {
-            badgePlayerService.awardBadgeToPlayer(saved.getPlayer(), badge, saved);
-        }
-
         log.info("Performance créée avec l'id : {}", saved.getId());
         return performanceMapper.toResponse(saved);
     }

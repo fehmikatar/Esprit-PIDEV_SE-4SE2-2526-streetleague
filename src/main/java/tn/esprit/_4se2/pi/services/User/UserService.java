@@ -12,6 +12,8 @@ import tn.esprit._4se2.pi.repositories.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -171,5 +173,14 @@ public class UserService implements IUserService {
         }
 
         return imageData;
+    }
+
+    public String getUserFullName(Long id) {
+
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        return user.getFirstName() + " " + user.getLastName();
     }
 }

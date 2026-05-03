@@ -75,7 +75,7 @@ public class AuthService {
                 yield fo;
             }
             case ROLE_PLAYER -> {
-                User playerUser = new User();
+                Player playerUser = new Player();
                 playerUser.setFirstName(req.firstName());
                 playerUser.setLastName(req.lastName());
                 playerUser.setEmail(req.email());
@@ -141,6 +141,11 @@ public class AuthService {
                 .map(a -> a.getAuthority())
                 .orElse("UNKNOWN");
 
-        return new AuthResponse(token, req.email(), role);
+        // 5. Récupérer l'utilisateur pour l'ID et le nom
+        User user = userRepository.findByEmail(req.email())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        String name = user.getFirstName() + " " + user.getLastName();
+
+        return new AuthResponse(user.getId(), token, req.email(), name, role);
     }
 }
