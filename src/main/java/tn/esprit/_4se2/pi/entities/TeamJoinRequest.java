@@ -8,15 +8,7 @@ import tn.esprit._4se2.pi.Enum.JoinRequestStatus;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "team_join_requests",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uq_pending_join_request",
-                        columnNames = {"team_id", "user_id", "status"}
-                )
-        }
-)
+@Table(name = "team_join_requests")
 @Getter
 @Setter
 @NoArgsConstructor

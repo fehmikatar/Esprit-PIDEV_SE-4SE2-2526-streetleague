@@ -132,36 +132,53 @@ public class TeamJoinRequestService implements TeamJoinRequestServiceInterface {
             throw new RuntimeException("Reviewer not found");
         }
 
-        // ✅ Changer le statut
+        Long teamId = request.getTeam().getId();
+        Long userId = request.getUser().getId();
+
+        // 1. Check if the user is already a member of the team
+        if (teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
+            // Optionnel: Rejeter automatiquement la demande car inutile
+            request.setStatus(JoinRequestStatus.REJECTED);
+            request.setMessage(request.getMessage() + " (Auto-rejected: User already member)");
+            request.setReviewedAt(LocalDateTime.now());
+            request.setReviewedBy(reviewer);
+            joinRequestRepository.save(request);
+            throw new RuntimeException("This user is already a member of the team.");
+        }
+
+        // 2. Check if another APPROVED entry already exists for same (team_id, user_id)
+        boolean alreadyApproved = joinRequestRepository.existsByTeamIdAndUserIdAndStatus(
+                teamId, userId, JoinRequestStatus.APPROVED);
+        
+        if (alreadyApproved) {
+            // Skip update but consider it "done" or throw error if preferred.
+            // User requested to "skip" or Skip update if already exists.
+            request.setStatus(JoinRequestStatus.APPROVED);
+            request.setReviewedAt(LocalDateTime.now());
+            request.setReviewedBy(reviewer);
+            return joinRequestRepository.save(request);
+        }
+
+        // 3. Only then update the status to APPROVED
         request.setStatus(JoinRequestStatus.APPROVED);
         request.setReviewedAt(LocalDateTime.now());
         request.setReviewedBy(reviewer);
 
-        // ✅✅ NOUVEAU : Ajouter l'utilisateur à l'équipe
+        // Add l'utilisateur à l'équipe
         try {
-            Long teamId = request.getTeam().getId();
-            Long userId = request.getUser().getId();
-
             System.out.println("🔄 Tentative d'ajout du membre: Team=" + teamId + ", User=" + userId);
+            
+            TeamMemberId memberId = new TeamMemberId(userId, teamId);
+            TeamMember newMember = new TeamMember();
+            newMember.setId(memberId);
+            newMember.setTeam(request.getTeam());
+            newMember.setUser(request.getUser());
+            newMember.setRole(TeamMember.Role.MEMBER);
 
-            // Vérifier qu'il n'est pas déjà membre
-            if (!teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
-                TeamMemberId memberId = new TeamMemberId(userId, teamId);
-
-                TeamMember newMember = new TeamMember();
-                newMember.setId(memberId);
-                newMember.setTeam(request.getTeam());
-                newMember.setUser(request.getUser());
-                newMember.setRole(TeamMember.Role.MEMBER);
-
-                teamMemberRepository.save(newMember);
-                System.out.println("✅ Utilisateur " + userId + " ajouté à l'équipe " + teamId);
-            } else {
-                System.out.println("⚠️ Utilisateur déjà membre de l'équipe " + teamId);
-            }
+            teamMemberRepository.save(newMember);
+            System.out.println("✅ Utilisateur " + userId + " ajouté à l'équipe " + teamId);
         } catch (Exception e) {
             System.err.println("❌ Erreur lors de l'ajout du membre à l'équipe: " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException("Erreur lors de l'ajout du membre : " + e.getMessage());
         }
 
