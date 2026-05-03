@@ -17,11 +17,11 @@ public class ChatSessionRegistry {
     // roomId -> set of user names currently typing
     private final Map<String, Set<String>> typingUsers = new ConcurrentHashMap<>();
 
-    public void joinRoom(String sessionId, String roomId, Long userId, String userName) {
+    public void joinRoom(String sessionId, String roomId, Long userId, String userName, String email) {
         sessionRoom.put(sessionId, roomId);
         roomSessions
             .computeIfAbsent(roomId, k -> new ConcurrentHashMap<>())
-            .put(sessionId, new UserInfo(userId, userName, sessionId));
+            .put(sessionId, new UserInfo(userId, userName, sessionId, email));
     }
 
     /** Removes the session from its room and returns info needed for the leave broadcast. */
@@ -61,7 +61,7 @@ public class ChatSessionRegistry {
         return typing != null ? List.copyOf(typing) : Collections.emptyList();
     }
 
-    public record UserInfo(Long userId, String userName, String sessionId) {}
+    public record UserInfo(Long userId, String userName, String sessionId, String email) {}
 
     public record LeaveResult(String roomId, UserInfo user) {}
 }

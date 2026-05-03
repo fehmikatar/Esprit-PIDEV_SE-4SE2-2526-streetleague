@@ -43,6 +43,8 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         try {
             String token = raw.substring(7);
             String email = jwtService.extractEmail(token);
+            if (email != null) email = email.toLowerCase();
+
             User user = userRepository.findByEmail(email).orElse(null);
             if (user == null) return message;
 

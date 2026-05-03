@@ -1,0 +1,242 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< esprit.tn:esprit-4se2-pi >----------------------
+[INFO] Building esprit-4se2-pi 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.0:run (default-cli) > test-compile @ esprit-4se2-pi >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ esprit-4se2-pi ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ esprit-4se2-pi ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ esprit-4se2-pi ---
+[INFO] skip non existing resourceDirectory C:\Users\fehmi\Downloads\nnnnn\Esprit-PIDEV_SE-4SE2-2526-streetleague\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ esprit-4se2-pi ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 1 source file with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.2.0:run (default-cli) < test-compile @ esprit-4se2-pi <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.0:run (default-cli) @ esprit-4se2-pi ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.0)
+
+2026-05-03T03:04:14.118+01:00  INFO 9476 --- [PI] [           main] tn.esprit._4se2.pi.PiApplication         : Starting PiApplication using Java 23.0.2 with PID 9476 (C:\Users\fehmi\Downloads\nnnnn\Esprit-PIDEV_SE-4SE2-2526-streetleague\target\classes started by fehmi in C:\Users\fehmi\Downloads\nnnnn\Esprit-PIDEV_SE-4SE2-2526-streetleague)
+2026-05-03T03:04:14.128+01:00  INFO 9476 --- [PI] [           main] tn.esprit._4se2.pi.PiApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-05-03T03:04:15.823+01:00  INFO 9476 --- [PI] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-03T03:04:16.022+01:00  INFO 9476 --- [PI] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 182 ms. Found 43 JPA repository interfaces.
+2026-05-03T03:04:16.964+01:00  INFO 9476 --- [PI] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2026-05-03T03:04:16.982+01:00  INFO 9476 --- [PI] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-03T03:04:16.984+01:00  INFO 9476 --- [PI] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-05-03T03:04:17.120+01:00  INFO 9476 --- [PI] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-03T03:04:17.121+01:00  INFO 9476 --- [PI] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2897 ms
+2026-05-03T03:04:17.375+01:00  INFO 9476 --- [PI] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-03T03:04:17.488+01:00  INFO 9476 --- [PI] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-05-03T03:04:17.568+01:00  INFO 9476 --- [PI] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-03T03:04:17.965+01:00  INFO 9476 --- [PI] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-03T03:04:18.007+01:00  INFO 9476 --- [PI] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-03T03:04:18.230+01:00  INFO 9476 --- [PI] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@70ee9d31
+2026-05-03T03:04:18.232+01:00  INFO 9476 --- [PI] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-03T03:04:18.743+01:00  WARN 9476 --- [PI] [           main] o.h.boot.model.internal.ToOneBinder      : HHH000491: 'tn.esprit._4se2.pi.entities.Team.createdBy' uses both @NotFound and FetchType.LAZY. @ManyToOne and @OneToOne associations mapped with @NotFound are forced to EAGER fetching.
+2026-05-03T03:04:20.282+01:00  INFO 9476 --- [PI] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-03T03:04:20.990+01:00  INFO 9476 --- [PI] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+? FileStorageConfig CONSTRUCTOR appelé !
+2026-05-03T03:04:21.900+01:00  INFO 9476 --- [PI] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-03T03:04:24.340+01:00 DEBUG 9476 --- [PI] [           main] o.s.w.s.s.s.WebSocketHandlerMapping      : Patterns [/ws/**, /ws-chat/**] in 'stompWebSocketHandlerMapping'
+2026-05-03T03:04:24.503+01:00  WARN 9476 --- [PI] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-03T03:04:24.566+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.AdminRestController:
+	
+2026-05-03T03:04:24.568+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.AuthController:
+	
+2026-05-03T03:04:24.568+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.BadgeController:
+	
+2026-05-03T03:04:24.568+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.BookingRestController:
+	
+2026-05-03T03:04:24.570+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.CallController:
+	
+2026-05-03T03:04:24.570+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.CartRestController:
+	
+2026-05-03T03:04:24.571+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.CategoryRestController:
+	
+2026-05-03T03:04:24.571+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.ChatController:
+	
+2026-05-03T03:04:24.572+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.CommunityController:
+	
+2026-05-03T03:04:24.572+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.CompetitionController:
+	
+2026-05-03T03:04:24.573+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.FavoriteRestController:
+	
+2026-05-03T03:04:24.573+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.FeedbackRestController:
+	
+2026-05-03T03:04:24.574+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.FieldOwnerRestController:
+	
+2026-05-03T03:04:24.574+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.MatchController:
+	
+2026-05-03T03:04:24.575+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.MatchEventController:
+	
+2026-05-03T03:04:24.576+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.NotificationRestController:
+	
+2026-05-03T03:04:24.576+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PasswordResetController:
+	
+2026-05-03T03:04:24.577+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PerformanceController:
+	
+2026-05-03T03:04:24.577+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PlayerLevelController:
+	
+2026-05-03T03:04:24.577+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PlayerRestController:
+	
+2026-05-03T03:04:24.578+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PricingRuleRestController:
+	
+2026-05-03T03:04:24.578+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.ProductRestController:
+	
+2026-05-03T03:04:24.580+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PromoCodeRestController:
+	
+2026-05-03T03:04:24.581+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.PromotionController:
+	
+2026-05-03T03:04:24.582+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.RegistrationController:
+	
+2026-05-03T03:04:24.583+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.SportSpaceAvailabilityRestController:
+	
+2026-05-03T03:04:24.583+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.SportSpaceRestController:
+	
+2026-05-03T03:04:24.585+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.TeamBookingRestController:
+	
+2026-05-03T03:04:24.585+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.TeamController:
+	
+2026-05-03T03:04:24.585+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.TeamLineupController:
+	
+2026-05-03T03:04:24.586+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.TeamManagerRestController:
+	
+2026-05-03T03:04:24.586+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.TeamMemberController:
+	
+2026-05-03T03:04:24.587+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.r.UserRestController:
+	
+2026-05-03T03:04:24.595+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.w.ChatWebSocketController:
+	{[MESSAGE],[/chat.join]}: handleJoin(Map,SimpMessageHeaderAccessor,Principal)
+	{[MESSAGE],[/chat.send]}: handleSend(Map,SimpMessageHeaderAccessor,Principal)
+	{[MESSAGE],[/call.answer]}: handleCallAnswer(Map,Principal,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/call.ice]}: handleCallIce(Map,Principal,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/chat.leave]}: handleLeave(Map,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/call.reject]}: handleCallReject(Map,Principal,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/chat.typing]}: handleTyping(Map,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/call.invite]}: handleCallInvite(Map,Principal,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/chat.history]}: handleHistory(Map,Principal)
+	{[MESSAGE],[/call.end]}: handleCallEnd(Map,Principal,SimpMessageHeaderAccessor)
+	{[MESSAGE],[/call.offer]}: handleCallOffer(Map,Principal,SimpMessageHeaderAccessor)
+2026-05-03T03:04:24.601+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	t.e._.p.w.WebSocketEventHandler:
+	{[MESSAGE],[/send-cancellation-notification]}: handleCancellationNotification(CancellationNotificationMessage)
+	{[MESSAGE],[/send-reservation-notification]}: handleReservationNotification(ReservationNotificationMessage)
+	{[SUBSCRIBE],[/topic/notifications]}: subscribeToNotifications()
+	{[MESSAGE],[/send-notification]}: handleGenericNotification(GenericNotificationMessage)
+	{[MESSAGE],[/join-user-room]}: joinUserRoom(JoinUserRoomRequest)
+2026-05-03T03:04:24.604+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.b.a.w.s.e.BasicErrorController:
+	
+2026-05-03T03:04:24.607+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.a.MultipleOpenApiWebMvcResource:
+	
+2026-05-03T03:04:24.615+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.a.OpenApiWebMvcResource:
+	
+2026-05-03T03:04:24.616+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.u.SwaggerWelcomeWebMvc:
+	
+2026-05-03T03:04:24.616+01:00 DEBUG 9476 --- [PI] [           main] .WebSocketAnnotationMethodMessageHandler : 
+	o.s.w.u.SwaggerConfigResource:
+	
+2026-05-03T03:04:24.915+01:00 DEBUG 9476 --- [PI] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 231 mappings in 'requestMappingHandlerMapping'
+? addResourceHandlers() appelé !
+? ResourceHandler configuré : /uploads/** -> file:uploads/
+2026-05-03T03:04:24.984+01:00 DEBUG 9476 --- [PI] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /uploads/**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-05-03T03:04:25.027+01:00  INFO 9476 --- [PI] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Mvc [pattern='/uploads/**']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@107b7bea, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@135f3f19, org.springframework.security.web.context.SecurityContextHolderFilter@7c11f00a, org.springframework.security.web.header.HeaderWriterFilter@4eca7921, org.springframework.security.web.authentication.logout.LogoutFilter@3d6d57d4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@118e3554, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4eb1cf0f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5a79b792, org.springframework.security.web.access.ExceptionTranslationFilter@53061382, org.springframework.security.web.access.intercept.AuthorizationFilter@5f6b899d]
+2026-05-03T03:04:25.056+01:00  INFO 9476 --- [PI] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@735666c4, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@485b21ec, org.springframework.security.web.context.SecurityContextHolderFilter@4d35f066, org.springframework.security.web.header.HeaderWriterFilter@1cb95256, org.springframework.web.filter.CorsFilter@67718026, org.springframework.security.web.authentication.logout.LogoutFilter@4203a7b1, tn.esprit._4se2.pi.security.jwt.JwtAuthFilter@7aca4144, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@702e553b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45a844de, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1fb89238, org.springframework.security.web.session.SessionManagementFilter@4845abe5, org.springframework.security.web.access.ExceptionTranslationFilter@315c13b4, org.springframework.security.web.access.intercept.AuthorizationFilter@68fd7df]
+2026-05-03T03:04:25.142+01:00 DEBUG 9476 --- [PI] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-05-03T03:04:25.179+01:00 DEBUG 9476 --- [PI] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-05-03T03:04:25.514+01:00  INFO 9476 --- [PI] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path ''
+2026-05-03T03:04:25.516+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : clientOutboundChannel added SubProtocolWebSocketHandler[StompSubProtocolHandler[v10.stomp, v11.stomp, v12.stomp]]
+2026-05-03T03:04:25.518+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added WebSocketAnnotationMethodMessageHandler[prefixes=[/app/]]
+2026-05-03T03:04:25.518+01:00  INFO 9476 --- [PI] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-05-03T03:04:25.519+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@24d10d40]
+2026-05-03T03:04:25.519+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : brokerChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@24d10d40]
+2026-05-03T03:04:25.520+01:00  INFO 9476 --- [PI] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@24d10d40]]
+2026-05-03T03:04:25.520+01:00  INFO 9476 --- [PI] [           main] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-05-03T03:04:25.520+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : clientInboundChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2026-05-03T03:04:25.521+01:00 DEBUG 9476 --- [PI] [           main] org.springframework.web.SimpLogging      : brokerChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2026-05-03T03:04:25.529+01:00  INFO 9476 --- [PI] [           main] tn.esprit._4se2.pi.PiApplication         : Started PiApplication in 12.155 seconds (process running for 13.016)
+2026-05-03T03:04:29.691+01:00  INFO 9476 --- [PI] [nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-03T03:04:29.692+01:00  INFO 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-03T03:04:29.692+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-05-03T03:04:29.692+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-05-03T03:04:29.694+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-05-03T03:04:29.695+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@36058c6b
+2026-05-03T03:04:29.696+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@27b10f48
+2026-05-03T03:04:29.696+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-05-03T03:04:29.696+01:00  INFO 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-05-03T03:04:29.704+01:00  WARN 9476 --- [PI] [nio-8085-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/ws/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-05-03T03:04:29.713+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /ws/info?t=1777773869625
+2026-05-03T03:04:29.729+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-05-03T03:04:29.734+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /ws/info?t=1777773869625
+2026-05-03T03:04:29.739+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/ws/info?t=1777773869625", parameters={masked}
+2026-05-03T03:04:29.740+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@30eb1fd2
+2026-05-03T03:04:29.747+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8085/ws/info?t=1777773869625
+2026-05-03T03:04:29.749+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-03T03:04:29.758+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /ws/166/aa5wj4wq/websocket
+2026-05-03T03:04:29.760+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-05-03T03:04:29.762+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /ws/166/aa5wj4wq/websocket
+2026-05-03T03:04:29.762+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/ws/166/aa5wj4wq/websocket", parameters={}
+2026-05-03T03:04:29.762+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.w.s.s.s.WebSocketHandlerMapping      : Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@30eb1fd2
+2026-05-03T03:04:29.765+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.w.s.s.t.h.DefaultSockJsService       : Processing transport request: GET http://localhost:8085/ws/166/aa5wj4wq/websocket
+2026-05-03T03:04:29.799+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 101 SWITCHING_PROTOCOLS
+2026-05-03T03:04:29.813+01:00 DEBUG 9476 --- [PI] [nio-8085-exec-4] s.w.s.h.LoggingWebSocketHandlerDecorator : New WebSocketServerSockJsSession[id=aa5wj4wq]
+Hibernate: select u1_0.id,case when u1_1.id is not null then 1 when u1_2.id is not null then 2 when u1_3.id is not null then 3 when u1_4.id is not null then 4 when u1_0.id is not null then 0 end,u1_0.created_at,u1_0.email,u1_0.first_name,u1_0.is_active,u1_0.last_name,u1_0.password_hash,u1_0.phone,u1_0.profile_image_data,u1_0.profile_image_url,u1_0.role,u1_1.admin_role,u1_1.department,u1_2.business_license,u1_2.business_name,u1_2.location,u1_2.total_revenue,u1_3.games_played,u1_3.position,u1_3.rating,u1_3.skill_level,u1_4.experience,u1_4.team_code,u1_4.team_name from user u1_0 left join admins u1_1 on u1_0.id=u1_1.id left join field_owners u1_2 on u1_0.id=u1_2.id left join players u1_3 on u1_0.id=u1_3.id left join team_managers u1_4 on u1_0.id=u1_4.id where u1_0.email=?
+2026-05-03T03:04:30.048+01:00 DEBUG 9476 --- [PI] [nboundChannel-2] org.springframework.web.SimpLogging      : Processing CONNECT user=ali@gmail.com session=aa5wj4wq
+2026-05-03T03:04:30.060+01:00 DEBUG 9476 --- [PI] [nboundChannel-6] org.springframework.web.SimpLogging      : Processing SUBSCRIBE destination=/queue/call-useraa5wj4wq subscriptionId=sub-0 session=aa5wj4wq user=ali@gmail.com attributes[2] payload=byte[0]
+2026-05-03T03:05:25.481+01:00  INFO 9476 --- [PI] [essageBroker-11] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[1 current WS(1)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 6, active threads = 0, queued tasks = 0, completed tasks = 6], outboundChannel[pool size = 1, active threads = 0, queued tasks = 0, completed tasks = 1], sockJsScheduler[pool size = 12, active threads = 1, queued tasks = 2, completed tasks = 14]

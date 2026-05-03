@@ -138,24 +138,31 @@ public class TeamJoinRequestService implements TeamJoinRequestServiceInterface {
         request.setReviewedBy(reviewer);
 
         // ✅✅ NOUVEAU : Ajouter l'utilisateur à l'équipe
-        Long teamId = request.getTeam().getId();
-        Long userId = request.getUser().getId();
+        try {
+            Long teamId = request.getTeam().getId();
+            Long userId = request.getUser().getId();
 
-        // Vérifier qu'il n'est pas déjà membre (au cas où)
-        if (!teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
-            TeamMemberId memberId = new TeamMemberId(userId, teamId);
+            System.out.println("🔄 Tentative d'ajout du membre: Team=" + teamId + ", User=" + userId);
 
-            TeamMember newMember = new TeamMember();
-            newMember.setId(memberId);
-            newMember.setTeam(request.getTeam());
-            newMember.setUser(request.getUser());
-            newMember.setRole(TeamMember.Role.MEMBER);
+            // Vérifier qu'il n'est pas déjà membre
+            if (!teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
+                TeamMemberId memberId = new TeamMemberId(userId, teamId);
 
-            teamMemberRepository.save(newMember);
+                TeamMember newMember = new TeamMember();
+                newMember.setId(memberId);
+                newMember.setTeam(request.getTeam());
+                newMember.setUser(request.getUser());
+                newMember.setRole(TeamMember.Role.MEMBER);
 
-            System.out.println("✅ Utilisateur " + userId + " ajouté à l'équipe " + teamId);
-        } else {
-            System.out.println("⚠️ Utilisateur déjà membre de l'équipe");
+                teamMemberRepository.save(newMember);
+                System.out.println("✅ Utilisateur " + userId + " ajouté à l'équipe " + teamId);
+            } else {
+                System.out.println("⚠️ Utilisateur déjà membre de l'équipe " + teamId);
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de l'ajout du membre à l'équipe: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de l'ajout du membre : " + e.getMessage());
         }
 
         return joinRequestRepository.save(request);
