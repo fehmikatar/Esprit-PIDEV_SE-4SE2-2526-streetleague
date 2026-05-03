@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import tn.esprit._4se2.pi.dto.Notification.NotificationRequest;
 import tn.esprit._4se2.pi.dto.Notification.NotificationResponse;
 import tn.esprit._4se2.pi.entities.Notification;
+import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.mappers.NotificationMapper;
 import tn.esprit._4se2.pi.repositories.NotificationRepository;
+import tn.esprit._4se2.pi.repositories.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ public class NotificationService implements INotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final UserRepository userRepository;
 
     @Override
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -66,12 +69,32 @@ public class NotificationService implements INotificationService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<NotificationResponse> getNotificationsByUserEmail(String email) {
+        Long userId = userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        return getNotificationsByUserId(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<NotificationResponse> getUnreadNotifications(Long userId) {
         log.info("Fetching unread notifications for user: {}", userId);
         return notificationRepository.findByUserIdAndIsReadFalse(userId)
                 .stream()
                 .map(notificationMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NotificationResponse> getUnreadNotificationsByUserEmail(String email) {
+        Long userId = userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        return getUnreadNotifications(userId);
     }
 
     @Override

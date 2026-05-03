@@ -25,11 +25,21 @@ public class Feedback {
     @Column(nullable = false)
     Long sportSpaceId;
 
+    @Column(nullable = false, unique = true)
+    Long bookingId;
+
     @Column(nullable = false)
     Integer rating; // 1-5
 
     @Column(length = 1000)
     String comment;
+
+    @Column(name = "is_toxic", nullable = false)
+    @Builder.Default
+    boolean isToxic = false;
+
+    @Column(name = "censored_comment", length = 1000)
+    String censoredComment;
 
     @Column(nullable = false)
     @Builder.Default
@@ -37,4 +47,13 @@ public class Feedback {
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
+    @Column(name = "approved_at")
+    LocalDateTime approvedAt;
+
+    @Column(length = 1000)
+    String ownerReply;
+
+    @Column(name = "owner_replied_at")
+    LocalDateTime ownerRepliedAt;
 }

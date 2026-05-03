@@ -15,21 +15,50 @@ import java.util.Optional;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
-    // Pour getUserFavorites
+
     Page<Favorite> findByUser(User user, Pageable pageable);
 
-    // Pour removeFromFavorites
+
     Optional<Favorite> findByUserIdAndProductId(Long userId, Long productId);
 
-    // Pour getUserFavoritesByCategory
     @Query("SELECT f FROM Favorite f WHERE f.user.id = :userId AND f.category.id = :categoryId")
     List<Favorite> findByUserIdAndCategoryId(@Param("userId") Long userId,
                                              @Param("categoryId") Long categoryId);
 
-    // Pour addToFavorites (vérification)
+
     boolean existsByUserIdAndProductId(Long userId, Long productId);
 
-    // Pour getFavoritesCountByProduct
+    List<Favorite> findByUserIdAndAddedAtAfter(Long userId, java.time.LocalDateTime after);
+
+    List<Favorite> findByUserId(Long userId);
+
+
+    @Query("SELECT f FROM Favorite f JOIN FETCH f.product p JOIN FETCH p.category WHERE f.user.id = :userId")
+    List<Favorite> findByUserIdWithProductAndCategory(@Param("userId") Long userId);
+
+
+    @Query("SELECT f.product.id FROM Favorite f WHERE f.user.id = :userId")
+    List<Long> findProductIdsByUserId(@Param("userId") Long userId);
+
+
+    @Query("SELECT DISTINCT p.category.id FROM Favorite f JOIN f.product p WHERE f.user.id = :userId")
+    List<Long> findFavoriteCategoryIdsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(f) FROM Favorite f JOIN f.product p WHERE f.user.id = :userId AND p.category.id = :categoryId")
+    long countFavoritesByUserAndProductCategory(@Param("userId") Long userId, @Param("categoryId") Long categoryId);
+
+
+    @Query("SELECT cat.name, COUNT(f.id) " +
+           "FROM Favorite f " +
+           "JOIN f.category cat " +
+           "GROUP BY cat.name")
+    List<Object[]> countFavoritesByCategory();
+
     @Query("SELECT COUNT(f) FROM Favorite f WHERE f.product.id = :productId")
     long countByProductId(@Param("productId") Long productId);
+
+    List<Favorite> findByProductNomContainingIgnoreCaseAndProductCategoryNomContainingIgnoreCase(
+            String productName, String categoryName);
+
+    List<Favorite> findByProductId(Long productId);
 }

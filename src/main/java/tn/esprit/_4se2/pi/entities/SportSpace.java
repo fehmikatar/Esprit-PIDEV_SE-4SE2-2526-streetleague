@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "sport_spaces")
@@ -55,4 +56,7 @@ public class SportSpace {
     @Column(name = "is_available")
     @Builder.Default
     Boolean isAvailable = true;
+
+    @OneToMany(mappedBy = "sportSpace")  // Une réservation peut être associée à un SportSpace
+    private List<Booking> bookings;
 }

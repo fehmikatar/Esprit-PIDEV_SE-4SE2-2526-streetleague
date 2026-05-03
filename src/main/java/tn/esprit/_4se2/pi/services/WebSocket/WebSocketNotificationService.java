@@ -24,7 +24,7 @@ public class WebSocketNotificationService {
 
     /**
      * Envoyer une notification de réservation confirmée à un utilisateur spécifique
-     * 
+     *
      * @param userId L'ID de l'utilisateur destinataire
      * @param title Le titre de la notification
      * @param message Le message de la notification
@@ -39,7 +39,7 @@ public class WebSocketNotificationService {
             String fieldName,
             String date,
             String time) {
-        
+
         try {
             ReservationNotificationMessage notification = new ReservationNotificationMessage();
             notification.setType("reservation");
@@ -52,18 +52,18 @@ public class WebSocketNotificationService {
             notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
 
             log.info("Envoi de la notification de réservation à l'utilisateur: {}", userId);
-            
+
             // Envoyer la notification à l'utilisateur spécifique via sa queue personnelle
             messagingTemplate.convertAndSendToUser(
-                userId.toString(),
-                "/queue/notifications",
-                notification
+                    userId.toString(),
+                    "/queue/notifications",
+                    notification
             );
-            
+
             // Également diffuser à tous les utilisateurs abonnés au topic général
             messagingTemplate.convertAndSend(
-                "/topic/notifications",
-                notification
+                    "/topic/notifications",
+                    notification
             );
         } catch (Exception e) {
             log.error("Erreur lors de l'envoi de la notification de réservation", e);
@@ -78,7 +78,7 @@ public class WebSocketNotificationService {
             String title,
             String message,
             String fieldName) {
-        
+
         try {
             CancellationNotificationMessage notification = new CancellationNotificationMessage();
             notification.setType("cancellation");
@@ -89,12 +89,12 @@ public class WebSocketNotificationService {
             notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
 
             log.info("Envoi de la notification d'annulation à l'utilisateur: {}", userId);
-            
+
             // Envoyer la notification à l'utilisateur spécifique
             messagingTemplate.convertAndSendToUser(
-                userId.toString(),
-                "/queue/notifications",
-                notification
+                    userId.toString(),
+                    "/queue/notifications",
+                    notification
             );
         } catch (Exception e) {
             log.error("Erreur lors de l'envoi de la notification d'annulation", e);
@@ -109,7 +109,7 @@ public class WebSocketNotificationService {
             String type,
             String title,
             String message) {
-        
+
         try {
             GenericNotificationMessage notification = new GenericNotificationMessage();
             notification.setType(type);
@@ -119,12 +119,12 @@ public class WebSocketNotificationService {
             notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
 
             log.info("Envoi de la notification générique à l'utilisateur: {}", userId);
-            
+
             // Envoyer la notification à l'utilisateur spécifique
             messagingTemplate.convertAndSendToUser(
-                userId.toString(),
-                "/queue/notifications",
-                notification
+                    userId.toString(),
+                    "/queue/notifications",
+                    notification
             );
         } catch (Exception e) {
             log.error("Erreur lors de l'envoi de la notification générique", e);
@@ -138,7 +138,7 @@ public class WebSocketNotificationService {
             String type,
             String title,
             String message) {
-        
+
         try {
             GenericNotificationMessage notification = new GenericNotificationMessage();
             notification.setType(type);
@@ -147,14 +147,38 @@ public class WebSocketNotificationService {
             notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
 
             log.info("Diffusion de la notification générique à tous les utilisateurs");
-            
+
             // Diffuser à tous les utilisateurs abonnés au topic
             messagingTemplate.convertAndSend(
-                "/topic/notifications",
-                notification
+                    "/topic/notifications",
+                    notification
             );
         } catch (Exception e) {
             log.error("Erreur lors de la diffusion de la notification", e);
+        }
+    }
+
+    /**
+     * Diffuser une mise à jour de commande à tous les administrateurs
+     */
+    public void sendOrderUpdateNotification(Long cartId, String status, String orderCode) {
+        try {
+            GenericNotificationMessage notification = new GenericNotificationMessage();
+            notification.setType("ORDER_UPDATE");
+            notification.setTitle("Commande Mise à Jour");
+            notification.setMessage("La commande " + orderCode + " est maintenant " + status);
+            notification.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
+            
+            // On peut ajouter des métadonnées personnalisées si besoin
+            // Pour l'instant, on broadcast sur /topic/notifications
+            messagingTemplate.convertAndSend("/topic/notifications", notification);
+            
+            // Spécifiquement pour les mises à jour d'état (utilisé pour le refresh auto)
+            messagingTemplate.convertAndSend("/topic/orders", notification);
+            
+            log.info("Notification de mise à jour de commande envoyée pour: {}", orderCode);
+        } catch (Exception e) {
+            log.error("Erreur lors de l'envoi de la notification de commande", e);
         }
     }
 }

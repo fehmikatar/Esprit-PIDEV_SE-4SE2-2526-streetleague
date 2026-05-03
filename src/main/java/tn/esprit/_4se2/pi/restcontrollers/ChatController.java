@@ -1,6 +1,7 @@
 package tn.esprit._4se2.pi.restcontrollers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,14 @@ import tn.esprit._4se2.pi.entities.User;
 import tn.esprit._4se2.pi.repositories.ChatMessageRepository;
 import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
+import tn.esprit._4se2.pi.dto.Athlet.ChatRequest;
+import tn.esprit._4se2.pi.dto.Athlet.ChatResponse;
+import tn.esprit._4se2.pi.services.HealthScore.ChatService;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
-
-import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,9 +35,12 @@ public class ChatController {
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
     private final TeamMemberRepository teamMemberRepository;
+    
+    @Autowired
+    private ChatService chatService;
+
     private static final String UPLOAD_DIR = "uploads/chat/";
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_DATE_TIME;
 
     /** GET /api/chat/messages/{roomId}?limit=50&lastMessageId=X — cursor-based history */
@@ -155,6 +161,12 @@ public class ChatController {
     public ResponseEntity<Void> markRead(@PathVariable String roomId) {
         return ResponseEntity.ok().build();
     }
+    
+    /** POST /api/chat — Intelligent chat endpoint from integration */
+    @PostMapping
+    public ChatResponse chat(@RequestBody ChatRequest request) {
+        return chatService.traiterMessage(request.getMessage());
+    }
 
     // ── helpers ──────────────────────────────────────────────────────────────
 
@@ -241,25 +253,20 @@ public class ChatController {
 
     private record PrivateRoomInfo(Long teamId, Long firstUserId, Long secondUserId) {}
 
-
-
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam("roomId") String roomId) {
         
         try {
-            // Validation : fichier vide
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
             }
 
-            // Validation : taille du fichier
             if (file.getSize() > MAX_FILE_SIZE) {
                 return ResponseEntity.badRequest().body(Map.of("error", "File too large (max 10MB)"));
             }
 
-            // Récupérer le nom original et l'extension
             String originalFilename = file.getOriginalFilename();
             if (originalFilename == null || originalFilename.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Invalid filename"));
@@ -271,23 +278,18 @@ public class ChatController {
                 extension = originalFilename.substring(dotIndex);
             }
 
-            // Générer un nom unique
             String uniqueFilename = UUID.randomUUID().toString() + extension;
 
-            // Créer le dossier de destination
             Path uploadPath = Paths.get(UPLOAD_DIR + roomId);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Sauvegarder le fichier
             Path filePath = uploadPath.resolve(uniqueFilename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Construire l'URL publique
             String fileUrl = "/uploads/chat/" + roomId + "/" + uniqueFilename;
 
-            // Retourner la réponse
             Map<String, String> response = new HashMap<>();
             response.put("fileUrl", fileUrl);
             response.put("filename", originalFilename);

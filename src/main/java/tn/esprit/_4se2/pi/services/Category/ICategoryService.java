@@ -1,25 +1,18 @@
 package tn.esprit._4se2.pi.services.Category;
 
-import tn.esprit._4se2.pi.dto.Sponsor.CategoryDTO;
+import tn.esprit._4se2.pi.dto.categorie.CategoryRequest;
+import tn.esprit._4se2.pi.dto.categorie.CategoryResponse;
 
 import java.util.List;
 
 public interface ICategoryService {
-    CategoryDTO addCategory(CategoryDTO categoryDTO);
-    List<CategoryDTO> addCategories(List<CategoryDTO> categoryDTOs);
+    CategoryResponse addCategory(CategoryRequest request);
 
-    CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
+    List<CategoryResponse> getAllCategories();
 
-    CategoryDTO getCategoryById(Long id);
-    CategoryDTO getCategoryByIdOrElse(Long id);
-    List<CategoryDTO> getAllCategories();
-    List<CategoryDTO> getRootCategories();
-    CategoryDTO getCategoryWithSubCategories(Long id);
+    CategoryResponse getCategoryById(Long id);
 
-    void deleteCategoryById(Long id);
-    void deleteAllCategories();
+    CategoryResponse updateCategory(Long id, CategoryRequest request);
 
-    long countCategories();
-    boolean existsById(Long id);
-    boolean existsByName(String name);
+    void deleteCategory(Long id);
 }

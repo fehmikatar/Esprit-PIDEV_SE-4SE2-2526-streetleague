@@ -2,7 +2,7 @@ package tn.esprit._4se2.pi.restcontrollers;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import tn.esprit._4se2.pi.dto.Sponsor.ProductDTOs;
-import tn.esprit._4se2.pi.service.IProductService;
+import tn.esprit._4se2.pi.services.Product.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +114,32 @@ public class ProductRestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/upload-image")
+    @Operation(summary = "Upload product image", description = "Uploads an image file and returns its local URL")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<java.util.Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = System.currentTimeMillis() + "_" + org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
+            java.nio.file.Path fileStorageLocation = java.nio.file.Paths.get("uploads").toAbsolutePath().normalize();
+            java.nio.file.Files.createDirectories(fileStorageLocation);
+            java.nio.file.Path targetLocation = fileStorageLocation.resolve(fileName);
+            java.nio.file.Files.copy(file.getInputStream(), targetLocation, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            
+            java.util.Map<String, String> response = new java.util.HashMap<>();
+            // Assuming backend runs on 8085
+            response.put("url", "http://localhost:8085/uploads/" + fileName);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/high-demand")
+    @Operation(summary = "Get high demand products", description = "Returns products currently in multiple active carts")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProductDTOs.ProductHighDemandDTO>> getHighDemandProducts() {
+        return ResponseEntity.ok(productService.getHighDemandProducts());
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,6 +29,10 @@ public class JwtService {
 
     // 🔑 Génère un token JWT après connexion
     public String generateToken(UserDetails userDetails) {
+        return generateToken(userDetails, null);
+    }
+
+    public String generateToken(UserDetails userDetails, Long userId) {
         String role = userDetails.getAuthorities().stream()
                 .findFirst()
                 .map(a -> a.getAuthority())
@@ -35,10 +40,15 @@ public class JwtService {
 
         Date now = new Date();
         Date exp = new Date(now.getTime() + expirationMs);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        if (userId != null) {
+            claims.put("userId", userId);
+        }
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .addClaims(Map.of("role", role))
+                .addClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(exp)
                 .signWith(key, io.jsonwebtoken.SignatureAlgorithm.HS256)
@@ -48,6 +58,24 @@ public class JwtService {
     // 📧 Extrait l'email depuis le token
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    public Long extractUserId(String token) {
+        Object rawUserId = parseClaims(token).get("userId");
+
+        if (rawUserId instanceof Number number) {
+            return number.longValue();
+        }
+
+        if (rawUserId instanceof String userIdValue && !userIdValue.isBlank()) {
+            try {
+                return Long.parseLong(userIdValue);
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     // ✅ Vérifie que le token est valide

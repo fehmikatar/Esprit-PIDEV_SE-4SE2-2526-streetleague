@@ -29,8 +29,8 @@ public class TeamController {
     private final TeamMemberRepository teamMemberRepository;
 
     @PostMapping
-    public Team create(@RequestBody Team team) {
-        return teamService.create(team);
+    public Team create(@RequestBody Team team, @RequestParam(required = false) Long userId) {
+        return teamService.create(team, userId);
     }
 
     @GetMapping

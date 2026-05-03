@@ -13,6 +13,8 @@ import tn.esprit._4se2.pi.entities.Product;
 import tn.esprit._4se2.pi.entities.ProductVariant;
 import tn.esprit._4se2.pi.mappers.ProductMapper;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
@@ -79,10 +82,33 @@ public class ProductService implements IProductService {
 
         Product product = optionalProduct.get();
         product.setNom(request.getNom());
+        product.setMarque(request.getMarque());
         product.setDescription(request.getDescription());
         product.setPrix(request.getPrix());
         product.setStock(request.getStock());
-        product.setImages(request.getImages());
+        
+        if (request.getImages() != null) {
+            java.util.List<tn.esprit._4se2.pi.entities.ProductImage> productImages = new java.util.ArrayList<>();
+            for (String img : request.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(null, img));
+                } else if (img != null && !img.trim().isEmpty()) {
+                    productImages.add(new tn.esprit._4se2.pi.entities.ProductImage(img, null));
+                }
+            }
+            product.getImages().clear();
+            product.getImages().addAll(productImages);
+        } else {
+            product.getImages().clear();
+        }
+
+        if (request.getStatus() != null) {
+            try {
+                product.setStatus(Product.ProductStatus.valueOf(request.getStatus().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Ignore exception, keep current status
+            }
+        }
 
         // Mettre à jour la catégorie
         if (request.getCategoryId() != null) {
@@ -97,11 +123,30 @@ public class ProductService implements IProductService {
 
         // Mettre à jour les variantes
         if (request.getVariants() != null) {
+            // Utiliser une clé composite (Taille + Couleur) pour identifier les variants existants
+            java.util.Map<String, ProductVariant> existingVariants = product.getVariants().stream()
+                    .collect(Collectors.toMap(
+                        v -> (v.getSize() + "-" + (v.getColor() != null ? v.getColor() : "")).toLowerCase(), 
+                        v -> v, 
+                        (v1, v2) -> v1
+                    ));
+            
             product.getVariants().clear();
             LocalDateTime now = LocalDateTime.now();
+            
             request.getVariants().forEach(variantDTO -> {
-                ProductVariant variant = productMapper.toVariantEntity(variantDTO, product);
-                variant.setCreatedAt(now);
+                String key = (variantDTO.getSize() + "-" + (variantDTO.getColor() != null ? variantDTO.getColor() : "")).toLowerCase();
+                ProductVariant variant = existingVariants.get(key);
+                
+                if (variant != null) {
+                    variant.setStock(variantDTO.getStock());
+                    variant.setSku(variantDTO.getSku());
+                    variant.setColor(variantDTO.getColor());
+                    variant.setPriceAdjustment(variantDTO.getPriceAdjustment());
+                } else {
+                    variant = productMapper.toVariantEntity(variantDTO, product);
+                    variant.setCreatedAt(now);
+                }
                 product.getVariants().add(variant);
             });
         }
@@ -112,7 +157,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDTOs.ProductResponse getProductById(Long id) {
-        return productRepository.findByIdAndDeletedFalse(id)
+        return productRepository.findByIdWithDetails(id)
                 .map(productMapper::toDTO)
                 .orElse(null);
     }
@@ -141,14 +186,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductDTOs.ProductResponse> searchProducts(ProductDTOs.ProductSearchCriteria criteria, Pageable pageable) {
+    public Page<ProductDTOs.ProductResponse> searchProducts(ProductDTOs.ProductSearchCriteria criteria,
+            Pageable pageable) {
         return productRepository.searchProducts(
                 criteria.getKeyword(),
                 criteria.getCategoryId(),
                 criteria.getMinPrice(),
                 criteria.getMaxPrice(),
-                pageable
-        ).map(productMapper::toDTO);
+                pageable).map(productMapper::toDTO);
     }
 
     @Override
@@ -217,5 +262,10 @@ public class ProductService implements IProductService {
         // TODO: Implémenter l'export CSV
         // Cette méthode sera implémentée plus tard
         return new byte[0];
+    }
+
+    @Override
+    public List<ProductDTOs.ProductHighDemandDTO> getHighDemandProducts() {
+        return productRepository.findHighDemandProducts();
     }
 }

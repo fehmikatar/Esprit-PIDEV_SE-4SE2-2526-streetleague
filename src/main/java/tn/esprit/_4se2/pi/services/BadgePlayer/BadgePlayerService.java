@@ -8,7 +8,7 @@ import tn.esprit._4se2.pi.dto.Sponsor.PromoCodeDTO;
 import tn.esprit._4se2.pi.dto.Promotion.PromotionRequest;
 import tn.esprit._4se2.pi.entities.*;
 import tn.esprit._4se2.pi.repositories.BadgePlayerRepository;
-import tn.esprit._4se2.pi.services.PromoCode.IPromoCodeService;
+import tn.esprit._4se2.pi.services.Product.IPromoCodeService;
 import tn.esprit._4se2.pi.services.Promotion.IPromotionService;
 
 import java.math.BigDecimal;

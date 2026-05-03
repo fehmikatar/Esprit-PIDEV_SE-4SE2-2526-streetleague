@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     List<Registration> findByCompetitionId(Long competitionId);
+    List<Registration> findByCompetitionIdAndStatus(Long competitionId, RegistrationStatus status);
     List<Registration> findByStatus(RegistrationStatus status);
 }
