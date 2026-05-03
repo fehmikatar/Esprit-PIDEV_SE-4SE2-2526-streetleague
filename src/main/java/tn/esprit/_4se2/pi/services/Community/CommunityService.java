@@ -15,6 +15,7 @@ import tn.esprit._4se2.pi.dto.Community.CreateCommentRequest;
 import tn.esprit._4se2.pi.dto.Community.CreatePostRequest;
 import tn.esprit._4se2.pi.dto.Community.PostResponse;
 import tn.esprit._4se2.pi.dto.Community.ReactionSummary;
+import tn.esprit._4se2.pi.dto.Community.UserReactionResponse;
 import tn.esprit._4se2.pi.entities.*;
 // ✅ Si manquant
 import tn.esprit._4se2.pi.repositories.*;
@@ -46,6 +47,7 @@ public class CommunityService {
     private final BadWordsFilterService badWordsFilter;
         private final CommunityPostRepository communityPostRepository;  // ✅ Doit être présent
     private final PostLikeRepository postLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     
 
@@ -90,13 +92,32 @@ public class CommunityService {
         return r;
     }
 
-    private CommentResponse toCommentResponse(PostComment comment) {
+    private CommentResponse toCommentResponse(PostComment comment, Long currentUserId) {
         CommentResponse r = new CommentResponse();
         r.setId(comment.getId());
         r.setContent(comment.getContent());
         r.setPostId(comment.getPost().getId());
+        r.setParentId(comment.getParent() != null ? comment.getParent().getId() : null);
         r.setCreatedAt(comment.getCreatedAt());
         r.setAuthor(toAuthorInfo(comment.getAuthor()));
+
+        List<CommentLike> likes = commentLikeRepository.findByCommentId(comment.getId());
+        r.setLikeCount(likes.size());
+        r.setLikedByCurrentUser(likes.stream().anyMatch(l -> l.getUserId().equals(currentUserId)));
+        r.setCurrentUserReaction(likes.stream()
+                .filter(l -> l.getUserId().equals(currentUserId))
+                .map(CommentLike::getReactionType)
+                .findFirst()
+                .orElse(null));
+
+        if (comment.getReplies() != null && !comment.getReplies().isEmpty()) {
+            r.setReplies(comment.getReplies().stream()
+                    .map(reply -> this.toCommentResponse(reply, currentUserId))
+                    .collect(Collectors.toList()));
+        } else {
+            r.setReplies(new java.util.ArrayList<>());
+        }
+
         return r;
     }
 
@@ -170,9 +191,9 @@ public class CommunityService {
                 .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
         requireTeamMember(post.getTeam().getId(), user.getId());
 
-        return commentRepository.findByPostIdOrderByCreatedAtAsc(postId)
+        return commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtAsc(postId)
                 .stream()
-                .map(this::toCommentResponse)
+                .map(comment -> this.toCommentResponse(comment, user.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -187,12 +208,25 @@ public class CommunityService {
         comment.setContent(badWordsFilter.filterText(request.getContent()));
         comment.setAuthor(user);
         comment.setPost(post);
+
+        if (request.getParentId() != null) {
+            PostComment parent = commentRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new RuntimeException("Parent comment not found: " + request.getParentId()));
+            
+            // Optional: Validate that the parent belongs to the same post
+            if (!parent.getPost().getId().equals(postId)) {
+                throw new RuntimeException("Parent comment does not belong to this post");
+            }
+            
+            comment.setParent(parent);
+        }
+
         PostComment saved = commentRepository.save(comment);
 
         post.setCommentCount(post.getCommentCount() + 1);
         postRepository.save(post);
 
-        return toCommentResponse(saved);
+        return toCommentResponse(saved, user.getId());
     }
 
     @Transactional
@@ -362,6 +396,66 @@ public ReactionType getCurrentUserReaction(Long postId, Long userId) {
     return postLikeRepository.findByUserIdAndPostId(userId, postId)
             .map(PostLike::getReactionType)
             .orElse(null);
+}
+
+/**
+ * Ajoute ou change une réaction sur un commentaire
+ */
+@Transactional
+public void addOrUpdateCommentReaction(Long commentId, String userEmail, ReactionType reactionType) {
+    User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    PostComment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new RuntimeException("Comment not found"));
+    
+    // Vérifier accès (membre de l'équipe du post associé)
+    requireTeamMember(comment.getPost().getTeam().getId(), user.getId());
+    
+    Optional<CommentLike> existing = commentLikeRepository.findByCommentIdAndUserId(commentId, user.getId());
+    
+    if (existing.isPresent()) {
+        CommentLike reaction = existing.get();
+        reaction.setReactionType(reactionType);
+        commentLikeRepository.save(reaction);
+    } else {
+        CommentLike newReaction = CommentLike.builder()
+                .userId(user.getId())
+                .commentId(commentId)
+                .reactionType(reactionType)
+                .build();
+        commentLikeRepository.save(newReaction);
+    }
+}
+
+/**
+ * Supprime une réaction sur un commentaire
+ */
+@Transactional
+public void removeCommentReaction(Long commentId, String userEmail) {
+    User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    commentLikeRepository.deleteByCommentIdAndUserId(commentId, user.getId());
+}
+
+/**
+ * Obtenir la liste des utilisateurs ayant réagi à un post
+ */
+public List<UserReactionResponse> getPostReactionUsers(Long postId) {
+    return likeRepository.findByPostId(postId).stream()
+            .map(like -> {
+                User user = userRepository.findById(like.getUserId())
+                        .orElseThrow(() -> new RuntimeException("User not found: " + like.getUserId()));
+                return UserReactionResponse.builder()
+                        .userId(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .profileImageUrl(user.getProfileImageUrl())
+                        .reactionType(like.getReactionType())
+                        .build();
+            })
+            .collect(Collectors.toList());
 }
     
 }

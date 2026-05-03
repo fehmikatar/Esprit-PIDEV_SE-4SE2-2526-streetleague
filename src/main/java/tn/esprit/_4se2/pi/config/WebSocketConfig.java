@@ -27,12 +27,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Primary endpoint
         registry.addEndpoint("/ws")
-            .setAllowedOriginPatterns("*")
+            .setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
             .withSockJS();
 
         // Fallback endpoint tried by chat.service.ts
         registry.addEndpoint("/ws-chat")
-            .setAllowedOriginPatterns("*")
+            .setAllowedOrigins("http://localhost:4200", "http://127.0.0.1:4200")
             .withSockJS();
     }
 

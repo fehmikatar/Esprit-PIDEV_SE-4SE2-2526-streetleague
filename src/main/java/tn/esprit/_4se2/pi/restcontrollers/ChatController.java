@@ -46,10 +46,7 @@ public class ChatController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = resolveUser(userDetails);
-        Long teamId = extractTeamId(roomId);
-
-        if (teamId != null && (user == null
-                || !teamMemberRepository.existsByTeamIdAndUserId(teamId, user.getId()))) {
+        if (!canAccessRoom(roomId, user)) {
             return ResponseEntity.status(403).build();
         }
 
@@ -116,8 +113,41 @@ public class ChatController {
 
     /** POST /api/chat/private-room */
     @PostMapping("/private-room")
-    public ResponseEntity<Map<String, Object>> createPrivateRoom() {
-        return ResponseEntity.ok(Map.of("roomId", "private_" + UUID.randomUUID()));
+    public ResponseEntity<Map<String, Object>> createPrivateRoom(
+            @RequestParam Long teamId,
+            @RequestParam Long memberId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = resolveUser(userDetails);
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        if (currentUser.getId().equals(memberId)) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Cannot open a private chat with yourself."));
+        }
+
+        if (!teamMemberRepository.existsByTeamIdAndUserId(teamId, currentUser.getId())
+                || !teamMemberRepository.existsByTeamIdAndUserId(teamId, memberId)) {
+            return ResponseEntity.status(403).body(Map.of("message", "Both users must belong to the same team."));
+        }
+
+        User otherUser = userRepository.findById(memberId).orElse(null);
+        if (otherUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Long firstUserId = Math.min(currentUser.getId(), memberId);
+        Long secondUserId = Math.max(currentUser.getId(), memberId);
+        String roomId = buildPrivateRoomId(teamId, firstUserId, secondUserId);
+
+        return ResponseEntity.ok(Map.of(
+            "roomId", roomId,
+            "roomName", formatDisplayName(otherUser),
+            "teamId", teamId,
+            "memberId", otherUser.getId(),
+            "memberName", formatDisplayName(otherUser),
+            "memberProfileImageUrl", otherUser.getProfileImageUrl() != null ? otherUser.getProfileImageUrl() : ""
+        ));
     }
 
     /** POST /api/chat/mark-read/{roomId} */
@@ -135,10 +165,65 @@ public class ChatController {
 
     private Long extractTeamId(String roomId) {
         if (roomId != null && roomId.startsWith("team_")) {
-            try { return Long.parseLong(roomId.substring(5)); }
+            String suffix = roomId.substring(5);
+            int nextSeparator = suffix.indexOf('_');
+            String teamIdPart = nextSeparator >= 0 ? suffix.substring(0, nextSeparator) : suffix;
+            try { return Long.parseLong(teamIdPart); }
             catch (NumberFormatException ignored) {}
         }
         return null;
+    }
+
+    private boolean canAccessRoom(String roomId, User user) {
+        Long teamId = extractTeamId(roomId);
+        if (teamId == null) {
+            return true;
+        }
+
+        if (user == null) {
+            return false;
+        }
+
+        PrivateRoomInfo privateRoom = extractPrivateRoomInfo(roomId);
+        if (privateRoom != null) {
+            boolean participant = user.getId().equals(privateRoom.firstUserId()) || user.getId().equals(privateRoom.secondUserId());
+            boolean sameTeam = teamMemberRepository.existsByTeamIdAndUserId(privateRoom.teamId(), privateRoom.firstUserId())
+                && teamMemberRepository.existsByTeamIdAndUserId(privateRoom.teamId(), privateRoom.secondUserId());
+            return participant && sameTeam;
+        }
+
+        return teamMemberRepository.existsByTeamIdAndUserId(teamId, user.getId());
+    }
+
+    private PrivateRoomInfo extractPrivateRoomInfo(String roomId) {
+        if (roomId == null || !roomId.startsWith("team_") || !roomId.contains("_private_")) {
+            return null;
+        }
+
+        String[] parts = roomId.split("_");
+        if (parts.length != 5 || !"team".equals(parts[0]) || !"private".equals(parts[2])) {
+            return null;
+        }
+
+        try {
+            return new PrivateRoomInfo(
+                Long.parseLong(parts[1]),
+                Long.parseLong(parts[3]),
+                Long.parseLong(parts[4])
+            );
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private String buildPrivateRoomId(Long teamId, Long firstUserId, Long secondUserId) {
+        return "team_" + teamId + "_private_" + firstUserId + "_" + secondUserId;
+    }
+
+    private String formatDisplayName(User user) {
+        String fullName = ((user.getFirstName() != null ? user.getFirstName() : "") + " "
+            + (user.getLastName() != null ? user.getLastName() : "")).trim();
+        return fullName.isBlank() ? user.getEmail() : fullName;
     }
 
     private Map<String, Object> toMap(ChatMessage m) {
@@ -148,10 +233,13 @@ public class ChatController {
         item.put("senderId", m.getSenderId() != null ? m.getSenderId() : 0);
         item.put("senderName", m.getSenderName() != null ? m.getSenderName() : "Member");
         item.put("content", m.getContent());
+        item.put("transcript", m.getTranscript() != null ? m.getTranscript() : "");
         item.put("createdAt", m.getCreatedAt().format(ISO));
         item.put("type", m.getType().name());
         return item;
     }
+
+    private record PrivateRoomInfo(Long teamId, Long firstUserId, Long secondUserId) {}
 
 
 

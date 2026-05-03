@@ -13,6 +13,7 @@ import tn.esprit._4se2.pi.dto.Community.CreateCommentRequest;
 import tn.esprit._4se2.pi.dto.Community.CreatePostRequest;
 import tn.esprit._4se2.pi.dto.Community.PostResponse;
 import tn.esprit._4se2.pi.dto.Community.ReactionSummary;
+import tn.esprit._4se2.pi.dto.Community.UserReactionResponse;
 import tn.esprit._4se2.pi.services.Community.CommunityService;
 
 import java.io.IOException;
@@ -125,5 +126,32 @@ public class CommunityController {
     @GetMapping("/posts/{postId}/reactions")
     public ResponseEntity<List<ReactionSummary>> getReactions(@PathVariable Long postId) {
         return ResponseEntity.ok(communityService.getReactionSummary(postId));
+    }
+
+    // ── Comment Reactions ──────────────────────────────────────────────────
+
+    @PostMapping("/comments/{commentId}/react")
+    public ResponseEntity<Void> addCommentReaction(
+            @PathVariable Long commentId,
+            @RequestBody AddReactionRequest request,
+            Principal principal) {
+        communityService.addOrUpdateCommentReaction(commentId, principal.getName(), request.getReactionType());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/comments/{commentId}/react")
+    public ResponseEntity<Void> removeCommentReaction(
+            @PathVariable Long commentId,
+            Principal principal) {
+        communityService.removeCommentReaction(commentId, principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Obtenir la liste des utilisateurs qui ont réagi à un post
+     */
+    @GetMapping("/posts/{postId}/reaction-users")
+    public ResponseEntity<List<UserReactionResponse>> getPostReactionUsers(@PathVariable Long postId) {
+        return ResponseEntity.ok(communityService.getPostReactionUsers(postId));
     }
 }

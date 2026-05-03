@@ -126,32 +126,21 @@ FOR /F "usebackq tokens=1,2 delims==" %%A IN ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapp
 
 @REM Extension to allow automatically downloading the maven-wrapper.jar from Maven-central
 @REM This allows using the maven wrapper in projects that prohibit checking in binary data.
-if exist %WRAPPER_JAR% (
-    if "%MVNW_VERBOSE%" == "true" (
-        echo Found %WRAPPER_JAR%
-    )
+if exist %WRAPPER_JAR% goto wrapperFound
+if "%MVNW_VERBOSE%" == "true" echo Couldn't find %WRAPPER_JAR%, downloading it ...
+if "%MVNW_REPOURL%" == "" (
+    SET DOWNLOAD_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
 ) else (
-    if "%MVNW_REPOURL%" == "" (
-        SET DOWNLOAD_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
-    ) else (
-        SET DOWNLOAD_URL="%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
-    )
-    if "%MVNW_VERBOSE%" == "true" (
-        echo Couldn't find %WRAPPER_JAR%, downloading it ...
-        echo Downloading from: %DOWNLOAD_URL%
-    )
-
-    powershell -Command "&{"^
-" = new-object System.Net.WebClient;"^
-"if (-not ([string]::IsNullOrEmpty('%MVNW_USERNAME%') -and [string]::IsNullOrEmpty('%MVNW_PASSWORD%'))) {"^
-".Credentials = new-object System.Net.NetworkCredential('%MVNW_USERNAME%', '%MVNW_PASSWORD%');"^
-"}"^
-"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; .DownloadFile('%DOWNLOAD_URL%', '%WRAPPER_JAR%')"^
-"}"
-    if "%MVNW_VERBOSE%" == "true" (
-        echo Finished downloading %WRAPPER_JAR%
-    )
+    SET DOWNLOAD_URL="%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.1.0/maven-wrapper-3.1.0.jar"
 )
+if "%MVNW_VERBOSE%" == "true" echo Downloading from: %DOWNLOAD_URL%
+
+powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; if (-not ([string]::IsNullOrEmpty('%MVNW_USERNAME%') -and [string]::IsNullOrEmpty('%MVNW_PASSWORD%'))) { $wc.Credentials = New-Object System.Net.NetworkCredential('%MVNW_USERNAME%', '%MVNW_PASSWORD%'); }; $wc.DownloadFile('%DOWNLOAD_URL%', '%WRAPPER_JAR%'); }"
+
+if "%MVNW_VERBOSE%" == "true" echo Finished downloading %WRAPPER_JAR%
+
+:wrapperFound
+
 @REM End of extension
 
 @REM Provide a "standardized" way to retrieve the CLI args that will

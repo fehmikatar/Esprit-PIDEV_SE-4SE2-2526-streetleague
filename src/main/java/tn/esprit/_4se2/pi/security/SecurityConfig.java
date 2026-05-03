@@ -60,6 +60,7 @@ public class SecurityConfig {
                         // ── Public endpoints ──────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/password/**").permitAll()
+                        .requestMatchers("/api/matching/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         // ── WebSocket upgrade paths (SockJS handshake) ─
@@ -117,7 +118,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:4200", "http://127.0.0.1:4200"));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

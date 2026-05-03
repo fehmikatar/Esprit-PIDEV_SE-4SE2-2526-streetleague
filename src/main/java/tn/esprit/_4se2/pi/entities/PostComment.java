@@ -30,10 +30,18 @@ public class PostComment {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private CommunityPost post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private PostComment parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
+    @Builder.Default
+    private java.util.List<PostComment> replies = new java.util.ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
