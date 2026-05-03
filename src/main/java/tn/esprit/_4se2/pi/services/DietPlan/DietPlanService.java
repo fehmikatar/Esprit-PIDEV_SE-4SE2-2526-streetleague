@@ -102,28 +102,63 @@ public class DietPlanService implements IDietPlanService {
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
     public List<Map<String, Object>> searchFoodCalories(String query) {
+        List<Map<String, Object>> results = new ArrayList<>();
+        if (query == null || query.trim().isEmpty()) {
+            return results;
+        }
         String q = query.toLowerCase().trim();
         log.info("Searching calories for: {}", q);
-        List<Map<String, Object>> results = new ArrayList<>();
 
         // 1. FatSecret Web Scraping
         try {
             String fatSecretUrl = "https://www.fatsecret.fr/calories-nutrition/search?q=" + URLEncoder.encode(q, StandardCharsets.UTF_8);
+            log.info("Scraping FatSecret: {}", fatSecretUrl);
+            
             Document doc = Jsoup.connect(fatSecretUrl)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-                    .timeout(10000)
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+                    .header("Accept-Language", "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7")
+                    .timeout(15000)
                     .get();
 
+            // Sélecteurs multiples pour plus de robustesse
             Elements resultElements = doc.select("table.generic.searchResult tr td.borderBottom");
+            if (resultElements.isEmpty()) {
+                resultElements = doc.select("td.borderBottom");
+            }
+            
+            log.info("Found {} potential food elements on FatSecret", resultElements.size());
+
+            // Si on est directement sur une page produit (cas où FatSecret redirige car 1 seul résultat)
+            if (resultElements.isEmpty() && doc.selectFirst("div.nutrition_display") != null) {
+                log.info("Direct product page detected");
+                String name = doc.selectFirst("h1").text();
+                String summary = doc.select(".nutrition_display").text();
+                java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?i)(\\d+)\\s*kcal").matcher(summary);
+                if (m.find()) {
+                    Map<String, Object> food = new HashMap<>();
+                    food.put("name", name + " (Direct)");
+                    food.put("calories", Integer.parseInt(m.group(1)));
+                    results.add(food);
+                }
+            }
+
             for (Element el : resultElements) {
                 Element nameEl = el.selectFirst("a.prominent");
+                if (nameEl == null) nameEl = el.selectFirst("a");
+                
                 Element detailsEl = el.selectFirst("div.smallText");
 
                 if (nameEl != null && detailsEl != null) {
                     String name = nameEl.text();
                     String details = detailsEl.text();
+                    log.debug("Processing food: {} - Details: {}", name, details);
 
-                    java.util.regex.Matcher m = java.util.regex.Pattern.compile("Calories:\\s*(\\d+)\\s*kcal").matcher(details);
+                    // Regex ultra-flexible : gère "Calories: 100", "100 kcal", "Calories : 100 kcal"
+                    java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?i)(?:calories\\s*[:\\-]?\\s*)?(\\d+)\\s*kcal").matcher(details);
+                    if (!m.find()) {
+                        m = java.util.regex.Pattern.compile("(?i)calories\\s*[:\\-]?\\s*(\\d+)").matcher(details);
+                    }
+                    
                     if (m.find()) {
                         int cals = Integer.parseInt(m.group(1));
                         Map<String, Object> food = new HashMap<>();
@@ -135,24 +170,27 @@ public class DietPlanService implements IDietPlanService {
                 if (results.size() >= 10) break;
             }
         } catch (Exception e) {
-            log.error("FatSecret scraping error: {}", e.getMessage());
+            log.error("FatSecret scraping error: {}. Cause: {}", e.getMessage(), e.getCause() != null ? e.getCause().getMessage() : "Unknown");
         }
 
         // 2. Open Food Facts API (Fallback/Additional)
-        if (results.size() < 10) {
+        if (results.size() < 5) {
             try {
                 String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + URLEncoder.encode(q, StandardCharsets.UTF_8) + "&search_simple=1&action=process&json=1";
                 String json = Jsoup.connect(url).ignoreContentType(true).userAgent("Mozilla/5.0").timeout(8000).execute().body();
-                
+
                 com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
                 com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(json);
                 com.fasterxml.jackson.databind.JsonNode products = root.path("products");
-                
+
                 for (com.fasterxml.jackson.databind.JsonNode product : products) {
                     String name = product.path("product_name").asText("Inconnu");
-                    int cals = product.path("nutriments").path("energy-kcal_100g").asInt(0);
+                    com.fasterxml.jackson.databind.JsonNode nutriments = product.path("nutriments");
+                    int cals = nutriments.path("energy-kcal_100g").asInt(0);
+                    if (cals == 0) cals = nutriments.path("energy-kcal").asInt(0);
+                    if (cals == 0) cals = (int)(nutriments.path("energy_100g").asInt(0) / 4.184); // kJ to kcal
+                    
                     if (cals > 0) {
-                        // Avoid duplicates if possible, simply add
                         Map<String, Object> food = new HashMap<>();
                         food.put("name", name + " (Web)");
                         food.put("calories", cals);
@@ -162,6 +200,19 @@ public class DietPlanService implements IDietPlanService {
                 }
             } catch (Exception e) {
                 log.error("Open Food Facts API error: {}", e.getMessage());
+            }
+        }
+
+        if (results.isEmpty()) {
+            // Dernier recours : liste statique commune
+            String[][] commonFoods = {{"Pomme", "52"}, {"Banane", "89"}, {"Poulet", "165"}, {"Riz", "130"}, {"Pasta", "131"}, {"Oeuf", "155"}};
+            for (String[] f : commonFoods) {
+                if (f[0].toLowerCase().contains(q) || q.contains(f[0].toLowerCase())) {
+                    Map<String, Object> food = new HashMap<>();
+                    food.put("name", f[0] + " (Auto)");
+                    food.put("calories", Integer.parseInt(f[1]));
+                    results.add(food);
+                }
             }
         }
 
@@ -178,7 +229,7 @@ public class DietPlanService implements IDietPlanService {
     @Transactional
     public DietPlanResponse generateRecommendedDietPlan(Long healthProfileId, String goal) {
         HealthProfile hp = healthProfileRepository.findById(healthProfileId)
-            .orElseThrow(() -> new RuntimeException("HealthProfile not found"));
+                .orElseThrow(() -> new RuntimeException("HealthProfile not found"));
 
         if (hp.getWeight() == null || hp.getHeight() == null || hp.getAge() == null || hp.getGender() == null) {
             throw new RuntimeException("Données de santé insuffisantes pour la recommandation (poids, taille, âge ou genre manquant).");
@@ -209,14 +260,14 @@ public class DietPlanService implements IDietPlanService {
                     break;
             }
         }
-        
+
         double tdee = bmr * activityFactor;
-        
+
         // 3. Objectif en fonction de l'IMC ou paramètre choisi
         Double bmi = hp.getBmi();
         double targetCalories;
         String goalText;
-        
+
         // Détermination du but :
         String finalGoal = "maintain";
         if (goal != null && !goal.trim().isEmpty()) {
@@ -230,61 +281,61 @@ public class DietPlanService implements IDietPlanService {
         int daySeed = java.time.LocalDate.now().getDayOfYear();
         String mealSuggestions;
 
-        if (finalGoal.equals("gain")) { 
+        if (finalGoal.equals("gain")) {
             targetCalories = tdee + 500;
             goalText = "Prise de masse pour optimiser vos performances.";
             String[] breakfasts = {
-                "Petit-déjeuner : flocons d'avoine, lait entier, beurre de cacahuète, banane, amandes",
-                "Petit-déjeuner : 4 œufs brouillés, pain complet, fromage, jus d'orange frais",
-                "Petit-déjeuner : pancakes protéinés, sirop d'érable, yaourt grec, noix"
+                    "Petit-déjeuner : flocons d'avoine, lait entier, beurre de cacahuète, banane, amandes",
+                    "Petit-déjeuner : 4 œufs brouillés, pain complet, fromage, jus d'orange frais",
+                    "Petit-déjeuner : pancakes protéinés, sirop d'érable, yaourt grec, noix"
             };
             String[] lunches = {
-                "Déjeuner : riz complet, poulet rôti, avocat, légumes sautés, huile d'olive",
-                "Déjeuner : pâtes au blé complet, bœuf haché maigre, sauce tomate maison, parmesan",
-                "Déjeuner : quinoa, saumon grillé, patates douces rôties, brocolis"
+                    "Déjeuner : riz complet, poulet rôti, avocat, légumes sautés, huile d'olive",
+                    "Déjeuner : pâtes au blé complet, bœuf haché maigre, sauce tomate maison, parmesan",
+                    "Déjeuner : quinoa, saumon grillé, patates douces rôties, brocolis"
             };
             String[] dinners = {
-                "Dîner : saumon, quinoa, salade mixte, noix de pécan",
-                "Dîner : steak de dinde, purée de pommes de terre, haricots verts",
-                "Dîner : lentilles, riz, thon, salade d'épinards"
+                    "Dîner : saumon, quinoa, salade mixte, noix de pécan",
+                    "Dîner : steak de dinde, purée de pommes de terre, haricots verts",
+                    "Dîner : lentilles, riz, thon, salade d'épinards"
             };
             mealSuggestions = breakfasts[daySeed % 3] + "\n" + lunches[daySeed % 3] + "\n" + dinners[daySeed % 3] + "\nCollation : smoothie protéiné, oléagineux";
-        } else if (finalGoal.equals("loss")) { 
+        } else if (finalGoal.equals("loss")) {
             targetCalories = tdee - 500;
             goalText = "Perte de poids contrôlée pour réduire le surplus calorique.";
             String[] breakfasts = {
-                "Petit-déjeuner : œufs brouillés, épinards, thé vert, pamplemousse",
-                "Petit-déjeuner : yaourt nature 0%, fruits rouges, poignée d'amandes",
-                "Petit-déjeuner : smoothie vert (épinards, pomme, concombre), 2 œufs durs"
+                    "Petit-déjeuner : œufs brouillés, épinards, thé vert, pamplemousse",
+                    "Petit-déjeuner : yaourt nature 0%, fruits rouges, poignée d'amandes",
+                    "Petit-déjeuner : smoothie vert (épinards, pomme, concombre), 2 œufs durs"
             };
             String[] lunches = {
-                "Déjeuner : blanc de poulet, brocolis vapeur, salade mixte, tomate",
-                "Déjeuner : filet de poisson blanc, courgettes grillées, petite portion de quinoa",
-                "Déjeuner : salade composée (thon, œuf, salade, concombre), vinaigrette allégée"
+                    "Déjeuner : blanc de poulet, brocolis vapeur, salade mixte, tomate",
+                    "Déjeuner : filet de poisson blanc, courgettes grillées, petite portion de quinoa",
+                    "Déjeuner : salade composée (thon, œuf, salade, concombre), vinaigrette allégée"
             };
             String[] dinners = {
-                "Dîner : poisson blanc, haricots verts, soupe de légumes, carottes",
-                "Dîner : soupe de potiron, blanc de dinde grillé",
-                "Dîner : wok de légumes sans matière grasse, tofu grillé"
+                    "Dîner : poisson blanc, haricots verts, soupe de légumes, carottes",
+                    "Dîner : soupe de potiron, blanc de dinde grillé",
+                    "Dîner : wok de légumes sans matière grasse, tofu grillé"
             };
             mealSuggestions = breakfasts[daySeed % 3] + "\n" + lunches[daySeed % 3] + "\n" + dinners[daySeed % 3] + "\nCollation : pomme, fromage blanc 0%";
-        } else { 
+        } else {
             targetCalories = tdee;
             goalText = "Maintien du poids idéal et optimisation des performances.";
             String[] breakfasts = {
-                "Petit-déjeuner : yaourt grec, fruits rouges, amandes, pain complet",
-                "Petit-déjeuner : muesli sans sucre ajouté, lait demi-écrémé, kiwi",
-                "Petit-déjeuner : 2 œufs au plat, pain aux céréales, café ou thé"
+                    "Petit-déjeuner : yaourt grec, fruits rouges, amandes, pain complet",
+                    "Petit-déjeuner : muesli sans sucre ajouté, lait demi-écrémé, kiwi",
+                    "Petit-déjeuner : 2 œufs au plat, pain aux céréales, café ou thé"
             };
             String[] lunches = {
-                "Déjeuner : dinde, riz basmati, carottes rôties, lentilles",
-                "Déjeuner : steak haché 5%, pâtes complètes, haricots verts",
-                "Déjeuner : salade de riz, poulet, maïs, tomates cerises"
+                    "Déjeuner : dinde, riz basmati, carottes rôties, lentilles",
+                    "Déjeuner : steak haché 5%, pâtes complètes, haricots verts",
+                    "Déjeuner : salade de riz, poulet, maïs, tomates cerises"
             };
             String[] dinners = {
-                "Dîner : tofu ou poulet, quinoa, légumes variés, huile d'olive",
-                "Dîner : filet de cabillaud, purée de chou-fleur, salade",
-                "Dîner : omelette aux champignons, petite portion de frites au four, salade verte"
+                    "Dîner : tofu ou poulet, quinoa, légumes variés, huile d'olive",
+                    "Dîner : filet de cabillaud, purée de chou-fleur, salade",
+                    "Dîner : omelette aux champignons, petite portion de frites au four, salade verte"
             };
             mealSuggestions = breakfasts[daySeed % 3] + "\n" + lunches[daySeed % 3] + "\n" + dinners[daySeed % 3] + "\nCollation : un fruit de saison, quelques noix";
         }

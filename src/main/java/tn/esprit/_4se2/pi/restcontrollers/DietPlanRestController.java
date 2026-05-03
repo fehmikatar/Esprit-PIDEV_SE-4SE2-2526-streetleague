@@ -8,6 +8,9 @@ import tn.esprit._4se2.pi.dto.DietPlan.DietPlanRequest;
 import tn.esprit._4se2.pi.dto.DietPlan.DietPlanResponse;
 import tn.esprit._4se2.pi.services.DietPlan.IDietPlanService;
 import jakarta.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +79,15 @@ public class DietPlanRestController {
     // Dans DietPlanRestController.java
     @GetMapping("/search-calories")
     public ResponseEntity<List<Map<String, Object>>> searchCalories(@RequestParam String query) {
-        return ResponseEntity.ok(dietPlanService.searchFoodCalories(query));
+        List<Map<String, Object>> debugList = new ArrayList<>();
+        Map<String, Object> debugItem = new HashMap<>();
+        debugItem.put("name", "FORCE-DEBUG: " + query);
+        debugItem.put("calories", 999);
+        debugList.add(debugItem);
+        
+        // On concatène avec les vrais résultats
+        debugList.addAll(dietPlanService.searchFoodCalories(query));
+        return ResponseEntity.ok(debugList);
     }
 
     @PostMapping("/health-profile/{healthProfileId}/recommend")
