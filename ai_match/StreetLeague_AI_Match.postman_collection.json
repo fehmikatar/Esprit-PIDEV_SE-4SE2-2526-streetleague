@@ -1,0 +1,102 @@
+{
+  "info": {
+    "name": "StreetLeague — IA Match Prediction",
+    "description": "Collection Postman pour tester l'API de prédiction IA des matchs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "spring_url", "value": "http://localhost:8082" },
+    { "key": "fastapi_url", "value": "http://localhost:8000" }
+  ],
+  "item": [
+    {
+      "name": "🐍 FastAPI — Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{fastapi_url}}/health",
+        "description": "Vérifie que l'API Python est bien démarrée"
+      }
+    },
+    {
+      "name": "🐍 FastAPI — Info Modèle",
+      "request": {
+        "method": "GET",
+        "url": "{{fastapi_url}}/model/info",
+        "description": "Retourne les features utilisées et les métriques du modèle"
+      }
+    },
+    {
+      "name": "🐍 FastAPI — Prédire (Domicile Fort)",
+      "request": {
+        "method": "POST",
+        "url": "{{fastapi_url}}/predict",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"home_rank\": 1,\n  \"away_rank\": 20,\n  \"home_goals_avg\": 3.5,\n  \"away_goals_avg\": 0.8,\n  \"home_conceded_avg\": 0.5,\n  \"away_conceded_avg\": 2.5,\n  \"home_wins_last5\": 5,\n  \"away_wins_last5\": 0,\n  \"home_rating_avg\": 4.8,\n  \"away_rating_avg\": 2.2,\n  \"is_neutral_venue\": 0,\n  \"competition_format\": 0\n}"
+        },
+        "description": "Équipe domicile très forte → devrait prédire HOME_WIN"
+      }
+    },
+    {
+      "name": "🐍 FastAPI — Prédire (Équipes Équilibrées)",
+      "request": {
+        "method": "POST",
+        "url": "{{fastapi_url}}/predict",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"home_rank\": 10,\n  \"away_rank\": 10,\n  \"home_goals_avg\": 1.5,\n  \"away_goals_avg\": 1.5,\n  \"home_conceded_avg\": 1.5,\n  \"away_conceded_avg\": 1.5,\n  \"home_wins_last5\": 2,\n  \"away_wins_last5\": 2,\n  \"home_rating_avg\": 3.0,\n  \"away_rating_avg\": 3.0\n}"
+        },
+        "description": "Équipes équilibrées → DRAW possible"
+      }
+    },
+    {
+      "name": "🐍 FastAPI — Prédire (Extérieur Fort)",
+      "request": {
+        "method": "POST",
+        "url": "{{fastapi_url}}/predict",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"home_rank\": 25,\n  \"away_rank\": 2,\n  \"home_goals_avg\": 0.7,\n  \"away_goals_avg\": 3.2,\n  \"home_conceded_avg\": 2.8,\n  \"away_conceded_avg\": 0.6,\n  \"home_wins_last5\": 0,\n  \"away_wins_last5\": 5,\n  \"home_rating_avg\": 2.1,\n  \"away_rating_avg\": 4.7,\n  \"is_neutral_venue\": 1\n}"
+        },
+        "description": "Équipe extérieure très forte → devrait prédire AWAY_WIN"
+      }
+    },
+    {
+      "name": "☕ Spring — Prédire (endpoint manual)",
+      "request": {
+        "method": "POST",
+        "url": "{{spring_url}}/api/matches/predict/manual",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"homeRank\": 3,\n  \"awayRank\": 8,\n  \"homeGoalsAvg\": 2.3,\n  \"awayGoalsAvg\": 1.5,\n  \"homeConcededAvg\": 1.0,\n  \"awayConcededAvg\": 1.8,\n  \"homeWinsLast5\": 4,\n  \"awayWinsLast5\": 2,\n  \"homeRatingAvg\": 4.2,\n  \"awayRatingAvg\": 3.1\n}"
+        },
+        "description": "Spring appelle FastAPI via RestTemplate"
+      }
+    },
+    {
+      "name": "☕ Spring — Prédire depuis BD (matchId = 1)",
+      "request": {
+        "method": "POST",
+        "url": "{{spring_url}}/api/matches/predict/1",
+        "description": "Spring calcule les stats depuis la BD puis appelle FastAPI"
+      }
+    },
+    {
+      "name": "🐍 FastAPI — Batch (plusieurs matchs)",
+      "request": {
+        "method": "POST",
+        "url": "{{fastapi_url}}/predict/batch",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"matches\": [\n    {\n      \"home_rank\": 1, \"away_rank\": 20,\n      \"home_goals_avg\": 3.5, \"away_goals_avg\": 0.8,\n      \"home_conceded_avg\": 0.5, \"away_conceded_avg\": 2.5,\n      \"home_wins_last5\": 5, \"away_wins_last5\": 0,\n      \"home_rating_avg\": 4.8, \"away_rating_avg\": 2.2\n    },\n    {\n      \"home_rank\": 10, \"away_rank\": 10,\n      \"home_goals_avg\": 1.5, \"away_goals_avg\": 1.5,\n      \"home_conceded_avg\": 1.5, \"away_conceded_avg\": 1.5,\n      \"home_wins_last5\": 2, \"away_wins_last5\": 2,\n      \"home_rating_avg\": 3.0, \"away_rating_avg\": 3.0\n    }\n  ]\n}"
+        },
+        "description": "Prédire plusieurs matchs en une seule requête"
+      }
+    }
+  ]
+}

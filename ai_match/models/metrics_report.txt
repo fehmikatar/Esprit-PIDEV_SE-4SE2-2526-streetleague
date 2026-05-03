@@ -1,0 +1,18 @@
+Best model   : SVM (RBF)
+Val Accuracy : 57.00%
+
+=== Classification Report ===
+              precision    recall  f1-score   support
+
+        DRAW       0.55      0.37      0.44        49
+    AWAY_WIN       0.58      0.78      0.66        98
+    HOME_WIN       0.56      0.38      0.45        53
+
+    accuracy                           0.57       200
+   macro avg       0.56      0.51      0.52       200
+weighted avg       0.57      0.57      0.55       200
+
+=== All Models ===
+Random Forest          train=82.75%  val=53.00%  cv=52.50%
+Gradient Boosting      train=82.00%  val=52.50%  cv=49.50%
+SVM (RBF)              train=62.75%  val=57.00%  cv=57.62%
