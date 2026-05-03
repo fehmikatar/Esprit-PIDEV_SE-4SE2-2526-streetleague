@@ -183,7 +183,7 @@ public class HealthProfileService implements IHealthProfileService {
         log.info("Fetching health profile with id: {}", id);
         return healthProfileRepository.findById(id)
                 .map(healthProfileMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Health profile not found with id: " + id));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Health profile not found with id: " + id));
     }
 
     @Override
@@ -192,7 +192,7 @@ public class HealthProfileService implements IHealthProfileService {
         log.info("Fetching health profile for user id: {}", userId);
         return healthProfileRepository.findByUserId(userId)
                 .map(healthProfileMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Health profile not found for user id: " + userId));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Health profile not found for user id: " + userId));
     }
 
     @Override

@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 public class DoctorService implements IDoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final tn.esprit._4se2.pi.repositories.AppointmentRepository appointmentRepository;
+    private final tn.esprit._4se2.pi.repositories.MedicalRecordRepository medicalRecordRepository;
     private final DoctorMapper doctorMapper;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
@@ -133,6 +135,11 @@ public class DoctorService implements IDoctorService {
         if (!doctorRepository.existsById(id)) {
             throw new RuntimeException("Doctor not found with id: " + id);
         }
+        
+        // Supprimer les dépendances pour éviter les contraintes d'intégrité
+        appointmentRepository.deleteByDoctorId(id);
+        medicalRecordRepository.deleteByTreatedById(id);
+        
         doctorRepository.deleteById(id);
         log.info("Doctor deleted with id: {}", id);
     }

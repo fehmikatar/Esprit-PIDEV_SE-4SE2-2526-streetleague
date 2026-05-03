@@ -12,4 +12,6 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
     List<MedicalRecord> findByHealthProfileId(Long healthProfileId);
     List<MedicalRecord> findByRecoveryStatus(RecoveryStatus status);
     List<MedicalRecord> findByInjuryDateBetween(LocalDate start, LocalDate end);
+    
+    void deleteByTreatedById(Long doctorId);
 }

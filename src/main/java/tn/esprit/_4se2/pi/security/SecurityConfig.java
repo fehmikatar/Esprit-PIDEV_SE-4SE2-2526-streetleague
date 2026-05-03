@@ -31,14 +31,15 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthFilter jwtAuthFilter;
 
-    // ✅ SecurityFilterChain #1 - Pour /uploads/** SEULEMENT - PRIORITÉ MAXIMALE
+    // ✅ SecurityFilterChain #1 - Pour /uploads/** et WebSocket - PRIORITÉ MAXIMALE
     @Bean
     @Order(1)
-    public SecurityFilterChain uploadSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain publicEndpointsSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/uploads/**")
+            .securityMatcher("/uploads/**", "/ws/**", "/ws-chat/**")
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .csrf(csrf -> csrf.disable());
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         
         return http.build();
     }
