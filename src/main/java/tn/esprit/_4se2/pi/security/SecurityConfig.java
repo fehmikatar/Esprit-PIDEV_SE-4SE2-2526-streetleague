@@ -61,6 +61,15 @@ public class SecurityConfig {
                         // ── Public endpoints ──────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/password/**").permitAll()
+                        .requestMatchers("/api/products/recommendations/**").permitAll()
+                        .requestMatchers("/api/sponsored/**").permitAll()
+                        .requestMatchers("/api/health-profiles/**").permitAll()   // ← AJOUTER
+                        .requestMatchers("/api/matching/**").permitAll()
+                        .requestMatchers("/api/health/**").permitAll()
+                        .requestMatchers("/api/health-profiles/*/activities/**").permitAll()  // ← AJOUTER
+                        .requestMatchers("/api/health-profiles/user/*/activities/**").permitAll() // ← AJOUTER
+                        .requestMatchers("/api/predict/**").permitAll()                           // ← AJOUTER
+                        .requestMatchers("/api/chat/**").permitAll()                              // ← AJOUTER
                         .requestMatchers("/api/matching/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/feedbacks/space/*/owner").hasAnyRole("FIELD_OWNER", "ADMIN")

@@ -1,5 +1,6 @@
 package tn.esprit._4se2.pi.services.Favorite;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import tn.esprit._4se2.pi.entities.User;
 @Service
+@Transactional
 @AllArgsConstructor
 public class FavoriteServiceImpl implements IFavoriteService {
 
@@ -34,7 +36,7 @@ public class FavoriteServiceImpl implements IFavoriteService {
         stockNotificationScheduler.notifyLowStockFavorites();
     }
 
-
+    @Transactional
     @Override
     public FavoriteDTOs.FavoriteResponse addToFavorites(Long userId, FavoriteDTOs.FavoriteRequest request) {
         User user = userRepository.findById(userId).orElse(null);
@@ -95,6 +97,7 @@ public class FavoriteServiceImpl implements IFavoriteService {
             favoriteRepository.deleteAll(favorites.getContent());
         });
     }
+
 
     @Override
     public Page<FavoriteDTOs.FavoriteResponse> getUserFavorites(Long userId, Pageable pageable) {
