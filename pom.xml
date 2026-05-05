@@ -131,6 +131,7 @@
                       <exclude>tn/esprit/_4se2/pi/dto/MedicalRecord/MedicalRecordResponse.java</exclude>
                       <exclude>tn/esprit/_4se2/pi/mappers/MedicalRecordMapper.java</exclude>
                       <exclude>tn/esprit/_4se2/pi/entities/Doctor.java</exclude>
+                      <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
