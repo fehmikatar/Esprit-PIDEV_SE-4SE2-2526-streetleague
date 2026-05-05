@@ -2,7 +2,7 @@ name: Build and deploy JAR app to Azure Web App
 
 env:
   AZURE_WEBAPP_NAME: app-backend1
-  JAVA_VERSION: '17'
+  JAVA_VERSION: '17'  # Change to a stable version of Java like 17
   DISTRIBUTION: zulu
 
 on:
@@ -18,19 +18,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Step to setup Java 17 (or 11) version
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.DISTRIBUTION }}
           cache: maven
+
+      # Step to build the app with Maven and display detailed logs
       - name: Build with Maven
-        run: mvn clean install -DskipTests
+        run: mvn clean install -DskipTests -X  # Add -X for detailed logs
+
+      # Step to list the files in the target directory
+      - name: List files in target directory
+        run: ls -l ${GITHUB_WORKSPACE}/target  # This will list the files in the target directory
+
+      # Step to upload the generated JAR file as an artifact
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/target/*.jar'  # Ensure this points to the generated JAR file
 
   deploy:
     permissions:
@@ -41,14 +51,17 @@ jobs:
       name: Development
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
+      # Download the JAR file artifact from the build job
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
+
+      # Step to deploy to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: '*.jar'
+          package: '*.jar'  # Ensure this points to the JAR file
