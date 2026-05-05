@@ -121,6 +121,25 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+         <excludes>
+    <exclude>tn/esprit/_4se2/pi/Swagger/Swagger.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/DoctorMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/FieldOwnerMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/UserMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/CartMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/DietPlanMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/SportSpaceAvailabilityMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/PlayerMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/mappers/LoyaltyProgramMapper.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/services/FieldOwner/FieldOwnerService.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/services/Player/PlayerService.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/services/AdvertisementService.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/restcontrollers/CartRestController.java</exclude>
+    <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
+</excludes>
 
     <build>
         <plugins>
