@@ -27,13 +27,13 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean install -DskipTests -X  # Logs détaillés avec -X
+        run: mvn clean install -DskipTests
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/PI/target/*.jar'
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     permissions:
@@ -43,6 +43,7 @@ jobs:
     environment:
       name: Development
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
