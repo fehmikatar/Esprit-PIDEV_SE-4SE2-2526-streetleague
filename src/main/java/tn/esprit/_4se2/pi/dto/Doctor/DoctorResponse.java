@@ -11,7 +11,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DoctorResponse {
+
+    // Identifiant unique du médecin
     Long id;
+
+    // Informations de base sur le médecin
     String firstName;
     String lastName;
     String specialty;
@@ -19,9 +23,12 @@ public class DoctorResponse {
     String email;
     String phoneNumber;
     String address;
+
+    // Horaires de travail
     String workingHoursStart;
     String workingHoursEnd;
-    
+
+    // Champ boolean pour la disponibilité, mappé en JSON avec un nom personnalisé
     @JsonProperty("isAvailable")
     boolean available;
 }
