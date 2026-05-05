@@ -124,59 +124,25 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-
-            <!-- Maven Compiler Plugin to compile using Java 17 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-
-                    <!-- TEMPORAIRE : fichiers exclus pour débloquer le build -->
-                    <excludes>
-                        <exclude>tn/esprit/_4se2/pi/Swagger/Swagger.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/restcontrollers/CartRestController.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/DoctorMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/FieldOwnerMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/UserMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/FieldOwner/FieldOwnerService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
-            <!-- Spring Boot Plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- Tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <argLine>-Dnet.bytebuddy.experimental=true</argLine>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+            <configuration>
+                <source>17</source> <!-- Specify Java version -->
+                <target>17</target>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.30</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 
 </project>
