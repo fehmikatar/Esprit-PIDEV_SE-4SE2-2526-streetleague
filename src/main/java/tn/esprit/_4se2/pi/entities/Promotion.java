@@ -19,4 +19,8 @@ public class Promotion {
     private double discount; // percentage or fixed amount
     private LocalDate startDate;
     private LocalDate endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "loyalty_tier_id")
+    private LoyaltyTier loyaltyTier;
 }

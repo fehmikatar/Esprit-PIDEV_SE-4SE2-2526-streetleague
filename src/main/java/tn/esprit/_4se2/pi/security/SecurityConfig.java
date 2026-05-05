@@ -63,7 +63,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/password/**").permitAll()
                         .requestMatchers("/api/products/recommendations/**").permitAll()
                         .requestMatchers("/api/sponsored/**").permitAll()
-                        .requestMatchers("/api/health-profiles/**").permitAll()   // ← AJOUTER
+                        .requestMatchers("/api/health-profiles/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/promo-codes/**").authenticated()
                         .requestMatchers("/api/matching/**").permitAll()
                         .requestMatchers("/api/health/**").permitAll()
                         .requestMatchers("/api/health-profiles/*/activities/**").permitAll()  // ← AJOUTER

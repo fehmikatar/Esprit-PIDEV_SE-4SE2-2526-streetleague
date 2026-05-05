@@ -31,6 +31,6 @@ public class TeamMember {
     private Role role;
 
     public enum Role {
-        MEMBER, RESPONSIBLE
+        MEMBER, RESPONSIBLE, ASSISTANT
     }
 }

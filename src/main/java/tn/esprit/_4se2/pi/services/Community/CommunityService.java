@@ -30,6 +30,7 @@ import tn.esprit._4se2.pi.repositories.PostLikeRepository;
 import tn.esprit._4se2.pi.repositories.TeamMemberRepository;
 import tn.esprit._4se2.pi.repositories.TeamRepository;
 import tn.esprit._4se2.pi.repositories.UserRepository;
+import tn.esprit._4se2.pi.services.N8nIntegrationService;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -55,8 +56,7 @@ public class CommunityService {
     private final UserRepository userRepository;
     private final BadWordsFilterService badWordsFilter;
     private final CommentLikeRepository commentLikeRepository;
-
-    
+    private final N8nIntegrationService n8nService;
 
     // ── Helper: resolve current authenticated user ────────────────────────────
 
@@ -221,7 +221,6 @@ public class CommunityService {
             PostComment parent = commentRepository.findById(request.getParentId())
                     .orElseThrow(() -> new RuntimeException("Parent comment not found: " + request.getParentId()));
             
-            // Optional: Validate that the parent belongs to the same post
             if (!parent.getPost().getId().equals(postId)) {
                 throw new RuntimeException("Parent comment does not belong to this post");
             }
@@ -253,60 +252,217 @@ public class CommunityService {
         postRepository.save(post);
     }
 
-    // ── Likes ─────────────────────────────────────────────────────────────────
+    // ── Likes & Reactions ─────────────────────────────────────────────────────
 
-@Transactional
-public PostResponse likePost(Long postId) {
-    User user = currentUser();
-    CommunityPost post = postRepository.findById(postId)
-            .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
-    requireTeamMember(post.getTeam().getId(), user.getId());
+    @Transactional
+    public PostResponse likePost(Long postId) {
+        User user = currentUser();
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+        requireTeamMember(post.getTeam().getId(), user.getId());
 
-    if (!likeRepository.existsByUserIdAndPostId(user.getId(), postId)) {
-        PostLike like = new PostLike();
-        like.setUser(user);
-        like.setPost(post);
-        likeRepository.save(like);
-        post.setLikesCount(post.getLikesCount() + 1);
-        postRepository.save(post);
+        if (!likeRepository.existsByUserIdAndPostId(user.getId(), postId)) {
+            PostLike like = new PostLike();
+            like.setUser(user);
+            like.setPost(post);
+            likeRepository.save(like);
+            post.setLikesCount(post.getLikesCount() + 1);
+            postRepository.save(post);
+        }
+
+        return toPostResponse(post, user.getId());
     }
 
-    return toPostResponse(post, user.getId());
-}
+    @Transactional
+    public PostResponse unlikePost(Long postId) {
+        User user = currentUser();
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+        requireTeamMember(post.getTeam().getId(), user.getId());
 
-@Transactional
-public PostResponse unlikePost(Long postId) {
-    User user = currentUser();
-    CommunityPost post = postRepository.findById(postId)
-            .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
-    requireTeamMember(post.getTeam().getId(), user.getId());
+        Optional<PostLike> like = likeRepository.findByUserIdAndPostId(user.getId(), postId);
+        if (like.isPresent()) {
+            likeRepository.delete(like.get());
+            post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
+            postRepository.save(post);
+        }
 
-    Optional<PostLike> like = likeRepository.findByUserIdAndPostId(user.getId(), postId);
-    if (like.isPresent()) {
-        likeRepository.delete(like.get());
-        post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
-        postRepository.save(post);
+        return toPostResponse(post, user.getId());
     }
 
-    return toPostResponse(post, user.getId());
-}
+    public List<PostResponse.AuthorInfo> getPostLikers(Long postId) {
+        User user = currentUser();
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
+        requireTeamMember(post.getTeam().getId(), user.getId());
 
-public List<PostResponse.AuthorInfo> getPostLikers(Long postId) {
-    User user = currentUser();
-    CommunityPost post = postRepository.findById(postId)
-            .orElseThrow(() -> new RuntimeException("Post not found: " + postId));
-    requireTeamMember(post.getTeam().getId(), user.getId());
+        return likeRepository.findByPostId(postId).stream()
+                .map(like -> {
+                    User likerUser = like.getUser();
+                    if (likerUser == null) {
+                        throw new RuntimeException("User not found");
+                    }
+                    return toAuthorInfo(likerUser);
+                })
+                .collect(Collectors.toList());
+    }
 
-    return likeRepository.findByPostId(postId).stream()
-            .map(like -> {
-                User likerUser = like.getUser();
-                if (likerUser == null) {
-                    throw new RuntimeException("User not found");
-                }
-                return toAuthorInfo(likerUser);
-            })
-            .collect(Collectors.toList());
-}
+    /**
+     * Ajoute ou change une réaction sur un post
+     */
+    @Transactional
+    public void addOrUpdateReaction(Long postId, String userEmail, ReactionType reactionType) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!teamMemberRepository.existsByTeamIdAndUserId(post.getTeam().getId(), user.getId())) {
+            throw new RuntimeException("You must be a team member to react");
+        }
+
+        Optional<PostLike> existing = likeRepository.findByUserIdAndPostId(user.getId(), postId);
+
+        if (existing.isPresent()) {
+            PostLike like = existing.get();
+            like.setReactionType(reactionType);
+            likeRepository.save(like);
+        } else {
+            PostLike newReaction = new PostLike();
+            newReaction.setUser(user);
+            newReaction.setPost(post);
+            newReaction.setReactionType(reactionType);
+            likeRepository.save(newReaction);
+            
+            post.setLikesCount(post.getLikesCount() + 1);
+            postRepository.save(post);
+        }
+    }
+
+    /**
+     * Supprimer une réaction sur un post
+     */
+    @Transactional
+    public void removeReaction(Long postId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        Optional<PostLike> like = likeRepository.findByUserIdAndPostId(user.getId(), postId);
+        if (like.isPresent()) {
+            likeRepository.delete(like.get());
+            
+            CommunityPost post = postRepository.findById(postId)
+                    .orElseThrow(() -> new RuntimeException("Post not found"));
+            post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
+            postRepository.save(post);
+        }
+    }
+
+    /**
+     * Obtenir le résumé des réactions d'un post
+     */
+    public List<ReactionSummary> getReactionSummary(Long postId) {
+        List<Object[]> results = likeRepository.countReactionsByPost(postId);
+        
+        return results.stream()
+                .map(row -> new ReactionSummary(
+                    (ReactionType) row[0],
+                    ((ReactionType) row[0]).getEmoji(),
+                    (Long) row[1]
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Obtenir la réaction de l'utilisateur courant sur un post
+     */
+    public ReactionType getCurrentUserReaction(Long postId, Long userId) {
+        return likeRepository.findByUserIdAndPostId(userId, postId)
+                .map(PostLike::getReactionType)
+                .orElse(null);
+    }
+
+    /**
+     * Ajoute ou change une réaction sur un commentaire
+     */
+    @Transactional
+    public void addOrUpdateCommentReaction(Long commentId, String userEmail, ReactionType reactionType) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        PostComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+        
+        requireTeamMember(comment.getPost().getTeam().getId(), user.getId());
+        
+        Optional<CommentLike> existing = commentLikeRepository.findByCommentIdAndUserId(commentId, user.getId());
+        
+        if (existing.isPresent()) {
+            CommentLike reaction = existing.get();
+            reaction.setReactionType(reactionType);
+            commentLikeRepository.save(reaction);
+        } else {
+            CommentLike newReaction = CommentLike.builder()
+                    .userId(user.getId())
+                    .commentId(commentId)
+                    .reactionType(reactionType)
+                    .build();
+            commentLikeRepository.save(newReaction);
+        }
+    }
+
+    /**
+     * Supprime une réaction sur un commentaire
+     */
+    @Transactional
+    public void removeCommentReaction(Long commentId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        commentLikeRepository.deleteByCommentIdAndUserId(commentId, user.getId());
+    }
+
+    /**
+     * Obtenir la liste des utilisateurs ayant réagi à un post
+     */
+    public List<UserReactionResponse> getPostReactionUsers(Long postId) {
+        return likeRepository.findByPostId(postId).stream()
+                .map(like -> {
+                    User reactionUser = like.getUser();
+                    if (reactionUser == null) {
+                        throw new RuntimeException("User not found for reaction");
+                    }
+                    return UserReactionResponse.builder()
+                            .userId(reactionUser.getId())
+                            .firstName(reactionUser.getFirstName())
+                            .lastName(reactionUser.getLastName())
+                            .profileImageUrl(reactionUser.getProfileImageUrl())
+                            .reactionType(like.getReactionType())
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    // ── AI Suggestion ─────────────────────────────────────────────────────────
+
+    public String getAiPostSuggestion(Long teamId) {
+        User user;
+        try {
+            user = currentUser();
+        } catch (Exception e) {
+            user = new User();
+            user.setId(0L);
+            user.setFirstName("System");
+            user.setLastName("AI");
+            user.setEmail("ai@streetleague.com");
+            user.setRole(tn.esprit._4se2.pi.Enum.Role.ROLE_ADMIN);
+        }
+        
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+                
+        return n8nService.getPostSuggestion(teamId, team.getName(), team.getSport(), user);
+    }
 
     // ── File helpers ──────────────────────────────────────────────────────────
 
@@ -323,148 +479,4 @@ public List<PostResponse.AuthorInfo> getPostLikers(Long postId) {
         if (filename == null || !filename.contains(".")) return "jpg";
         return filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     }
-
-/**
- * Ajoute ou change une réaction sur un post
- */
-public void addOrUpdateReaction(Long postId, String userEmail, ReactionType reactionType) {
-    // Récupérer l'utilisateur
-    User user = userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-    // Vérifier que l'utilisateur est membre de l'équipe
-    CommunityPost post = postRepository.findById(postId)
-            .orElseThrow(() -> new RuntimeException("Post not found"));
-    
-    if (!teamMemberRepository.existsByTeamIdAndUserId(post.getTeam().getId(), user.getId())) {  // ✅ Changé
-        throw new RuntimeException("You must be a team member to react");
-    }
-    
-    // Chercher si une réaction existe déjà
-    Optional<PostLike> existingReaction = likeRepository.findByUserIdAndPostId(user.getId(), postId);
-    
-    if (existingReaction.isPresent()) {
-        // Modifier la réaction existante
-        PostLike reaction = existingReaction.get();
-        reaction.setReactionType(reactionType);
-        likeRepository.save(reaction);
-    } else {
-        // Créer une nouvelle réaction
-        PostLike newReaction = new PostLike();
-        newReaction.setUser(user);
-        newReaction.setPost(post);
-        newReaction.setReactionType(reactionType);
-        likeRepository.save(newReaction);
-        
-        // Incrémenter le compteur
-        post.setLikesCount(post.getLikesCount() + 1);
-        postRepository.save(post);
-    }
-}
-/**
- * Supprime une réaction
- */
-public void removeReaction(Long postId, String userEmail) {
-    User user = userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-    Optional<PostLike> reaction = likeRepository.findByUserIdAndPostId(user.getId(), postId);
-    
-    if (reaction.isPresent()) {
-        likeRepository.delete(reaction.get());
-        
-        // Décrémenter le compteur
-        CommunityPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-        post.setLikesCount(Math.max(0, post.getLikesCount() - 1));
-        postRepository.save(post);
-    }
-}
-
-/**
- * Obtenir le résumé des réactions
- */
-public List<ReactionSummary> getReactionSummary(Long postId) {
-    List<Object[]> results = likeRepository.countReactionsByPost(postId);
-    
-    return results.stream()
-            .map(row -> new ReactionSummary(
-                    (ReactionType) row[0],
-                    ((ReactionType) row[0]).getEmoji(),
-                    (Long) row[1]
-            ))
-            .collect(Collectors.toList());
-}
-
-/**
- * Obtenir la réaction de l'utilisateur courant
- */
-public ReactionType getCurrentUserReaction(Long postId, Long userId) {
-    return likeRepository.findByUserIdAndPostId(userId, postId)
-            .map(PostLike::getReactionType)
-            .orElse(null);
-}
-
-/**
- * Ajoute ou change une réaction sur un commentaire
- */
-@Transactional
-public void addOrUpdateCommentReaction(Long commentId, String userEmail, ReactionType reactionType) {
-    User user = userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-    PostComment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new RuntimeException("Comment not found"));
-    
-    // Vérifier accès (membre de l'équipe du post associé)
-    requireTeamMember(comment.getPost().getTeam().getId(), user.getId());
-    
-    Optional<CommentLike> existing = commentLikeRepository.findByCommentIdAndUserId(commentId, user.getId());
-    
-    if (existing.isPresent()) {
-        CommentLike reaction = existing.get();
-        reaction.setReactionType(reactionType);
-        commentLikeRepository.save(reaction);
-    } else {
-        CommentLike newReaction = CommentLike.builder()
-                .userId(user.getId())
-                .commentId(commentId)
-                .reactionType(reactionType)
-                .build();
-        commentLikeRepository.save(newReaction);
-    }
-}
-
-/**
- * Supprime une réaction sur un commentaire
- */
-@Transactional
-public void removeCommentReaction(Long commentId, String userEmail) {
-    User user = userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    
-    commentLikeRepository.deleteByCommentIdAndUserId(commentId, user.getId());
-}
-
-/**
- * Obtenir la liste des utilisateurs ayant réagi à un post
- */
-public List<UserReactionResponse> getPostReactionUsers(Long postId) {
-    return likeRepository.findByPostId(postId).stream()
-            .map(like -> {
-                User reactionUser = like.getUser();
-                if (reactionUser == null) {
-                    throw new RuntimeException("User not found for reaction");
-                }
-                return UserReactionResponse.builder()
-                        .userId(reactionUser.getId())
-                        .firstName(reactionUser.getFirstName())
-                        .lastName(reactionUser.getLastName())
-                        .profileImageUrl(reactionUser.getProfileImageUrl())
-                        .reactionType(like.getReactionType())
-                        .build();
-            })
-            .collect(Collectors.toList());
-}
-    
 }

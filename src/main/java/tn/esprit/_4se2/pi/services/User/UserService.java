@@ -172,4 +172,10 @@ public class UserService implements IUserService {
 
         return imageData;
     }
+
+    public String getUserFullName(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return user.getFirstName() + " " + user.getLastName();
+    }
 }
