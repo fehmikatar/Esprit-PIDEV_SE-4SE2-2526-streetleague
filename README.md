@@ -14,8 +14,12 @@
 **StreetLeague** est une plateforme innovante dédiée à la gestion du sport amateur. L'application permet d'organiser des compétitions, de gérer la réservation de terrains (SportSpaces) et de récolter des feedbacks de la communauté. Ce repository contient l'**API Backend** (Spring Boot) qui alimente l'ensemble de l'écosystème StreetLeague.
 
 ## 👥 Membres de l'Équipe & Répartition
-- **Fehmi Katar** : Gestion des Terrains (SportSpace), Feedbacks, Réservations, Gestion des Utilisateurs et Authentification (JWT).
-- 
+- **Fehmi Katar** 
+- **Ibtihel Baccarir**
+- **Mahdi Naifer**
+- **Rayen Fgaier**
+- **Roudayna Zini**
+- **Manel Lakom** 
 ## 🏗️ Structure du Projet
 
 L'architecture est modulaire et divisée de manière académique :
