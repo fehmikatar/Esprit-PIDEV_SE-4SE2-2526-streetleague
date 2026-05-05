@@ -62,4 +62,36 @@ public class Cart {
     public String getClientName() { return clientName; }
     public void setClientName(String clientName) { this.clientName = clientName; }
 
-    public String getClient
+    public String getClientAddress() { return clientAddress; }
+    public void setClientAddress(String clientAddress) { this.clientAddress = clientAddress; }
+
+    public String getClientPostalCode() { return clientPostalCode; }
+    public void setClientPostalCode(String clientPostalCode) { this.clientPostalCode = clientPostalCode; }
+
+    public String getClientCity() { return clientCity; }
+    public void setClientCity(String clientCity) { this.clientCity = clientCity; }
+
+    public String getClientPhone() { return clientPhone; }
+    public void setClientPhone(String clientPhone) { this.clientPhone = clientPhone; }
+
+    public String getClientEmail() { return clientEmail; }
+    public void setClientEmail(String clientEmail) { this.clientEmail = clientEmail; }
+
+    public String getDeliveryMode() { return deliveryMode; }
+    public void setDeliveryMode(String deliveryMode) { this.deliveryMode = deliveryMode; }
+
+    public String getPaymentMode() { return paymentMode; }
+    public void setPaymentMode(String paymentMode) { this.paymentMode = paymentMode; }
+
+    public String getCardNumber() { return cardNumber; }
+    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
+
+    public String getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(String expiryDate) { this.expiryDate = expiryDate; }
+
+    public String getCvv() { return cvv; }
+    public void setCvv(String cvv) { this.cvv = cvv; }
+
+    public String getDeliveryConfirmationCode() { return deliveryConfirmationCode; }
+    public void setDeliveryConfirmationCode(String deliveryConfirmationCode) { this.deliveryConfirmationCode = deliveryConfirmationCode; }
+}
