@@ -1,8 +1,9 @@
 package tn.esprit._4se2.pi.entities;
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "field_owners")
@@ -10,15 +11,13 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FieldOwner extends User {
-
     String businessName;
-
     String businessLicense;
-
     String location;
-
     Double totalRevenue;
+    LocalDateTime createdAt;
+    Boolean isActive;
 }

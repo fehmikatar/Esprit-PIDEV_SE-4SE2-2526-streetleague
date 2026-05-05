@@ -2,6 +2,7 @@ package tn.esprit._4se2.pi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 import tn.esprit._4se2.pi.Enum.Role;
@@ -12,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity(name = "User")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -64,3 +65,5 @@ public class User {
     }
 
 }
+
+
