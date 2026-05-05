@@ -109,53 +109,19 @@
                         </path>
                     </annotationProcessorPaths>
                     <excludes>
-                        <exclude>tn/esprit/_4se2/pi/Swagger/Swagger.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/CartItem.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Team.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Badge.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Performance.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Doctor.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/FieldOwner.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Favorite.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/FavoriteCategory.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/Product.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/entities/ProductImage.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/repositories/CartRepository.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/Cart/CartService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/Team/TeamService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/Match/MatchService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/Badge/BadgeService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/FieldOwner/FieldOwnerService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/AdvertisementService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/services/Player/PlayerService.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/CartMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/DoctorMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/FieldOwnerMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/UserMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/BadgeMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/DietPlanMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/SportSpaceAvailabilityMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/PlayerMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/LoyaltyProgramMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/mappers/MedicalRecordMapper.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/restcontrollers/CartRestController.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/utils/XpCalculator.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Badge/BadgeRequest.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Badge/BadgeResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/MedicalRecord/MedicalRecordRequest.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/MedicalRecord/MedicalRecordResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Doctor/DoctorRequest.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Doctor/DoctorResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/FieldOwner/FieldOwnerRequest.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/FieldOwner/FieldOwnerResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Sponsor/FavoriteDTOs/FavoriteCategoryRequest.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Sponsor/FavoriteDTOs/FavoriteCategoryResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Sponsor/FavoriteDTOs/FavoriteResponse.java</exclude>
-                        <exclude>tn/esprit/_4se2/pi/dto/Sponsor/ProductDTOs/ProductRequest.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/services/Favorite/FavoriteServiceImpl.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/Cart/CartStatsService.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/Appointment/AppointmentService.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/Performance/PerformanceService.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/Product/ProductService.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/Product/ProductImportService.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/services/MedicalRecord/MedicalRecordService.java</exclude>
+                      <exclude>tn/esprit/_4se2/pi/services/BadgePlayer/BadgePlayerService.java</exclude>
+                      <exclude>tn/esprit/_4se2/pi/mappers/PerformanceMapper.java</exclude>
+                      <exclude>tn/esprit/_4se2/pi/mappers/MedicalRecordMapper.java</exclude>
+                     <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
+                     <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
+                     <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
