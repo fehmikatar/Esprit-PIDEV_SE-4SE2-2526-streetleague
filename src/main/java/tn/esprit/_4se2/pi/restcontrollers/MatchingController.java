@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit._4se2.pi.dto.Matching.MatchingDTOs.*;
 import tn.esprit._4se2.pi.services.Matching.MatchingService;
+import tn.esprit._4se2.pi.services.Community.CommunityService;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class MatchingController {
 
     private final MatchingService matchingService;
+    private final CommunityService communityService;
 
     @PostMapping("/recommend/teams")
     public ResponseEntity<List<MatchResponse>> getBestTeamsForProfile(
@@ -35,5 +37,11 @@ public class MatchingController {
             @PathVariable Long teamId,
             @RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(matchingService.getBestPlayersForTeam(teamId, limit));
+    }
+
+    @GetMapping("/ai-post-suggestion/{teamId}")
+    public ResponseEntity<java.util.Map<String, String>> getAiPostSuggestion(@PathVariable Long teamId) {
+        String suggestion = communityService.getAiPostSuggestion(teamId);
+        return ResponseEntity.ok(java.util.Map.of("suggestion", suggestion));
     }
 }

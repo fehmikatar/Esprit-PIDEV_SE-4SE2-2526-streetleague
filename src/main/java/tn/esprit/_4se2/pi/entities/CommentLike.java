@@ -27,6 +27,7 @@ public class CommentLike {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reaction_type", nullable = false)
+    @Builder.Default
     private ReactionType reactionType = ReactionType.LIKE;
 
     @Column(name = "created_at", nullable = false)
