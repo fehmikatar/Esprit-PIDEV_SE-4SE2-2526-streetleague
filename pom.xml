@@ -19,7 +19,7 @@
     <description>Projet PI ESPRIT</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>17</java.version> <!-- Version Java -->
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -127,7 +127,7 @@
     <build>
         <plugins>
 
-            <!-- Compiler Java 17 + Lombok -->
+            <!-- Maven Compiler Plugin to compile using Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
