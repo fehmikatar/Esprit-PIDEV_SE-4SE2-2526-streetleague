@@ -24,7 +24,8 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.DISTRIBUTION }}
-          cache: maven
+          cache: 'maven'
+          cache-dependency-path: '**/pom.xml'
 
       - name: Build with Maven
         run: mvn clean install -DskipTests
