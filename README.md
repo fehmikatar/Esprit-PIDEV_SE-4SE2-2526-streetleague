@@ -15,6 +15,11 @@
 
 ## 👥 Membres de l'Équipe & Répartition
 - **Fehmi Katar** : Gestion des Terrains (SportSpace), Feedbacks, Réservations, Gestion des Utilisateurs et Authentification (JWT).
+- **Roudayna Zini**: Gestion des Équipes (Teams), Gestion de la Communauté (Community), Commentaires, Interactions entre Utilisateurs, Engagement et Animation de la Plateforme.
+- **ibtihel Baccari**:Gestion des Sponsors, Gestion E-commerce (Boutique en ligne, Produits, Commandes, Paiements),et favoris.
+-**Mahdi Naifer**:Gestion des Compétitions, Gestion des Matchs, Gestion des Publicités Partenaires.
+-**Rayen Fgair**:Gestion des Performances, Gestion des Badges et Système de Récompenses.
+-**Manel Laakoum**:Gestion du HealthCare (Suivi de la santé des joueurs, intégration des services de soins et prévention des blessures, support médical lié aux activités sportives).
 - 
 ## 🏗️ Structure du Projet
 
