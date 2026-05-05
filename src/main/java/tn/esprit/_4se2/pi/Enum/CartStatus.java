@@ -1,5 +1,5 @@
-package tn.esprit._4se2.pi.Enum;
+package tn.esprit._4se2.pi.entities;
 
 public enum CartStatus {
-    PAIEMENT,COMMANDE
+    ACTIVE, INACTIVE, COMPLETED, CANCELLED
 }
