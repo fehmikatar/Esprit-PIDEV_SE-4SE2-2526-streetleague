@@ -2,7 +2,7 @@ name: Build and deploy JAR app to Azure Web App
 
 env:
   AZURE_WEBAPP_NAME: app-backend1
-  JAVA_VERSION: '21'
+  JAVA_VERSION: '17'
   DISTRIBUTION: zulu
 
 on:
