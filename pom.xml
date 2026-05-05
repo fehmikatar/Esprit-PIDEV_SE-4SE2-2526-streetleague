@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version> <!-- ou 3.1.x -->
+        <version>3.2.0</version>
         <relativePath/>
     </parent>
 
@@ -24,37 +24,28 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
-        <!-- MySQL Driver -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -72,53 +63,39 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
-        <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.3.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.17.2</version>
         </dependency>
-
     </dependencies>
-
-
 
     <build>
         <plugins>
@@ -136,6 +113,16 @@
                             <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <excludes>
+                        <exclude>tn/esprit/_4se2/pi/Swagger/Swagger.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/mappers/DoctorMapper.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/mappers/FieldOwnerMapper.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/services/FieldOwner/FieldOwnerService.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
+                        <exclude>tn/esprit/_4se2/pi/restcontrollers/CartRestController.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
