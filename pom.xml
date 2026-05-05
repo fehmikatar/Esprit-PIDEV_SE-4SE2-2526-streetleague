@@ -122,6 +122,8 @@
                         <exclude>tn/esprit/_4se2/pi/services/FieldOwner/FieldOwnerService.java</exclude>
                         <exclude>tn/esprit/_4se2/pi/entities/Cart.java</exclude>
                         <exclude>tn/esprit/_4se2/pi/restcontrollers/CartRestController.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/mappers/UserMapper.java</exclude>
+                       <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
