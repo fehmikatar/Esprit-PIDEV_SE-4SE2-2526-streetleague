@@ -122,6 +122,11 @@
                      <exclude>tn/esprit/_4se2/pi/mappers/FavoriteMapper.java</exclude>
                      <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
                      <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
+                    <exclude>tn/esprit/_4se2/pi/services/Cart/CartService.java</exclude>
+                    <exclude>tn/esprit/_4se2/pi/services/Cart/CartStatsService.java</exclude>
+                    <exclude>tn/esprit/_4se2/pi/scheduler/CartScheduler.java</exclude>
+                    <exclude>tn/esprit/_4se2/pi/mappers/ProductMapper.java</exclude>
+                    <exclude>tn/esprit/_4se2/pi/websocket/WebSocketEventHandler.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
