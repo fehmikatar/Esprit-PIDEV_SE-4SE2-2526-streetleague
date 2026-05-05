@@ -1,40 +1,34 @@
 package tn.esprit._4se2.pi.entities;
-
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "favorite_categories")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FavoriteCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    @NotBlank(message = "Le nom de la catégorie favorite est obligatoire")
-    @Size(min = 2, max = 100, message = "Le nom doit contenir entre 2 et 100 caractères")
+    private Long id;
     @Column(nullable = false)
-    String name;
-
+    private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    User user;
-
+    private User user;
     @OneToMany(mappedBy = "category")
-    @Builder.Default
-    List<Favorite> favorites = new ArrayList<>();
-
+    private List<Favorite> favorites = new ArrayList<>();
     @Column(name = "created_at")
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
+
+    public FavoriteCategory() {}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public List<Favorite> getFavorites() { return favorites; }
+    public void setFavorites(List<Favorite> favorites) { this.favorites = favorites; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
